@@ -2,6 +2,7 @@
 import React from "react";
 import { CLIENTS,CLIENT_SECTION_HEADING } from '../../constants/constant'; // Import client data
 import "./styles/Client.css";
+import "./styles/responsive.css";
 
 const Clients = () => {
   return (

@@ -4,6 +4,8 @@ import Services from './Services';
 import Faq from './Faq';
 import Client from './Client';
 import "./styles/Home.css";
+import "./styles/responsive.css";
+import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from 'react-icons/fa';
 
 const Home = () => {
   // State to track whether to show the scroll-to-top button
@@ -49,6 +51,22 @@ const Home = () => {
           <span>^</span> {/* Simple up arrow */}
         </button>
       )}
+
+      {/* Contact Us strip */}
+      <div className="contact-strip">
+        <div className="contact-item">
+          <FaEnvelope className="icon" />
+          <span>Email: narayan.kavitake@upmyskill.in</span>
+        </div>
+        <div className="contact-item">
+          <FaPhoneAlt className="icon" />
+          <span>Phone: +123 456 7890</span>
+        </div>
+        <div className="contact-item">
+          <FaMapMarkerAlt className="icon" />
+          <span>Address: 123 Main Street, Pune</span>
+        </div>
+      </div>
     </section>
   );
 };

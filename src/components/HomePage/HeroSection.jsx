@@ -3,6 +3,7 @@ import React from 'react';
 import { DROPDOWN_OPTIONS } from '../../constants/constant';
 import { useNavigate } from 'react-router-dom'; // for navigation
 import './styles/HeroSection.css';
+import "./styles/responsive.css";
 
 const HeroSection = () => {
   const navigate = useNavigate();

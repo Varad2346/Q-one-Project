@@ -19,6 +19,9 @@
   font-size: clamp(24px, 5vw, 36px); /* Responsive font-size */
   font-weight: 700;
   color: #333; /* Darker text color for better readability */
+  
+  border-bottom: 3px solid #ff4b2b; /* Underline effect */
+  padding-bottom: 10px; /* Add padding to avoid touching text */
 }
 
 /* FAQ item styling */

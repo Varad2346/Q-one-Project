@@ -5,6 +5,7 @@ import { FaLaptop, FaTools, FaTimes, FaHandshake, FaCertificate, FaAward, FaClip
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../store/auth';
+import "./styles/responsive.css";
 // Icon options to choose from
 
 const iconOptions = [

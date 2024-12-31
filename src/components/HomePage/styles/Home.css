@@ -1,31 +1,55 @@
 /* Style the scroll-to-top button */
 .scroll-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 24px;
-    background-color: #ff4b2b;
-    color: white;
-    border: none;
-    padding:4px;
-    width: 25px;
-    height: 25px;
-    font-size: 24px;
-    cursor: pointer;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-  
-  .scroll-to-top:hover {
-    background-color: #e60023;
-  }
-  
-  .scroll-to-top:focus {
-    outline: none;
-  }
-  
-  /* Show the button when the user has scrolled down */
-  .scroll-to-top[style*="opacity: 1"] {
-    opacity: 1;
-  }
-  
+  position: fixed;
+  bottom: 20px;
+  right: 24px;
+  background-color: #ff4b2b;
+  color: white;
+  border: none;
+  padding:4px;
+  width: 25px;
+  height: 25px;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top:hover {
+  background-color: #e60023;
+}
+
+.scroll-to-top:focus {
+  outline: none;
+}
+
+/* Show the button when the user has scrolled down */
+.scroll-to-top[style*="opacity: 1"] {
+  opacity: 1;
+}
+
+
+.contact-strip {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  /*position: sticky;
+  bottom: 0;
+  z-index: 1000;*/
+  font-size: 14px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-item .icon {
+  font-size: 16px;
+}
+

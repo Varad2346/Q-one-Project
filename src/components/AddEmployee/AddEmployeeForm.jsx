@@ -1,3 +1,4 @@
+//file updated by varad
 import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -77,7 +78,7 @@ const AddEmployeeForm = () => {
     if (role === 'employee' || role === 'trainer') {
       submitData.password = '123456'; // Default password
     }
-    
+
     try {
       const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST',

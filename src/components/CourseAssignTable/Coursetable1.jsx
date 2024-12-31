@@ -1,4 +1,4 @@
-//updated by varad
+//updated by varad1
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./tables1.css";

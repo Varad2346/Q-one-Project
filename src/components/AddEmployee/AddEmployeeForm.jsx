@@ -34,14 +34,14 @@ const AddEmployeeForm = () => {
     lastName: '',
     gender: 'Male',
     email: '',
-    password: '', // Default password for Employee and Trainer
-    confirmPassword: '', // Add this
+    password: '123456', // Default password for Employee and Trainer
+    confirmPassword: '123456', // Add this
     mobileNumber: '',
     department: '',  // This field will be conditionally excluded for HR
-    role: 'Employee',
+    role: 'employee',
   });
 
-  const [role, setRole] = useState('Employee');
+  const [role, setRole] = useState('employee');
 
   
 
@@ -74,11 +74,13 @@ const AddEmployeeForm = () => {
     const submitData = { ...formData };
 
     // If role is Employee or Trainer, set a default password
-    if (role === 'Employee' || role === 'Trainer') {
+    if (role === 'employee' || role === 'trainer') {
       submitData.password = '123456'; // Default password
+      submitData.confirmPassword='123456';
     }
 
     try {
+      console.log(submitData);
       const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST',
         headers: {
@@ -122,7 +124,7 @@ const AddEmployeeForm = () => {
     setFormData((prevData) => ({
       ...prevData,
       role: selectedRole,
-      password: selectedRole === 'Employee' || selectedRole === 'Trainer' ? '123456' : '', // Keep empty for HOD and HR
+      password: selectedRole === 'employee' || selectedRole === 'trainer' ? '123456' : '', // Keep empty for HOD and HR
       confirmPassword: '', // Ensure confirmPassword is cleared when switching roles
     }));
   };

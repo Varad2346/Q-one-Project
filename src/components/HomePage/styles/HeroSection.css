@@ -1,0 +1,208 @@
+/* General reset for padding and border handling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Hero Section Styles */
+.hero {
+  position: relative;
+  height: 42vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: hwb(200 50% 22% / 0.991);
+  padding: 40px;
+  color: #333333;
+  text-align: center;
+  transition: height 0.3s ease, padding 0.3s ease; /* Smooth transition */
+}
+
+/* Overlay for background effect */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 141, 200, 0.15);
+  z-index: 1;
+}
+
+/* Container for the cards */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 2;
+  padding: 10px;
+  /* gap: 30px; */
+  color: #ff5733;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Individual card styles */
+.card {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin: 15px;
+  padding: 40px 20px;
+  text-align: center;
+  width: 280px;
+  max-width: 100%;
+  overflow: hidden;
+  transition: transform 0.4s, box-shadow 0.4s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ff5733;
+  cursor: pointer;
+  flex-grow: 1; /* Ensures proper layout distribution */
+  box-sizing: border-box;
+  min-height: 220px; /* Ensures a consistent height even for multi-line titles */
+  display: flex; /* Use flexbox to control height */
+  justify-content: space-between; /* Distribute content evenly */
+}
+
+/* Card hover effect (scale for smooth animation) */
+.card:hover {
+  transform: scale(1.05); /* Smooth scaling */
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+  border: 2px solid #ff5733;
+}
+
+/* Card hover before effect */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-color: rgba(255, 87, 51, 0.1); /* Light orange overlay */
+  transform: rotate(45deg);
+  transition: all 0.5s;
+  opacity: 0;
+  z-index: 0; /* Behind text */
+}
+
+/* On hover, the card background overlay appears */
+.card:hover::before {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+/* Card title styles */
+.card-title {
+  font-size: 1.8rem;
+  margin: 10px 0;
+  color: #333333;
+  font-weight: bold;
+  z-index: 1; /* Keeps title above overlay */
+  transition: font-size 0.3s ease; /* Smooth transition for font resizing */
+  overflow-wrap: break-word; /* Ensures title wraps correctly */
+  word-wrap: break-word; /* Handles long words */
+}
+
+/* Card icon styles */
+.card-icon {
+  font-size: 2.5rem; /* Adjust icon size */
+  color: #ff5733; /* Icon color */
+  margin-bottom: 10px;
+  z-index: 1; /* Keeps icon above overlay */
+}
+
+/* Card content styles */
+.card-content {
+  font-size: 1rem;
+  color: #555555;
+  line-height: 1.5;
+  z-index: 1; /* Keeps content above overlay */
+}
+
+/* Media Queries for Responsiveness */
+
+/* For large screens (desktop) */
+@media (max-width: 1200px) { /* Laptops */
+  .card {
+    width: 45%; /* Adjust width for laptops */
+    padding: 30px 20px; /* Reduce padding */
+  }
+
+  .hero {
+    height: 50vh; /* Adjust hero section height */
+    padding: 30px; /* Adjust padding */
+  }
+
+  .card-title {
+    font-size: 1.6rem; /* Slightly reduce font size */
+  }
+}
+
+/* For medium screens (tablets) */
+@media (max-width: 992px) { /* Tablets */
+  .card {
+    width: 45%; /* Adjust width for tablet screens */
+    padding: 25px 20px; /* Adjust padding for tablet screens */
+  }
+
+  .hero {
+    height: 60vh; /* Adjust hero section height */
+    padding: 25px; /* Adjust padding */
+  }
+
+  .card-title {
+    font-size: 1.4rem; /* Adjust font size */
+  }
+}
+
+/* For smaller mobile screens */
+@media (max-width: 768px) { /* Mobile Devices */
+  .card {
+    width: 80%; /* Increase card width for smaller screens */
+    margin: 10px 0; /* Reduce margin */
+    padding: 20px 15px; /* Adjust padding */
+  }
+
+  .hero {
+    height: auto; /* Allow height to adjust based on content */
+    padding: 20px; /* Reduce padding for mobile */
+  }
+
+  .card-title {
+    font-size: 1.5rem; /* Reduce title font size */
+  }
+
+  .card-icon {
+    font-size: 2.2rem; /* Reduce icon size */
+  }
+}
+
+/* For very small mobile screens */
+@media (max-width: 480px) { /* Small Mobile Devices */
+  .card {
+    width: 100%; /* Full width for very small screens */
+    padding: 15px; /* Adjust padding */
+  }
+
+  .hero {
+    height: auto; /* Allow height to adjust based on content */
+    padding: 15px; /* Reduce padding for very small screens */
+  }
+
+  .card-title {
+    font-size: 1.4rem; /* Further reduce title font size */
+  }
+
+  .card-icon {
+    font-size: 2rem; /* Adjust icon size */
+  }
+}

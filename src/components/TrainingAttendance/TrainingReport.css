@@ -1,0 +1,204 @@
+.container {
+  width: 100%;
+  max-width: 1400px;
+  text-align: left;
+  background: #ffffff;
+  padding: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.training-report,
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+.training-report td,
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid grey;
+  padding: 8px;
+  vertical-align: middle;
+  text-align: left;
+  font-size:18px;
+}
+
+.training-report .label,
+.attendance-table th {
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  background-color: #ff8c00;
+}
+
+.training-report td:first-child {
+  width: 20%;
+}
+
+.attendance-report th:first-child,
+.attendance-report td:first-child {
+  width: 8%;
+}
+
+.attendance-report th:nth-child(2),
+.attendance-report td:nth-child(2) {
+  width: 30%;
+}
+
+.attendance-report th:nth-child(3),
+.attendance-report td:nth-child(3) {
+  width: 30%;
+}
+
+.attendance-report th:nth-child(4),
+.attendance-report td:nth-child(4) {
+  width: 15%;
+}
+
+.attendance-report th:nth-child(5),
+.attendance-report td:nth-child(5) {
+  width: 17%;
+}
+
+.training-report .wrapped {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* Increase height for blank rows */
+.training-report .blank {
+  width: 17000000px; /* Adjust as needed */
+}
+
+/* Ensure uniform height for rows with values */
+.training-report .value-row {
+  width: auto;
+}
+
+.training-report td {
+  height: 20px;
+}
+
+.merged {
+  height: 60px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  margin-left: 50px;
+  padding: 10px 150px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: black;
+  border: none;
+  border-radius: 4px;
+}
+
+
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+.dropdown-button1 {
+  padding: 10px 100px;
+  margin-left: 40px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: black;
+  border: none;
+  border-radius: 4px;
+}
+
+
+
+.dropdown-content1 {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown-content1 a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content1 a:hover {
+  background-color: #ddd;
+}
+
+.dropdown1:hover .dropdown-content1 {
+  display: block;
+}
+input{
+  border: none;
+}
+.commit-button-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.commit-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.commit-button:hover {
+  background-color: #0056b3;
+}

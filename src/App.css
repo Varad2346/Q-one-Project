@@ -1,0 +1,12 @@
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Added box-sizing for better control over layout */
+}
+/* Universal box-sizing for consistency */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

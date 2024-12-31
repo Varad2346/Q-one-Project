@@ -1,0 +1,276 @@
+/* Center the login-container on the page */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+.login-page {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    display: flex;
+    width: 70vw;
+    height: 80vh;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* Left section styling */
+.login-left {
+    flex: 1;
+    background: linear-gradient(135deg, #f97316, #f15d22);
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    padding: 40px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.login-img {
+    margin-top: 90px;
+    width: 100%;
+    height: 150px;
+    max-width: 450px;
+    border-radius: 20px;
+}
+
+/* Right section styling */
+.login-right {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.login-right h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.login-right p {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 22px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+}
+
+.show-password {
+    align-self: flex-end;
+    color: #f97316;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.login-button {
+    margin-top: 20px;
+    background-color: #f97316;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #e86212;
+}
+
+
+.signup-text {
+    margin-top: 20px;
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.signup-link {
+    color: #f97316;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Style for the password container and the show password text */
+.password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Media Queries for Responsiveness */
+@media screen and (max-width: 1024px) {
+    .login-container {
+        width: 90vw; /* Increase width on tablets */
+        height: auto;
+        flex-direction: column;
+    }
+
+    .login-left {
+        flex: 0 0 100%;
+        height: 200px; /* Adjust height on tablets */
+        padding: 20px;
+       
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        
+    }
+
+    .login-img {
+        width: 80%;
+        max-width: 550px;
+        height: auto;
+        margin-bottom: 10%;
+    }
+
+    .login-right {
+        flex: 0 0 100%;
+        padding: 20px;
+    }
+
+    .login-right h2 {
+        font-size: 2rem; /* Adjust heading size */
+    }
+
+    .login-form {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .login-button {
+        padding: 10px; /* Adjust button padding */
+    }
+
+    .signup-text {
+        font-size: 0.85rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .login-container {
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .login-left {
+        flex: 0 0 100%;
+        padding: 15px;
+        height: 200px;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    .login-img {
+        width: 80%;
+        max-width: 300px;
+        height: auto;
+    }
+
+    .login-right {
+        flex: 0 0 100%;
+        padding: 15px;
+    }
+
+    .login-right h2 {
+        font-size: 1.8rem;
+    }
+
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+        padding: 18px; /* Adjust padding for smaller screens */
+    }
+
+    .login-button {
+        padding: 10px;
+    }
+
+    .signup-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body, html {
+        font-size: 14px; /* Adjust font size for very small screens */
+    }
+
+    .login-container {
+        width: 95%;
+        height: auto;
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .login-left {
+        flex: 0 0 100%;
+        padding: 10px;
+        height: 180px;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    .login-img {
+        width: 80%;
+        max-width: 250px;
+        height: auto;
+    }
+
+    .login-right {
+        flex: 0 0 100%;
+        padding: 10px;
+    }
+
+    .login-right h2 {
+        font-size: 1.6rem;
+    }
+
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+        padding: 15px; /* Adjust padding for very small screens */
+    }
+
+    .login-button {
+        padding: 10px;
+    }
+
+    .signup-text {
+        font-size: 0.75rem;
+    }
+
+    .show-password {
+        font-size: 0.8rem;
+    }
+}

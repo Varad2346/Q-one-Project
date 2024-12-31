@@ -1,0 +1,128 @@
+/* General Body Styling */
+  
+  /* Container Styling */
+  .container {
+    width: 100%;
+    max-width: 1500px;
+    margin: auto;
+    text-align: left;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  /* HOD Table Styling */
+  .hod-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    text-align: left;
+  }
+  
+  .hod-table td {
+    border: 1px solid grey;
+    /* padding: 5px; */
+    padding: 15px;
+    font-size: 17px;
+    vertical-align: middle;
+  }
+  
+  .hod-table .hod-cell,
+  .hod-table .department-cell,
+  .hod-table .year-cell {
+    font-weight: bold; /* Make headings bold */
+  }
+  .department-cell{
+    
+  }
+  .hod-table td:first-child {
+    width: 10%; /* Wider space for HOD label */
+  }
+  .hod-table td:nth-child(2) {
+    width: 42%; /* Wider space for HOD Name */
+  }
+  .hod-table td:nth-child(4) {
+    width: 25%; /* Wider space for HOD Name */
+  }
+  .hod-table td:nth-child(odd) {
+    background-color: #ff8c00; /* Wider space for HOD Name */
+  }
+  
+  .hod-table .vertical-divider {
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    text-align: center;
+    white-space: nowrap; /* Prevents text from wrapping */
+  }
+  .department-cell{
+    width: 10%;
+  }
+
+  .hod-table .year-cell {
+    text-align: center; /* Center-align horizontally */
+    vertical-align: middle; /* Center-align vertically */
+    white-space: nowrap; /* Ensure 'Year: 2025' fits in one line */
+    width: 5%;
+  }
+  
+  /* Title Styling */
+  .main-title {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+  
+/* General Table Styling */
+.training-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .training-table th,
+  .training-table td {
+    border: 1px solid grey;
+    padding: 8px;
+    text-align: center;
+    font-size: 20px;
+    vertical-align: middle;
+  }
+  
+  .training-table th {
+    background-color: #ff8c00;
+    font-weight: bold;
+  }
+  
+  /* Align 'Actual Date' column to center */
+  .training-table .actual-date-column {
+    width: 6%;
+    text-align: center;
+  }
+  
+  /* Adjusting 'Trainer' column width (doubled size) */
+  .training-table .trainer-column {
+    width: 15%;
+  }
+  
+  /* Adjusting 'Remark' column width */
+  .training-table .remark-column {
+    width: 10%; /* Doubled width */
+  }
+  
+  /* Adjusting 'DOE' column width (same as 'Actual Date') */
+  .training-table .doe-column {
+    width: 10%;
+  }
+  .grade-input{
+    border: none;
+    width: 20px;
+    padding: 16px;
+  }
+  
+.actual-date1 {
+    width: 1%;
+}

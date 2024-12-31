@@ -1,0 +1,77 @@
+/* Center align the title */
+.title {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Outer container styling */
+.training-calendar {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 99vw;
+  box-sizing: border-box;
+}
+
+/* Table container */
+.table-container {
+  width: 99vw; /* Takes 99% of the viewport width */
+  /* max-width: 1600px; */
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+th, td {
+  border: 1px solid grey;
+  padding: 9px;
+  width: 150px;
+  height: 50px;
+  box-sizing: border-box;
+}
+
+th {
+  background-color: orange;
+  color: black;
+  font-weight: bold;
+}
+
+.green {
+  background-color: green;
+  color: white;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 1200px) {
+  th, td {
+      font-size: 0.9em;
+      padding: 8px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  th, td {
+      font-size: 0.8em;
+      padding: 6px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  th, td {
+      font-size: 0.7em;
+      padding: 5px;
+  }
+}

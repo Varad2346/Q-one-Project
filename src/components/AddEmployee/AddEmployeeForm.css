@@ -1,0 +1,213 @@
+/* General container for the form */
+.form-container {
+  max-width: 600px; /* Maximum width for larger screens */
+  width: 90%; /* Full width on smaller screens */
+  margin: 35px auto; /* Center the form */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(227, 162, 10, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+  transition: box-shadow 0.3s ease;
+  position: relative; /* To position the role toggle */
+}
+
+/* Title styling */
+.form-title {
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 2rem;
+  color: #333;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  border-bottom: 3px solid #ff4b2b; /* Underline effect */
+  padding-bottom: 10px; /* Add padding to avoid touching text */
+}
+
+/* Row layout for form groups */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Reduced gap for tighter spacing */
+  justify-content: space-between;
+}
+
+/* Individual form group styling */
+.form-group1 {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 45%;
+  min-width: 250px;
+  margin-bottom: 15px; /* Reduced bottom margin for more compact layout */
+}
+
+/* Label styling */
+.form-label {
+  display: block;
+  margin-bottom: 5px; /* Adjusted margin for a tighter look */
+  font-weight: 500;
+  color: #000;
+}
+
+/* Input field styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  height: 40px;
+  margin-top: 5px; /* Minor top margin for better alignment */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+/* Floating effect on input focus */
+input:focus,
+select:focus {
+  border-color: #ff4b2b;
+  box-shadow: 0 0 8px rgba(255, 75, 43, 0.3);
+  outline: none;
+
+}
+
+/* Button container styling */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* Button styling */
+.Add-employee-button {
+  flex: 1;
+  padding: 12px 20px;
+  background-color: #ff4b2b;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  height: 50px;
+}
+
+.Add-employee-button:hover {
+  background-color: #e60023;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Role toggle buttons */
+.role-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Make it take the full width */
+  margin-bottom: 20px; /* Add spacing below the toggle */
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 2px;
+  border-radius: 5px;
+  /* Remove position absolute, it was causing visibility issues */
+}
+
+.role-toggle-button {
+  flex: 1;
+  padding: 12px 0;
+  background-color: transparent;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  text-align: center;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Active button styling */
+.role-toggle-button.active {
+  background-color: #ff4b2b;
+  color: white;
+}
+
+/* Hover effect for toggle buttons */
+.role-toggle-button:hover {
+  background-color: #f8f8f8;
+  color: #ff4b2b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-title {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    flex-direction: column; /* Stack form fields on smaller screens */
+  }
+
+  .form-group1 {
+    flex: 1 1 100%; /* Full width for form groups */
+    margin-bottom: 20px; /* Extra margin for spacing */
+  }
+
+  .role-toggle {
+    position: relative;
+    width: 100%; /* Make it stretch across the width */
+    justify-content: center; /* Center the buttons on smaller screens */
+    margin-bottom: 20px; /* Add space below it */
+  }
+
+  .Add-employee-button {
+    width: 100%; /* Full-width buttons on smaller screens */
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+}
+
+
+.role-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Full width for buttons */
+  margin-bottom: 20px; /* Space between toggle buttons and form */
+}
+
+.role-button {
+  flex: 1;
+  padding: 12px 0;
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  text-align: center;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Active role button */
+.role-button.active {
+  background-color: #ff4b2b;
+  color: white;
+}
+
+/* Hover effect for role toggle buttons */
+.role-button:hover {
+  background-color: #f8f8f8;
+  color: #ff4b2b;
+}
+

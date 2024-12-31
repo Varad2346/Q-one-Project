@@ -1,0 +1,335 @@
+.course-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+} 
+
+.left-container {
+  width: 100%; /* Adjust width as needed */
+  background-color:white; /* Original box background color */
+  padding: 20px;
+  height: 89vh;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  border-top-right-radius: 0%;
+  border-bottom-right-radius: 0%;
+}
+
+.right-container {
+  width: 27%; /* Adjust width as needed */
+  background-color: #fff; /* Original background color for the employee selection box */
+  padding: 20px;
+  border-radius: 10px;
+  height: 89vh;   
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 0%;
+  border-bottom-left-radius: 0%;
+  border-collapse: collapse;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+
+
+.course-table {
+  width: 100%;
+  border-radius: 40px;
+  border-collapse: collapse;
+  position: relative;
+}
+
+ .course-table td {
+  border: 1px solid #ddd;
+  padding: 5px;
+  text-align: left;
+
+
+}
+
+
+.course-table th {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+  background-color: #ff8c00;
+  color: white;
+  font-weight: bold;
+  /* position: sticky; Sticky positioning */
+  top: 0; /* Stick to the top of the scrolling container */
+  z-index: 1; /* Ensure the header is above other table content */
+}
+
+.form-error {
+  color: red;
+  margin-top: 10px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-selected {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  color: rgba(128, 128, 128, 0.849); /* Faint grey color */
+}
+
+.dropdown-list {
+  list-style: none;
+  position: absolute;
+  z-index: 1;
+  display: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-list.visible {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 8px;
+  cursor: pointer;
+  
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0; /* Original hover color */
+}
+
+
+.employee-selection {
+  margin: 0px 20px;
+  margin: auto;
+  padding: 10px 15px;
+  width: 100%;
+  background-color: #fffaf0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.employee-select {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+/* Button Group Styles */
+.button-group {
+  justify-content: end;
+  margin: 15px 20px;
+  display: flex;
+  gap: 30px;
+}
+.add-course-button{
+  background-color: #ff8c00;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.submit-button{
+  background-color: #ff8c00;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  width: 200px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.add-course-button:hover{
+  background-color: #e67e00;
+  transform: translateY(-2px);
+}
+.submit-button{
+  background-color: #e67e00;
+  transform: translateY(-2px);
+}
+.reset-button{
+  background-color: #f44336;
+  color: white;
+  width: 200px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.drop-course-button {
+  background-color: #f44336;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.reset-button,.drop-course-button:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+}
+input[type="checkbox"] {
+  width: 14px; /* Set the desired width */
+  height: 14px; /* Set the desired height */
+  transform: scale(1.5); /* Increase the size */
+  margin-left: 10px; /* Optional: Add some space to the right */
+  cursor: pointer; /* Change cursor to pointer */
+  /* Optional: Set styles for better visibility */
+  accent-color: #485aff; /* Change the color of the checkbox */
+}
+.header {
+      display: flex;
+      flex-direction: row;
+   /* Adjust margin */
+      padding: 1px 15px;
+      width: 100%;
+      background-color: #fffaf0;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: sticky; /* Sticky positioning */
+      top: 0; /* Stick to the top of the container */
+      z-index: 1000; /* Ensure it stays above other content */
+  
+}
+
+.course-table-out {
+  width: 100;
+  padding:4px;
+   /* Adjust based on header height */
+  overflow-y: auto; /* Allow scrolling */
+  height: 70vh /* Adjust height considering the fixed header */
+}
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.modal-content {
+text-align: center;
+background: white;
+padding: 20px;
+border-radius: 8px;
+width: 400px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-container {
+margin-bottom: 15px;
+}
+
+button {
+padding: 10px;
+background-color: #ff8c00;  ;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+
+}
+
+button[type="button"] {
+background-color: #f44336;
+}
+
+button[type="submit"]:hover, button[type="button"]:hover {
+opacity: 0.9;
+}
+.modal-buttons{
+display: flex;
+justify-content: end;
+gap: 20px;
+
+}
+.modal-input-fields{
+gap: 4px;
+display: flex;
+flex-direction: column;
+margin-bottom: 9px;
+margin-top: 7px;
+}
+
+.toggle-view-button {
+  background-color: #ff8c00;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-view-button:hover {
+  background-color: #ff7a00;
+  transform: scale(1.05);
+}

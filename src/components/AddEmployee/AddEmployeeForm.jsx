@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AddEmployeeForm.css';
@@ -20,27 +20,30 @@ import {
   HOD_LABEL,
   ADD_TRAINER_FORM_TITLE,
   TRAINER_LABEL,
-  DEPARTMENT_LABEL,
+  DEPARTMENT_LABEL, // New department label
   SAVE_BUTTON_TEXT,
-  CANCEL_BUTTON_TEXT,
+  CANCEL_BUTTON_TEXT
 } from '../../constants/constant';
 
 const AddEmployeeForm = () => {
-  const { authToken } = useAuth();
 
+    const { authToken }=useAuth();
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     gender: 'Male',
     email: '',
-    password: '123456',
-    confirmPassword: '123456',
+    password: '123456', // Default password for Employee and Trainer
+    confirmPassword: '123456', // Add this
     mobileNumber: '',
-    department: '',
+    department: '',  // This field will be conditionally excluded for HR
     role: 'employee',
   });
 
   const [role, setRole] = useState('employee');
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,25 +53,34 @@ const AddEmployeeForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation for HR and HOD roles
     if (role === 'HR' || role === 'HOD') {
+      // Check if password and confirm password match
       if (formData.password !== formData.confirmPassword) {
         toast.error('Password and Confirm Password do not match!');
         return;
       }
 
+      // Check if password is at least 6 characters long
       if (formData.password.length < 6) {
         toast.error('Password must be at least 6 characters long!');
         return;
       }
     }
 
+    console.log('Form Data Submitted:', formData);
+
+    // Conditionally set the password based on the role
     const submitData = { ...formData };
+
+    // If role is Employee or Trainer, set a default password
     if (role === 'employee' || role === 'trainer') {
-      submitData.password = '123456';
-      submitData.confirmPassword = '123456';
+      submitData.password = '123456'; // Default password
+      submitData.confirmPassword='123456';
     }
 
     try {
+      console.log(submitData);
       const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST',
         headers: {
@@ -78,14 +90,14 @@ const AddEmployeeForm = () => {
         body: JSON.stringify(submitData),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Network response was not ok');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Network response was not ok');
       }
 
+      const data = await response.json();
       console.log('User created:', data);
-      toast.success(`User created successfully: ${data.data.firstName} ${data.data.lastName}`);
+      toast.success('User added successfully!');
       resetForm();
     } catch (error) {
       toast.error(error.message || 'Error creating user');
@@ -99,10 +111,10 @@ const AddEmployeeForm = () => {
       lastName: '',
       gender: 'Male',
       email: '',
-      password: '',
-      confirmPassword: '',
+      password: '', // Keep empty for HOD and HR
+      confirmPassword: '', // Ensure confirmPassword is reset
       mobileNumber: '',
-      department: '',
+      department: '', // Reset department field
       role: role,
     });
   };
@@ -112,17 +124,18 @@ const AddEmployeeForm = () => {
     setFormData((prevData) => ({
       ...prevData,
       role: selectedRole,
-      password: selectedRole === 'employee' || selectedRole === 'trainer' ? '123456' : '',
-      confirmPassword: '',
+      password: selectedRole === 'employee' || selectedRole === 'trainer' ? '123456' : '', // Keep empty for HOD and HR
+      confirmPassword: '', // Ensure confirmPassword is cleared when switching roles
     }));
   };
 
   return (
     <div className="form-container">
+      {/* Role toggle section */}
       <div className="role-toggle">
         <button
-          className={`role-button ${role === 'employee' ? 'active' : ''}`}
-          onClick={() => toggleRole('employee')}
+          className={`role-button ${role === 'Employee' ? 'active' : ''}`}
+          onClick={() => toggleRole('Employee')}
         >
           {EMPLOYEE_LABEL}
         </button>
@@ -139,15 +152,16 @@ const AddEmployeeForm = () => {
           {HOD_LABEL}
         </button>
         <button
-          className={`role-button ${role === 'trainer' ? 'active' : ''}`}
-          onClick={() => toggleRole('trainer')}
+          className={`role-button ${role === 'Trainer' ? 'active' : ''}`}
+          onClick={() => toggleRole('Trainer')}
         >
           {TRAINER_LABEL}
         </button>
       </div>
 
+      {/* Form Title */}
       <h2 className="form-title">
-        {role === 'employee'
+        {role === 'Employee'
           ? ADD_EMPLOYEE_FORM_TITLE
           : role === 'HR'
           ? ADD_HR_FORM_TITLE
@@ -209,6 +223,7 @@ const AddEmployeeForm = () => {
           </div>
         </div>
 
+        {/* Email and Department in one row */}
         <div className="form-row">
           <div className="form-group1">
             <label htmlFor="email">{EMAIL_LABEL}</label>
@@ -236,6 +251,7 @@ const AddEmployeeForm = () => {
           )}
         </div>
 
+        {/* Password and Confirm Password in one row */}
         {(role === 'HR' || role === 'HOD') && (
           <div className="form-row">
             <div className="form-group1">
@@ -273,6 +289,7 @@ const AddEmployeeForm = () => {
         </div>
       </form>
 
+      {/* ToastContainer for notifications */}
       <ToastContainer />
     </div>
   );

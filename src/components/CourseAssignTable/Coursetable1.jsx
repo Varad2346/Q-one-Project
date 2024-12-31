@@ -2,18 +2,19 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./tables1.css";
 import Select from "react-select";
-import { useAuth } from '../../store/auth';
+import { useAuth } from "../../store/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Tooltip } from 'react-tooltip';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Tooltip } from "react-tooltip";
 
 const CourseTable = () => {
   const { authToken } = useAuth();
   const { categoryId } = useParams();
   const [employees, setEmployees] = useState([]);
   const [trainers, setTrainers] = useState([]);
+  console.log("trainers",trainers);
   const [courses, setCourses] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
@@ -28,7 +29,7 @@ const CourseTable = () => {
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [isMonthView, setIsMonthView] = useState(true);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [viewMode, setViewMode] = useState('current');
+  const [viewMode, setViewMode] = useState("current");
 
   const durations = [
     "1 to 2 hrs",
@@ -46,13 +47,33 @@ const CourseTable = () => {
   };
 
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const monthMapping = {
-    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
-    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11
+    January: 0,
+    February: 1,
+    March: 2,
+    April: 3,
+    May: 4,
+    June: 5,
+    July: 6,
+    August: 7,
+    September: 8,
+    October: 9,
+    November: 10,
+    December: 11,
   };
 
   const getLastDateOfMonth = (month, year) => {
@@ -63,7 +84,7 @@ const CourseTable = () => {
   const getMinDate = () => {
     return "1900-01-01";
   };
-  
+
   const getMaxDate = () => {
     return "2100-12-31";
   };
@@ -74,25 +95,34 @@ const CourseTable = () => {
         const response = await fetch("http://localhost:3000/api/users", {
           headers: { Authorization: `Bearer ${authToken}` },
         });
-        if (!response.ok) throw new Error(`Failed to fetch users: ${response.statusText}`);
+        if (!response.ok)
+          throw new Error(`Failed to fetch users: ${response.statusText}`);
         const data = await response.json();
+        console.log("emp", data.data);
+        console.log(Array.isArray(data.data));
+        const employeeOptions = Array.isArray(data.data)
+          ? data.data
+              .filter((emp) => emp.role.toLowerCase() === "employee")
+              .map((emp) => ({
+                value: emp.userId,
+                label: `${emp.firstName} ${emp.lastName}`,
+              }))
+          : []; // Fallback to an empty array if `data` is not an array
+        const trainerOptions = Array.isArray(data.data)
+          ? data.data
+              .filter((emp) => emp.role.toLowerCase() === "trainer")
+              .map((emp) => ({
+                value: emp.userId,
+                label: `${emp.firstName} ${emp.lastName}`,
+              }))
+          : []; // Fallback to an empty array if `data` is not an array
 
-        const employeeOptions = data
-          .filter((emp) => emp.role.toLowerCase() === "employee")
-          .map((emp) => ({
-            value: emp.userId,
-            label: `${emp.firstName} ${emp.lastName}`,
-          }));
-
-        const trainerOptions = data
-          .filter((emp) => emp.role.toLowerCase() === "trainer")
-          .map((emp) => ({
-            value: emp.userId,
-            label: `${emp.firstName} ${emp.lastName}`,
-          }));
-
-        setEmployees(employeeOptions);
-        setTrainers(trainerOptions);
+          
+          setEmployees(employeeOptions);
+          setTrainers(trainerOptions);
+          console.log("opt", employeeOptions);
+        console.log("fit", employeeOptions);
+        console.log("tra", trainerOptions);
       } catch (error) {
         console.log("Failed to fetch user data.", error);
       }
@@ -100,15 +130,18 @@ const CourseTable = () => {
 
     const fetchCourses = async () => {
       try {
+        console.log(categoryId);
         const response = await fetch(
           `http://localhost:3000/api/courses/${categoryId}`,
           {
             headers: { Authorization: `Bearer ${authToken}` },
           }
         );
-        if (!response.ok) throw new Error(`Failed to fetch courses: ${response.statusText}`);
+        if (!response.ok)
+          throw new Error(`Failed to fetch courses: ${response.statusText}`);
         const data = await response.json();
-        setCourses(data);
+        console.log("courses",data.data);
+        setCourses(data.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
@@ -139,7 +172,7 @@ const CourseTable = () => {
   };
 
   const handleMonthSelect = (courseId, month) => {
-    const year = viewMode === 'current' ? currentYear : currentYear + 1;
+    const year = viewMode === "current" ? currentYear : currentYear + 1;
     const lastDateOfMonth = getLastDateOfMonth(month, year);
     setSelectedMonths((prev) => ({ ...prev, [courseId]: month }));
     setPlanDates((prev) => ({ ...prev, [courseId]: lastDateOfMonth }));
@@ -155,7 +188,7 @@ const CourseTable = () => {
   };
 
   const toggleYearView = () => {
-    setViewMode(prev => prev === 'current' ? 'next' : 'current');
+    setViewMode((prev) => (prev === "current" ? "next" : "current"));
     setSelectedMonths({});
     setPlanDates({});
   };
@@ -262,10 +295,11 @@ const CourseTable = () => {
         }
       );
 
-      if (!response.ok) throw new Error(`Failed to add course: ${response.statusText}`);
-      
+      if (!response.ok)
+        throw new Error(`Failed to add course: ${response.statusText}`);
+
       const result = await response.json();
-      
+
       if (result.success) {
         const addedCourse = {
           courseId: result.data.courseId,
@@ -273,7 +307,7 @@ const CourseTable = () => {
           description: result.data.description,
           trainerId: result.data.trainerId,
         };
-        
+
         setCourses((prev) => [...prev, addedCourse]);
         toast.success(result.message);
         handleCloseModal();
@@ -308,14 +342,16 @@ const CourseTable = () => {
             },
           }
         );
-        
+
         if (!response.ok) {
           throw new Error(`Failed to delete course ${courseId}`);
         }
       }
 
       setCourses((prevCourses) =>
-        prevCourses.filter((course) => !selectedCourses.includes(course.courseId))
+        prevCourses.filter(
+          (course) => !selectedCourses.includes(course.courseId)
+        )
       );
 
       setSelectedCourses([]);
@@ -337,9 +373,9 @@ const CourseTable = () => {
     setSelectedTrainer(null);
   };
 
-  const filteredCourses = courses.filter((course) =>
-    course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredCourses = courses.filter((course) =>
+  //   course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   return (
     <div className="course-container">
@@ -381,7 +417,7 @@ const CourseTable = () => {
               </button>
             </div>
           </div>
-          
+
           <div className="course-table-out">
             <table className="course-table">
               <thead>
@@ -394,39 +430,42 @@ const CourseTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredCourses.map((course, index) => (
+                {courses.map((course, index) => (
+                  console.log("courses1",courses),
                   <tr key={course.courseId}>
                     <td>{index + 1}</td>
                     <td>
                       <div
                         className="topic-cell"
-                        data-tooltip-id={`tooltip-${course.courseId}`}
-                        data-tooltip-content={course.courseName}
                       >
-                        {course.courseName.length > 30
-                          ? `${course.courseName.slice(0, 30)}...`
-                          : course.courseName}
+                        {course.name}
                       </div>
-                      <Tooltip id={`tooltip-${course.courseId}`} />
                     </td>
                     <td>
                       <div className="custom-dropdown">
                         <div
                           className="dropdown-selected"
-                          onClick={() => toggleDropdown(`${course.courseId}-duration`)}
+                          onClick={() =>
+                            toggleDropdown(`${course.courseId}-duration`)
+                          }
                         >
-                          {selectedDurations[course.courseId] || "Select Duration"}
+                          {selectedDurations[course.courseId] ||
+                            "Select Duration"}
                         </div>
                         <ul
                           className={`dropdown-list ${
-                            dropdownOpen[`${course.courseId}-duration`] ? "visible" : ""
+                            dropdownOpen[`${course.courseId}-duration`]
+                              ? "visible"
+                              : ""
                           }`}
                         >
                           {durations.map((duration) => (
                             <li
                               key={duration}
                               className="dropdown-item"
-                              onClick={() => handleDurationSelect(course.courseId, duration)}
+                              onClick={() =>
+                                handleDurationSelect(course.courseId, duration)
+                              }
                             >
                               {duration}
                             </li>
@@ -439,22 +478,35 @@ const CourseTable = () => {
                         <div className="custom-dropdown">
                           <div
                             className="dropdown-selected"
-                            onClick={() => toggleDropdown(`${course.courseId}-month`)}
+                            onClick={() =>
+                              toggleDropdown(`${course.courseId}-month`)
+                            }
                           >
                             {selectedMonths[course.courseId] || "Select Month"}
                           </div>
                           <ul
                             className={`dropdown-list ${
-                              dropdownOpen[`${course.courseId}-month`] ? "visible" : ""
+                              dropdownOpen[`${course.courseId}-month`]
+                                ? "visible"
+                                : ""
                             }`}
                           >
-                            {getMonthsForYear(viewMode === 'current' ? currentYear : currentYear + 1).map((month) => (
+                            {getMonthsForYear(
+                              viewMode === "current"
+                                ? currentYear
+                                : currentYear + 1
+                            ).map((month) => (
                               <li
                                 key={month}
                                 className="dropdown-item"
-                                onClick={() => handleMonthSelect(course.courseId, month)}
+                                onClick={() =>
+                                  handleMonthSelect(course.courseId, month)
+                                }
                               >
-                                {month} {viewMode === 'next' ? `${currentYear + 1}` : currentYear}
+                                {month}{" "}
+                                {viewMode === "next"
+                                  ? `${currentYear + 1}`
+                                  : currentYear}
                               </li>
                             ))}
                           </ul>
@@ -463,7 +515,12 @@ const CourseTable = () => {
                         <input
                           type="date"
                           value={planDates[course.courseId] || ""}
-                          onChange={(e) => handlePlanDateChange(course.courseId, e.target.value)}
+                          onChange={(e) =>
+                            handlePlanDateChange(
+                              course.courseId,
+                              e.target.value
+                            )
+                          }
                           min={getMinDate()}
                           max={getMaxDate()}
                         />
@@ -506,6 +563,7 @@ const CourseTable = () => {
                     required
                   />
                   <label htmlFor="trainer-select">Select Trainer</label>
+
                   <Select
                     options={trainers}
                     value={selectedTrainer}
@@ -548,22 +606,20 @@ const CourseTable = () => {
           >
             Submit
           </button>
-          <button 
-            type="button" 
-            className="reset-button" 
-            onClick={handleReset}
-          >
+          <button type="button" className="reset-button" onClick={handleReset}>
             Reset
           </button>
         </div>
 
         <div className="button" style={{ marginTop: "50px" }}>
-          {viewMode === 'next' && (
+          {viewMode === "next" && (
             <div>
-              <h3 style={{ fontWeight: "bold" }}>Planning for Next Year: {currentYear + 1}</h3>
+              <h3 style={{ fontWeight: "bold" }}>
+                Planning for Next Year: {currentYear + 1}
+              </h3>
               <p>
-                You are currently planning courses for the next year. Please ensure
-                dates and months align with the selected year.
+                You are currently planning courses for the next year. Please
+                ensure dates and months align with the selected year.
               </p>
             </div>
           )}

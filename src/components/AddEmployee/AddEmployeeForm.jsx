@@ -34,8 +34,8 @@ const AddEmployeeForm = () => {
     lastName: '',
     gender: 'Male',
     email: '',
-    password: '123456', // Default password for Employee and Trainer
-    confirmPassword: '123456', // Add this
+    password: '', // Default password for Employee and Trainer
+    confirmPassword: '', // Add this
     mobileNumber: '',
     department: '',  // This field will be conditionally excluded for HR
     role: 'employee',
@@ -54,7 +54,7 @@ const AddEmployeeForm = () => {
     e.preventDefault();
 
     // Validation for HR and HOD roles
-    if (role === 'HR' || role === 'HOD') {
+    if (role === 'hr' || role === 'hod') {
       // Check if password and confirm password match
       if (formData.password !== formData.confirmPassword) {
         toast.error('Password and Confirm Password do not match!');
@@ -76,11 +76,9 @@ const AddEmployeeForm = () => {
     // If role is Employee or Trainer, set a default password
     if (role === 'employee' || role === 'trainer') {
       submitData.password = '123456'; // Default password
-      submitData.confirmPassword='123456';
     }
-
+    
     try {
-      console.log(submitData);
       const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST',
         headers: {
@@ -134,26 +132,26 @@ const AddEmployeeForm = () => {
       {/* Role toggle section */}
       <div className="role-toggle">
         <button
-          className={`role-button ${role === 'Employee' ? 'active' : ''}`}
-          onClick={() => toggleRole('Employee')}
+          className={`role-button ${role === 'employee' ? 'active' : ''}`}
+          onClick={() => toggleRole('employee')}
         >
           {EMPLOYEE_LABEL}
         </button>
         <button
-          className={`role-button ${role === 'HR' ? 'active' : ''}`}
-          onClick={() => toggleRole('HR')}
+          className={`role-button ${role === 'hr' ? 'active' : ''}`}
+          onClick={() => toggleRole('hr')}
         >
           {HR_LABEL}
         </button>
         <button
-          className={`role-button ${role === 'HOD' ? 'active' : ''}`}
-          onClick={() => toggleRole('HOD')}
+          className={`role-button ${role === 'hod' ? 'active' : ''}`}
+          onClick={() => toggleRole('hod')}
         >
           {HOD_LABEL}
         </button>
         <button
-          className={`role-button ${role === 'Trainer' ? 'active' : ''}`}
-          onClick={() => toggleRole('Trainer')}
+          className={`role-button ${role === 'trainer' ? 'active' : ''}`}
+          onClick={() => toggleRole('trainer')}
         >
           {TRAINER_LABEL}
         </button>
@@ -161,11 +159,11 @@ const AddEmployeeForm = () => {
 
       {/* Form Title */}
       <h2 className="form-title">
-        {role === 'Employee'
+        {role === 'employee'
           ? ADD_EMPLOYEE_FORM_TITLE
-          : role === 'HR'
+          : role === 'hr'
           ? ADD_HR_FORM_TITLE
-          : role === 'HOD'
+          : role === 'hod'
           ? ADD_HOD_FORM_TITLE
           : ADD_TRAINER_FORM_TITLE}
       </h2>
@@ -236,7 +234,7 @@ const AddEmployeeForm = () => {
               required
             />
           </div>
-          {role !== 'HR' && (
+          {role !== 'hr' && (
             <div className="form-group1">
               <label htmlFor="department">{DEPARTMENT_LABEL}</label>
               <input
@@ -252,7 +250,7 @@ const AddEmployeeForm = () => {
         </div>
 
         {/* Password and Confirm Password in one row */}
-        {(role === 'HR' || role === 'HOD') && (
+        {(role === 'hr' || role === 'hod') && (
           <div className="form-row">
             <div className="form-group1">
               <label htmlFor="password">{PASSWORD_LABEL}</label>

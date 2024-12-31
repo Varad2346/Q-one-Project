@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles/Services.css';
-import { FaLaptop, FaTools, FaTimes, FaHandshake, FaCertificate, FaAward, FaClipboardList, FaRecycle, FaCogs, FaChartLine, FaHeartbeat } from 'react-icons/fa';
+import {
+  FaLaptop,
+  FaTools,
+  FaTimes,
+  FaHandshake,
+  FaCertificate,
+  FaAward,
+  FaClipboardList,
+  FaRecycle,
+  FaCogs,
+  FaChartLine,
+  FaHeartbeat,
+} from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../store/auth';
-import "./styles/responsive.css";
-// Icon options to choose from
+import './styles/responsive.css';
 
+// Icon options to choose from
 const iconOptions = [
   { name: 'COMPUTER SKILL', icon: <FaLaptop /> },
   { name: 'TECHNICAL SKILL', icon: <FaTools /> },
@@ -22,8 +34,7 @@ const iconOptions = [
 ];
 
 const Services = () => {
-  const { authToken }=useAuth();
-  // console.log("token",authToken)
+  const { authToken } = useAuth();
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,28 +43,25 @@ const Services = () => {
   const [newTopic, setNewTopic] = useState({ name: '', description: '', icon: null });
   const [serviceToDelete, setServiceToDelete] = useState(null);
   const [showDeleteButtons, setShowDeleteButtons] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState(null); // Added state for selected icon
+  const [selectedIcon, setSelectedIcon] = useState(null);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        // const token = localStorage.getItem('token');
-        // if (!token) throw new Error('No token found');
-        
         const response = await fetch('http://localhost:3000/api/courseCategory', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
+            Authorization: `Bearer ${authToken}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Failed to fetch services');
         }
 
-        const data = await response.json();
-        const activeServices = data.filter(service => service.status !== 'deleted');
+        const result = await response.json();
+        const activeServices = result.data.filter((service) => !service.deletedAt);
         setServices(activeServices);
       } catch (err) {
         setError(err.message);
@@ -64,21 +72,20 @@ const Services = () => {
     };
 
     fetchServices();
-  }, []);
+  }, [authToken]);
 
   const handleAddTopic = async () => {
     if (!newTopic.name || !newTopic.description || !newTopic.icon) {
-      toast.error('Please fill in both the topic name, description, and select an icon.');
+      toast.error('Please fill in all fields and select an icon.');
       return;
     }
 
     try {
-      // const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:3000/api/courseCategory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify(newTopic),
       });
@@ -87,8 +94,8 @@ const Services = () => {
         throw new Error('Failed to add service');
       }
 
-      const addedService = await response.json();
-      setServices((prevServices) => [...prevServices, addedService]);
+      const result = await response.json();
+      setServices((prevServices) => [...prevServices, result.data]);
       setModalOpen(false);
       setNewTopic({ name: '', description: '', icon: null });
       toast.success('Training Topic added successfully!');
@@ -100,12 +107,11 @@ const Services = () => {
 
   const handleDeleteService = async (id) => {
     try {
-      // const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:3000/api/courseCategory/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
@@ -113,7 +119,7 @@ const Services = () => {
         throw new Error('Failed to delete service');
       }
 
-      setServices((prevServices) => prevServices.filter(service => service.categoryId !== id));
+      setServices((prevServices) => prevServices.filter((service) => service.categoryId !== id));
       setServiceToDelete(null);
       toast.success('Training Topic deleted successfully!');
     } catch (err) {
@@ -126,9 +132,8 @@ const Services = () => {
     setShowDeleteButtons(!showDeleteButtons);
   };
 
-  // Helper function to map service icon
   const getServiceIcon = (iconName) => {
-    const foundIcon = iconOptions.find(option => option.name === iconName);
+    const foundIcon = iconOptions.find((option) => option.name === iconName);
     return foundIcon ? foundIcon.icon : <FaClipboardList />;
   };
 
@@ -146,14 +151,15 @@ const Services = () => {
       <div className="services-grid">
         {services.map((service) => (
           <div key={service.categoryId} className="service-card" onClick={() => navigate(`/coursetable/${service.categoryId}`)}>
-            <div className="service-icon">
-              {getServiceIcon(service.icon)} {/* Render the icon based on the service.icon */}
-            </div>
+            <div className="service-icon">{getServiceIcon(service.name)}</div>
             <h3 className="service-title">{service.name}</h3>
             {showDeleteButtons && (
               <button
                 className="delete-button"
-                onClick={(e) => { e.stopPropagation(); setServiceToDelete(service.categoryId); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setServiceToDelete(service.categoryId);
+                }}
               >
                 <FaTimes />
               </button>
@@ -195,7 +201,7 @@ const Services = () => {
                   key={option.name}
                   className={`icon-button ${selectedIcon === option.name ? 'active' : ''}`}
                   onClick={() => {
-                    setSelectedIcon(option.name); // Update the selected icon
+                    setSelectedIcon(option.name);
                     setNewTopic({ ...newTopic, icon: option.name });
                   }}
                 >

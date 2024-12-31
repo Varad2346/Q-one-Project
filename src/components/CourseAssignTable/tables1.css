@@ -333,3 +333,95 @@ margin-top: 7px;
   background-color: #ff7a00;
   transform: scale(1.05);
 }
+
+/* Consistent button animations */
+button, .add-course-button, .drop-course-button, .toggle-view-button, .reset-button, .submit-button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:hover, .add-course-button:hover, .drop-course-button:hover, 
+.toggle-view-button:hover, .reset-button:hover, .submit-button:hover {
+  transform: translateY(-2px); /* Consistent hover animation */
+  background-color: #e67e00; /* Highlight color for all buttons */
+}
+
+/* Add gap between icons and text */
+button svg, .add-course-button svg, .drop-course-button svg, 
+.toggle-view-button svg, .reset-button svg, .submit-button svg {
+  margin-right: 8px; /* Add gap */
+}
+
+/* Adjust hover color for specific buttons if needed */
+.drop-course-button:hover, .reset-button:hover {
+  background-color: #d32f2f; /* Red button hover color */
+}
+
+.drop-course-button:hover {
+  background-color: #e67e00; /* Red hover color */
+  transform: translateY(-2px); /* Make the hover effect consistent */
+}
+
+/* Add these styles to your existing tables1.css file */
+
+
+/* Update existing styles to accommodate the new button */
+.button-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Tooltip styles */
+.react-tooltip {
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.course-table {
+  width: 100%;
+  border-radius: 40px;
+  border-collapse: collapse;
+  position: relative;
+  table-layout: fixed; /* Fix the table layout */
+}
+
+/* Set fixed width for table columns */
+.course-table th,
+.course-table td {
+  border: 1px solid #ddd;
+  padding: 5px;
+  text-align: center;
+}
+
+/* Example of setting fixed column widths for the table headers */
+.course-table th:nth-child(1), /* First column */
+.course-table td:nth-child(1) {
+  width: 70px; /* Adjust the width for the first column */
+}
+
+.course-table th:nth-child(2), /* Second column */
+.course-table td:nth-child(2) {
+  width: 350px;
+ /* Adjust the width for the second column */
+}
+
+.course-table th:nth-child(3), /* Third column */
+.course-table td:nth-child(3) {
+  width: 150px; /* Adjust the width for the third column */
+}
+
+.course-table th:nth-child(4), /* Fourth column */
+.course-table td:nth-child(4) {
+  width: 150px; /* Adjust the width for the fourth column */
+}
+
+.course-table th:nth-child(5), /* Fourth column */
+.course-table td:nth-child(5) {
+  width: 70px; /* Adjust the width for the fourth column */
+}
+/* Add more columns as needed and set widths accordingly */

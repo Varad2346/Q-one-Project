@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./tables1.css";
 import Select from "react-select";
+import { useAuth } from '../../store/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlus,
-  faTrashAlt,
-  faCheck,
-  faClock,
-  faCalendarAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from '../../store/auth';
-
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { Tooltip } from 'react-tooltip';
 
 const CourseTable = () => {
-
-  const { authToken }=useAuth();
+  const { authToken } = useAuth();
   const { categoryId } = useParams();
   const [employees, setEmployees] = useState([]);
   const [trainers, setTrainers] = useState([]);
@@ -29,16 +20,15 @@ const CourseTable = () => {
   const [selectedDurations, setSelectedDurations] = useState({});
   const [selectedMonths, setSelectedMonths] = useState({});
   const [planDates, setPlanDates] = useState({});
-  const [formError, setFormError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCourseName, setNewCourseName] = useState("");
   const [newDescription, setNewDescription] = useState("");
-  const [newDuration, setNewDuration] = useState("");
   const [selectedTrainer, setSelectedTrainer] = useState(null);
-  const [newPlanDate, setNewPlanDate] = useState("");
   const [isMonthView, setIsMonthView] = useState(true);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [viewMode, setViewMode] = useState('current');
 
   const durations = [
     "1 to 2 hrs",
@@ -46,53 +36,45 @@ const CourseTable = () => {
     "4 to 6 hrs",
     "more than 6 hours",
   ];
+
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+
+  const getMonthsForYear = (year) => {
+    return [...months];
+  };
+
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
 
   const monthMapping = {
-    January: 1,
-    February: 2,
-    March: 3,
-    April: 4,
-    May: 5,
-    June: 6,
-    July: 7,
-    August: 8,
-    September: 9,
-    October: 10,
-    November: 11,
-    December: 12,
+    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
+    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11
   };
 
-  // Function to get the last date of a given month
-  const getLastDateOfMonth = (month) => {
-    const year = new Date().getFullYear(); // Use the current year
+  const getLastDateOfMonth = (month, year) => {
     const monthNumber = monthMapping[month];
-    return new Date(year, monthNumber, 0).toISOString().split("T")[0]; // Returns the last date of the given month
+    return new Date(year, monthNumber + 1, 0).toISOString().split("T")[0];
+  };
+
+  const getMinDate = () => {
+    return "1900-01-01";
+  };
+  
+  const getMaxDate = () => {
+    return "2100-12-31";
   };
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // const token = localStorage.getItem("token");
       try {
         const response = await fetch("http://localhost:3000/api/users", {
           headers: { Authorization: `Bearer ${authToken}` },
         });
-        if (!response.ok)
-
-          throw new Error(`Failed to fetch users: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to fetch users: ${response.statusText}`);
         const data = await response.json();
 
         const employeeOptions = data
@@ -112,13 +94,11 @@ const CourseTable = () => {
         setEmployees(employeeOptions);
         setTrainers(trainerOptions);
       } catch (error) {
-        console.error("Error fetching users:", error);
-        setFormError("Failed to fetch user data.");
+        console.log("Failed to fetch user data.", error);
       }
     };
 
     const fetchCourses = async () => {
-      // const token = localStorage.getItem("token");
       try {
         const response = await fetch(
           `http://localhost:3000/api/courses/${categoryId}`,
@@ -126,20 +106,17 @@ const CourseTable = () => {
             headers: { Authorization: `Bearer ${authToken}` },
           }
         );
-        if (!response.ok)
-          throw new Error(`Failed to fetch courses: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to fetch courses: ${response.statusText}`);
         const data = await response.json();
-        console.log(data);
         setCourses(data);
       } catch (error) {
         console.error("Error fetching courses:", error);
-        setFormError("Failed to fetch courses data.");
       }
     };
 
     fetchUsers();
     fetchCourses();
-  }, [categoryId]);
+  }, [categoryId, authToken]);
 
   const handleEmployeeChange = (selectedOptions) => {
     setSelectedEmployees(selectedOptions);
@@ -162,9 +139,10 @@ const CourseTable = () => {
   };
 
   const handleMonthSelect = (courseId, month) => {
-    const lastDateOfMonth = getLastDateOfMonth(month); // Get last date for selected month
+    const year = viewMode === 'current' ? currentYear : currentYear + 1;
+    const lastDateOfMonth = getLastDateOfMonth(month, year);
     setSelectedMonths((prev) => ({ ...prev, [courseId]: month }));
-    setPlanDates((prev) => ({ ...prev, [courseId]: lastDateOfMonth })); // Automatically set the last date of the month
+    setPlanDates((prev) => ({ ...prev, [courseId]: lastDateOfMonth }));
     toggleDropdown(`${courseId}-month`);
   };
 
@@ -176,37 +154,34 @@ const CourseTable = () => {
     setIsMonthView(!isMonthView);
   };
 
+  const toggleYearView = () => {
+    setViewMode(prev => prev === 'current' ? 'next' : 'current');
+    setSelectedMonths({});
+    setPlanDates({});
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (selectedCourses.length === 0)
-      toast.error("Please select at least one course.")
+    if (selectedCourses.length === 0) {
+      toast.error("Please select at least one course");
+      return;
+    }
+    if (selectedEmployees.length === 0) {
+      toast.error("Please select at least one employee");
+      return;
+    }
 
-      // return setFormError("Please select at least one course.");
-    if (selectedEmployees.length === 0)
-      toast.error("Please select at least one employee.");
-
-    const incompleteDurations = selectedCourses.filter(
-      (course) => !selectedDurations[course]
+    const incompleteSelections = selectedCourses.filter(
+      (course) =>
+        !selectedDurations[course] ||
+        (!selectedMonths[course] && !planDates[course])
     );
-    if (incompleteDurations.length > 0)
-      toast.error("Please select duration for all selected courses.");
 
-    const incompleteMonths = selectedCourses.filter(
-      (course) => !selectedMonths[course]
-    );
-    if (incompleteMonths.length > 0)
-      toast.error("Please select month for all selected courses.");
-
-    const incompletePlanDates = selectedCourses.filter(
-      (course) => !planDates[course]
-    );
-    if (incompletePlanDates.length > 0)
-      toast.error("Please select plan date for all selected courses.");
-
-    setFormError(""); // Clear any existing errors
-
-    // const token = localStorage.getItem("token");
+    if (incompleteSelections.length > 0) {
+      toast.error("Please complete all selections");
+      return;
+    }
 
     try {
       for (const employee of selectedEmployees) {
@@ -215,7 +190,8 @@ const CourseTable = () => {
             userId: employee.value,
             courseId: courseId,
             duration: selectedDurations[courseId],
-            plan_date: planDates[courseId],
+            plan_date: planDates[courseId] || null,
+            month: selectedMonths[courseId] || null,
             status: "pending",
           };
 
@@ -233,17 +209,17 @@ const CourseTable = () => {
 
           if (!response.ok) {
             throw new Error(
-              `Failed to submit data for employee ${employee.label} and course ${courseId}: ${response.statusText}`
+              `Failed to submit data for employee ${employee.label} and course ${courseId}`
             );
           }
         }
       }
 
-      handleReset(); // Reset the form after successful submission
-      console.log("Data submitted successfully.");
+      toast.success("Courses assigned successfully");
+      handleReset();
     } catch (error) {
       console.error("Error submitting data:", error);
-      setFormError("Failed to submit data.");
+      toast.error("Failed to submit data");
     }
   };
 
@@ -254,24 +230,23 @@ const CourseTable = () => {
     setSelectedMonths({});
     setPlanDates({});
     setSelectedTrainer(null);
-    setFormError("");
     setSearchQuery("");
     setDropdownOpen({});
   };
 
   const handleAddCourse = async (e) => {
     e.preventDefault();
-    // const token = localStorage.getItem("token");
 
     if (!selectedTrainer) {
-      toast.error("please select a trainer")
-      // return setFormError("Please select a trainer.");
+      toast.error("Please select a trainer");
+      return;
     }
 
     const newCourse = {
-      courseName: newCourseName,
+      name: newCourseName,
       description: newDescription,
-      trainerName: selectedTrainer.label,
+      trainerId: selectedTrainer.value,
+      categoryId: categoryId,
     };
 
     try {
@@ -287,21 +262,33 @@ const CourseTable = () => {
         }
       );
 
-      if (!response.ok)
-        throw new Error(`Failed to add course: ${response.statusText}`);
-      const addedCourse = await response.json();
-      setCourses((prev) => [...prev, addedCourse]);
-      handleCloseModal();
-      handleReset();
+      if (!response.ok) throw new Error(`Failed to add course: ${response.statusText}`);
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        const addedCourse = {
+          courseId: result.data.courseId,
+          courseName: result.data.name,
+          description: result.data.description,
+          trainerId: result.data.trainerId,
+        };
+        
+        setCourses((prev) => [...prev, addedCourse]);
+        toast.success(result.message);
+        handleCloseModal();
+      } else {
+        throw new Error(result.message || "Failed to add course");
+      }
     } catch (error) {
       console.error("Error adding course:", error);
-      setFormError("Failed to add course.");
+      toast.error("Failed to add course");
     }
   };
 
   const handleDropCourse = async () => {
     if (selectedCourses.length === 0) {
-      toast.error("Please select at least one course to drop.");
+      toast.error("Please select at least one course to drop");
       return;
     }
 
@@ -309,8 +296,6 @@ const CourseTable = () => {
       "Are you sure you want to delete the selected courses? This action cannot be undone."
     );
     if (!confirmDrop) return;
-
-    // const token = localStorage.getItem("token");
 
     try {
       for (const courseId of selectedCourses) {
@@ -323,25 +308,21 @@ const CourseTable = () => {
             },
           }
         );
-        console.log(response.ok);
+        
         if (!response.ok) {
-          throw new Error(
-            `Failed to delete course ${courseId}: ${response.statusText}`
-          );
+          throw new Error(`Failed to delete course ${courseId}`);
         }
       }
 
       setCourses((prevCourses) =>
-        prevCourses.filter(
-          (course) => !selectedCourses.includes(course.courseId)
-        )
+        prevCourses.filter((course) => !selectedCourses.includes(course.courseId))
       );
 
       setSelectedCourses([]);
-      setFormError("");
+      toast.success("Courses dropped successfully");
     } catch (error) {
       console.error("Error dropping courses:", error);
-      toast.error("Failed to drop one or more courses.");
+      toast.error("Failed to drop courses");
     }
   };
 
@@ -351,7 +332,9 @@ const CourseTable = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    handleReset();
+    setNewCourseName("");
+    setNewDescription("");
+    setSelectedTrainer(null);
   };
 
   const filteredCourses = courses.filter((course) =>
@@ -389,7 +372,6 @@ const CourseTable = () => {
                 <FontAwesomeIcon icon={faTrashAlt} className="button-icon" />
                 Drop Course
               </button>
-
               <button
                 type="button"
                 className="toggle-view-button"
@@ -399,47 +381,52 @@ const CourseTable = () => {
               </button>
             </div>
           </div>
+          
           <div className="course-table-out">
             <table className="course-table">
               <thead>
                 <tr>
                   <th>SR NO</th>
-                  <th>Topic</th>
-                  <th>Duration</th>
-                  <th>{isMonthView ? "Month" : "Plan Date"}</th>
-                  <th>Select</th>
+                  <th>TOPIC</th>
+                  <th>DURATION</th>
+                  <th>{isMonthView ? "MONTH" : "PLAN DATE"}</th>
+                  <th>SELECT</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredCourses.map((course, index) => (
                   <tr key={course.courseId}>
                     <td>{index + 1}</td>
-                    <td>{course.courseName}</td>
+                    <td>
+                      <div
+                        className="topic-cell"
+                        data-tooltip-id={`tooltip-${course.courseId}`}
+                        data-tooltip-content={course.courseName}
+                      >
+                        {course.courseName.length > 30
+                          ? `${course.courseName.slice(0, 30)}...`
+                          : course.courseName}
+                      </div>
+                      <Tooltip id={`tooltip-${course.courseId}`} />
+                    </td>
                     <td>
                       <div className="custom-dropdown">
                         <div
                           className="dropdown-selected"
-                          onClick={() =>
-                            toggleDropdown(`${course.courseId}-duration`)
-                          }
+                          onClick={() => toggleDropdown(`${course.courseId}-duration`)}
                         >
-                          {selectedDurations[course.courseId] ||
-                            "Select Duration"}
+                          {selectedDurations[course.courseId] || "Select Duration"}
                         </div>
                         <ul
                           className={`dropdown-list ${
-                            dropdownOpen[`${course.courseId}-duration`]
-                              ? "visible"
-                              : ""
+                            dropdownOpen[`${course.courseId}-duration`] ? "visible" : ""
                           }`}
                         >
                           {durations.map((duration) => (
                             <li
                               key={duration}
                               className="dropdown-item"
-                              onClick={() =>
-                                handleDurationSelect(course.courseId, duration)
-                              }
+                              onClick={() => handleDurationSelect(course.courseId, duration)}
                             >
                               {duration}
                             </li>
@@ -452,28 +439,22 @@ const CourseTable = () => {
                         <div className="custom-dropdown">
                           <div
                             className="dropdown-selected"
-                            onClick={() =>
-                              toggleDropdown(`${course.courseId}-month`)
-                            }
+                            onClick={() => toggleDropdown(`${course.courseId}-month`)}
                           >
                             {selectedMonths[course.courseId] || "Select Month"}
                           </div>
                           <ul
                             className={`dropdown-list ${
-                              dropdownOpen[`${course.courseId}-month`]
-                                ? "visible"
-                                : ""
+                              dropdownOpen[`${course.courseId}-month`] ? "visible" : ""
                             }`}
                           >
-                            {months.map((month) => (
+                            {getMonthsForYear(viewMode === 'current' ? currentYear : currentYear + 1).map((month) => (
                               <li
                                 key={month}
                                 className="dropdown-item"
-                                onClick={() =>
-                                  handleMonthSelect(course.courseId, month)
-                                }
+                                onClick={() => handleMonthSelect(course.courseId, month)}
                               >
-                                {month}
+                                {month} {viewMode === 'next' ? `${currentYear + 1}` : currentYear}
                               </li>
                             ))}
                           </ul>
@@ -482,12 +463,9 @@ const CourseTable = () => {
                         <input
                           type="date"
                           value={planDates[course.courseId] || ""}
-                          onChange={(e) =>
-                            handlePlanDateChange(
-                              course.courseId,
-                              e.target.value
-                            )
-                          }
+                          onChange={(e) => handlePlanDateChange(course.courseId, e.target.value)}
+                          min={getMinDate()}
+                          max={getMaxDate()}
                         />
                       )}
                     </td>
@@ -505,7 +483,6 @@ const CourseTable = () => {
               </tbody>
             </table>
           </div>
-          {formError && <p className="form-error">{formError}</p>}
         </form>
 
         {isModalOpen && (
@@ -562,6 +539,7 @@ const CourseTable = () => {
             classNamePrefix="select"
           />
         </div>
+
         <div className="button-group">
           <button
             type="submit"
@@ -570,12 +548,45 @@ const CourseTable = () => {
           >
             Submit
           </button>
-          <button type="button" className="reset-button" onClick={handleReset}>
+          <button 
+            type="button" 
+            className="reset-button" 
+            onClick={handleReset}
+          >
             Reset
           </button>
         </div>
+
+        <div className="button" style={{ marginTop: "50px" }}>
+          {viewMode === 'next' && (
+            <div>
+              <h3 style={{ fontWeight: "bold" }}>Planning for Next Year: {currentYear + 1}</h3>
+              <p>
+                You are currently planning courses for the next year. Please ensure
+                dates and months align with the selected year.
+              </p>
+            </div>
+          )}
+          <button
+            type="button"
+            className="plan-date-button"
+            onClick={toggleYearView}
+            style={{
+              marginTop: "10px",
+              backgroundColor: "#FF6347",
+              color: "#fff",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            {viewMode === "current" ? "Plan Next Year" : "Plan Current Year"}
+          </button>
+        </div>
       </div>
-       <ToastContainer />
+
+      <ToastContainer />
     </div>
   );
 };

@@ -193,10 +193,9 @@ const CourseTable = () => {
     setSelectedMonths({});
     setPlanDates({});
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (selectedCourses.length === 0) {
       toast.error("Please select at least one course");
       return;
@@ -205,51 +204,86 @@ const CourseTable = () => {
       toast.error("Please select at least one employee");
       return;
     }
-
+  
     const incompleteSelections = selectedCourses.filter(
       (course) =>
         !selectedDurations[course] ||
         (!selectedMonths[course] && !planDates[course])
     );
-
+  
     if (incompleteSelections.length > 0) {
       toast.error("Please complete all selections");
       return;
     }
-
+  
     try {
-      for (const employee of selectedEmployees) {
-        for (const courseId of selectedCourses) {
-          const request = {
+      // Step 1: Create Planned Courses
+      const plannedCourses = [];
+      for (const courseId of selectedCourses) {
+        const request = {
+          courseId: courseId,
+          trainingDuration: selectedDurations[courseId],
+          plannedDate: planDates[courseId] || null,
+          status: "pending", // Assuming status remains pending
+        };
+  
+        const response = await fetch("http://localhost:3000/api/planned-courses/", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(request),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to create planned course for course ${courseId}`);
+        }
+  
+        const data = await response.json();
+        if (data.success) {
+          plannedCourses.push(data.data); // Save the planned course response data
+        } else {
+          throw new Error(data.message || "Failed to create planned course");
+        }
+      }
+  
+      // Step 2: Enroll Employees
+      for (const plannedCourse of plannedCourses) {
+        for (const employee of selectedEmployees) {
+          const enrollmentRequest = {
+            plannedCourseId: plannedCourse.plannedCourseId,
             userId: employee.value,
-            courseId: courseId,
-            duration: selectedDurations[courseId],
-            plan_date: planDates[courseId] || null,
-            month: selectedMonths[courseId] || null,
-            status: "pending",
           };
-
-          const response = await fetch(
-            "http://localhost:3000/api/userCourses",
+  
+          const enrollmentResponse = await fetch(
+            "http://localhost:3000/api/enrollments",
             {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${authToken}`,
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(request),
+              body: JSON.stringify(enrollmentRequest),
             }
           );
-
-          if (!response.ok) {
+  
+          if (!enrollmentResponse.ok) {
             throw new Error(
-              `Failed to submit data for employee ${employee.label} and course ${courseId}`
+              `Failed to enroll employee ${employee.label} for course ${plannedCourse.courseId}`
+            );
+          }
+  
+          const enrollmentData = await enrollmentResponse.json();
+          if (!enrollmentData.success) {
+            throw new Error(
+              `Failed to enroll employee ${employee.label} for course ${plannedCourse.courseId}`
             );
           }
         }
       }
-
-      toast.success("Courses assigned successfully");
+  
+      toast.success("Courses assigned and employees enrolled successfully");
       handleReset();
     } catch (error) {
       console.error("Error submitting data:", error);

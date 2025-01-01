@@ -7,7 +7,7 @@ import Navbar from './components/Navbar/Navbar';
 import PageNotFound from './components/PageNotFound';
 import AddEmployee from './components/AddEmployee/AddEmployeeForm';
 import Coursetable from './components/CourseAssignTable/Coursetable1';
-import TrainingAttendance from './components/TrainingAttendance/TrainingReport1';
+import TrainingAttendance from './components/TrainingAttendance/TrainingReport';
 import TrainingTable from './components/TrainingTable/TrainingTable';
 import TrainingCalendar from './components/TrainingCalendar/TrainingCalendar';
 import { useAuth } from './store/auth'; // Import useAuth for authentication

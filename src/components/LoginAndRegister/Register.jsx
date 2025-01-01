@@ -10,7 +10,7 @@ const Register = () => {
     email: '',
     mobilenumber: '',
     password: '',
-    role: 'employee',
+    role: 'admin',
   });
 
   const [error, setError] = useState('');
@@ -42,7 +42,7 @@ const Register = () => {
       password: formData.password,
       role: formData.role,
     };
-
+    console.log(dataToSend);
     try {
       const response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
@@ -68,7 +68,7 @@ const Register = () => {
         email: '',
         mobilenumber: '',
         password: '',
-        role: 'employee',
+        role: '',
       });
     } catch (err) {
       setError(err.message);

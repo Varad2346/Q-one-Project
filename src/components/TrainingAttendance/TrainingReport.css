@@ -1,20 +1,37 @@
+/* General container styles */
 .container {
-  width: 100%;
-  max-width: 1400px;
+  width: 99%;
+  /* max-width: 1400px; */
   text-align: left;
   background: #ffffff;
   padding: 25px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   border-radius: 8px;
+  margin: 5px auto;
+  background-color: white;
+  border-radius: 20px;
+  border: 2px solid whitesmoke;
+  min-height: 89vh;
+  
 }
 
-h1 {
+/* Title styles */
+.report-heading {
+  margin-top: 15px;
   font-size: 30px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 10px;
 }
-
+.report-heading::after {
+  content: ''; /* Empty content for the pseudo-element */
+  display: block;
+  width: 30%; /* Adjust width as needed */
+  height: 4px; /* Thickness of the underline */
+  background-color: #ff5733; /* Color matching the service icon */
+  margin: 5px auto 0;  /* Center the underline and add margin */
+}
+/* Subtitle styles */
 .subtitle {
   font-size: 18px;
   font-weight: bold;
@@ -23,23 +40,26 @@ h1 {
   margin-bottom: 5px;
 }
 
+/* Table styles for training report and attendance */
 .training-report,
 .attendance-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 5px;
+  margin-top: 25px;
 }
 
+/* Styles for table cells and headers */
 .training-report td,
 .attendance-table th,
 .attendance-table td {
   border: 1px solid grey;
   padding: 8px;
   vertical-align: middle;
-  text-align: left;
-  font-size:18px;
+  text-align: center;
+  font-size: 18px;
 }
 
+/* Header styles */
 .training-report .label,
 .attendance-table th {
   font-weight: bold;
@@ -48,10 +68,12 @@ h1 {
   background-color: #ff8c00;
 }
 
+/* Styling for the first column */
 .training-report td:first-child {
   width: 20%;
 }
 
+/* Ensure consistent cell widths for the attendance table */
 .attendance-report th:first-child,
 .attendance-report td:first-child {
   width: 8%;
@@ -77,6 +99,7 @@ h1 {
   width: 17%;
 }
 
+/* Break words in wrapped content */
 .training-report .wrapped {
   word-wrap: break-word;
   white-space: normal;
@@ -100,6 +123,7 @@ h1 {
   height: 60px;
 }
 
+/* Dropdown styles */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -116,8 +140,7 @@ h1 {
   border-radius: 4px;
 }
 
-
-
+/* Dropdown content */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -143,47 +166,12 @@ h1 {
   display: block;
 }
 
-
-.dropdown-button1 {
-  padding: 10px 100px;
-  margin-left: 40px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  color: black;
-  border: none;
-  border-radius: 4px;
-}
-
-
-
-.dropdown-content1 {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-radius: 4px;
-}
-
-.dropdown-content1 a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content1 a:hover {
-  background-color: #ddd;
-}
-
-.dropdown1:hover .dropdown-content1 {
-  display: block;
-}
-input{
+/* Input element and button style resets */
+input {
   border: none;
 }
+
+/* Commit button styles */
 .commit-button-container {
   position: absolute;
   bottom: 20px;
@@ -192,7 +180,7 @@ input{
 
 .commit-button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #e91248;
   color: white;
   border: none;
   border-radius: 5px;
@@ -200,5 +188,46 @@ input{
 }
 
 .commit-button:hover {
-  background-color: #0056b3;
+  background-color: #ff0040;
+}
+
+/* Feedback input styling */
+.feedback-input {
+  text-align: center;        /* Centers text horizontally inside the input */
+  vertical-align: middle;    /* Vertically aligns the text inside */
+  padding: 20px;             /* Consistent padding for input */
+  font-size: large;          /* Larger text size */
+  width: 100px;               /* Fixed width */
+  height: 30px;              /* Fixed height for consistency */
+  margin: 0;                 /* No extra margins */
+  border: 1px solid #ccc;    /* Border to make it visually distinct */
+  display: inline-block;     /* Prevent stretching */
+  box-sizing: border-box;    /* Ensures padding and border are included in width */
+}
+
+/* Status button styles */
+.status-button {
+  background-color: #ffffff; /* White background */
+  color: black;              /* Black text */
+  border: 1px solid #ccc;    /* Border for clarity */
+  padding: 10px 20px;        /* Padding for better appearance */
+  font-size: large;          /* Large font size */
+  cursor: pointer;          /* Pointer cursor */
+  text-align: center;        /* Ensures text is centered inside button */
+  display: inline-block;     /* Prevent stretching */
+  width: auto;               /* Prevent button from stretching too much */
+  margin: 0;                 /* No margins */
+  box-shadow: none;          /* Remove box-shadow */
+}
+
+/* Status button hover effect */
+.status-button:hover {
+  background-color: #f0f0f0; /* Lighter background on hover */
+  outline-style: none;        /* Remove outline */
+}
+
+/* Centering content inside table cells */
+.centered-cell {
+  text-align: center;        /* Centers content horizontally */
+  vertical-align: middle;    /* Centers content vertically */
 }

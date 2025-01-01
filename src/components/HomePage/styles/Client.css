@@ -2,6 +2,8 @@
   padding: 5% 2%; /* Use percentages for padding */
   height: 50vh; /* Allow height to adjust based on content */
   display: flex;
+  width: 99%;
+  margin: auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -9,7 +11,7 @@
   background-color: #ffffff; /* White background for contrast */
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
+  /* background: linear-gradient(135deg, #f9f9f9, #e0e0e0); */
   transform: translateY(-10px);
 }
 
@@ -33,13 +35,14 @@
 
 .logos-container {
   display: flex;
+  width: 100%;
   align-items: center;
   animation: scroll 20s linear infinite;
 }
 
 .client-logo {
   flex: 0 0 auto; /* Ensure logos do not grow */
-  padding: 0 3%; /* Use relative padding */
+  padding: 0 4%; /* Use relative padding */
 }
 
 .client-logo-img {

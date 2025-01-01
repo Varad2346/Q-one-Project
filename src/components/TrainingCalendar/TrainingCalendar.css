@@ -1,6 +1,6 @@
 /* Center align the title */
 .title {
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
   font-size: 24px;
   font-weight: bold;
@@ -9,7 +9,11 @@
 
 /* Outer container styling */
 .training-calendar {
-  margin-left: 8px;
+  margin: 5px auto;
+  background-color: white;
+  border-radius: 20px;
+  border: 8px solid whitesmoke;
+  min-height: 89vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,7 +23,7 @@
 
 /* Table container */
 .table-container {
-  width: 99vw; /* Takes 99% of the viewport width */
+  width: 94vw; /* Takes 99% of the viewport width */
   /* max-width: 1600px; */
 }
 
@@ -45,10 +49,6 @@ th {
   font-weight: bold;
 }
 
-.green {
-  background-color: green;
-  color: white;
-}
 
 .yellow {
   background-color: yellow;
@@ -74,4 +74,16 @@ th {
       font-size: 0.7em;
       padding: 5px;
   }
+}
+.download-btn {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background-color: #45a049;
 }

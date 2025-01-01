@@ -3,9 +3,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 65px;
+  height: 75px;
   width: 100%;
-  background-color: #fff;
+  background-color: white;
   border-bottom: 2px solid #ddd; /* Subtle bottom border */
   padding: 0 5%; /* Use percentage padding for better responsiveness */
   font-family: 'Roboto', sans-serif;
@@ -13,6 +13,7 @@
   position: sticky; /* Keeps the navbar fixed at the top */
   top: 0;
   z-index: 100;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, .05);
 }
 
 /* Logo styling */
@@ -35,11 +36,13 @@
 
 /* Navbar link styling */
 .navbar-link {
+  font-weight: 500;
+  font-size:1.3rem ;
   text-decoration: none;
   margin: 0 15px; /* Space between items */
   cursor: pointer; /* Pointer cursor for interactive items */
   color: #333; /* Text color for regular items */
-  font-weight: 500; /* Standard font weight */
+  /* font-weight: 500; Standard font weight */
   position: relative; /* Relative positioning for bottom border effect */
   transition: color 0.3s ease; /* Smooth transition for text color */
   border-bottom: 2px solid transparent; /* Bottom border initially hidden */

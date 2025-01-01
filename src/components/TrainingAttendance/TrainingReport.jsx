@@ -263,6 +263,7 @@ const TrainingReport = () => {
       }
 
       const report = await response.json();
+      console.log("rport",report);
       const reportId = report.data.reportId;
 
       toast.success('Training report created successfully!');
@@ -274,12 +275,12 @@ const TrainingReport = () => {
           trainingFeedback: feedback[user.userId] || '8',
           reportId,
         };
-        console.log(enrollmentData);
+        console.log("enrolledmend",enrollmentData);
         console.log(enrollments);
-      
+        
         // Find the enrollment matching the userId
         const userEnrollment = enrollments.find((data) => data.userId === user.userId);
-      
+        console.log(userEnrollment);
         if (userEnrollment) {
           try {
             // Update the enrollment using the enrollmentId from the found enrollment

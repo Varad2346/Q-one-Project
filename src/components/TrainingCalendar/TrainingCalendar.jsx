@@ -11,6 +11,7 @@ const TrainingCalendar = () => {
 
   const [plannedCourses, setPlannedCourses] = useState([]); // State for planned courses
   const [newdata, setNewData] = useState([]); // New state to store updated courses with enrollments
+  const [reports, setReports] = useState([]); // State to store reports data
   const [loading, setLoading] = useState(true); // State for loading indication
 
   useEffect(() => {
@@ -75,6 +76,9 @@ const TrainingCalendar = () => {
         // Now, fetch enrollments only after planned courses are set
         fetchEnrollments(allPlannedCourses);
 
+        // Fetch reports data
+        fetchReports();
+
       } catch (error) {
         console.error("Error fetching planned courses:", error);
         setLoading(false); // End loading state in case of error
@@ -122,6 +126,31 @@ const TrainingCalendar = () => {
       }
     };
 
+    const fetchReports = async () => {
+      try {
+        const reportsResponse = await fetch(
+          "http://localhost:3000/api/reports/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        if (!reportsResponse.ok) {
+          throw new Error("Failed to fetch reports");
+        }
+
+        const reportsData = await reportsResponse.json();
+        setReports(reportsData.data); // Set the reports data
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+        setLoading(false); // End loading state in case of error
+      }
+    };
+
     fetchPlannedCourses();
   }, [authToken]); // Only run effect when authToken changes
 
@@ -158,12 +187,15 @@ const TrainingCalendar = () => {
     const diffTime = currentDate - plannedDateObj;
     const diffDays = diffTime / (1000 * 60 * 60 * 24); // Convert milliseconds to days
 
-    if (diffDays < 14 && reportId) {
-      return "green"; // green if report exists
+    const report = reports.find(r => r.reportId === reportId); // Find the report using reportId
+
+    if (diffDays < 14 && report) {
+      const actualDate = report.actualDate ? new Date(report.actualDate) : null;
+      return { color: "green", actualDate: actualDate ? formatDate(actualDate) : "No Actual Date" }; // Show actual date if available
     } else if (diffDays < 14) {
-      return " "; // no report
+      return { color: "", actualDate: "" }; // no report
     } else {
-      return "red"; // red if more than 14 days and no report
+      return { color: "red", actualDate: "" }; // red if more than 14 days and no report
     }
   };
 
@@ -225,15 +257,20 @@ const TrainingCalendar = () => {
                         (plannedDate) => new Date(plannedDate).getMonth() === monthIndex
                       );
                       let bgColor = "";
+                      let actualDate = "";
                       if (plannedCourseForMonth) {
                         const enrollment = course.enrollments.find(
                           (enrollment) => enrollment.reportId
                         );
-                        bgColor = checkReportStatus(plannedCourseForMonth, enrollment?.reportId);
+                        const { color, actualDate: reportDate } = checkReportStatus(plannedCourseForMonth, enrollment?.reportId);
+                        bgColor = color;
+                        actualDate = reportDate;
                       }
 
                       return (
-                        <td key={monthIndex} style={{ backgroundColor: bgColor }}></td>
+                        <td key={monthIndex} style={{ backgroundColor: bgColor }}>
+                          {actualDate && <div>{actualDate}</div>}
+                        </td>
                       );
                     })}
                   </tr>

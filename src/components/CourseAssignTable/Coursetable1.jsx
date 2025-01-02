@@ -1,4 +1,3 @@
-//updated by varad1
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./tables1.css";
@@ -304,19 +303,19 @@ const CourseTable = () => {
 
   const handleAddCourse = async (e) => {
     e.preventDefault();
-
+  
     if (!selectedTrainer) {
       toast.error("Please select a trainer");
       return;
     }
-
+  
     const newCourse = {
       name: newCourseName,
       description: newDescription,
       trainerId: selectedTrainer.value,
       categoryId: categoryId,
     };
-
+  
     try {
       const response = await fetch(
         `http://localhost:3000/api/courses/${categoryId}`,
@@ -329,21 +328,24 @@ const CourseTable = () => {
           body: JSON.stringify(newCourse),
         }
       );
-
-      if (!response.ok)
+  
+      if (!response.ok) {
         throw new Error(`Failed to add course: ${response.statusText}`);
-
+      }
+  
       const result = await response.json();
-
+  
       if (result.success) {
         const addedCourse = {
           courseId: result.data.courseId,
-          courseName: result.data.name,
+          name: result.data.name,
           description: result.data.description,
           trainerId: result.data.trainerId,
         };
-
-        setCourses((prev) => [...prev, addedCourse]);
+  
+        // Update the courses state immediately
+        setCourses((prevCourses) => [...prevCourses, addedCourse]);
+  
         toast.success(result.message);
         handleCloseModal();
       } else {
@@ -354,7 +356,7 @@ const CourseTable = () => {
       toast.error("Failed to add course");
     }
   };
-
+  
   const handleDropCourse = async () => {
     if (selectedCourses.length === 0) {
       toast.error("Please select at least one course to drop");

@@ -16,7 +16,7 @@ const TrainingTable = () => {
   const [plannedCourses, setPlannedCourses] = useState([]);
   const [reports, setReports] = useState([]);
   const [newdata, setNewdata] = useState([]);
-
+  console.log(reports)
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {

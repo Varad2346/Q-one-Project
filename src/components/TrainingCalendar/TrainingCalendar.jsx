@@ -13,7 +13,7 @@ const TrainingCalendar = () => {
   const [newdata, setNewData] = useState([]); // New state to store updated courses with enrollments
   const [reports, setReports] = useState([]); // State to store reports data
   const [loading, setLoading] = useState(true); // State for loading indication
-
+  console.log(newdata)
   useEffect(() => {
     if (!authToken) {
       console.error("No authorization token found.");
@@ -240,13 +240,28 @@ const TrainingCalendar = () => {
                         (plannedDate) => new Date(plannedDate).getMonth() === monthIndex
                       );
                       return (
-                        <td key={monthIndex}>
-                          {courseInThisMonth
-                            ? formatDate(course.plannedDates.find(
-                                (plannedDate) => new Date(plannedDate).getMonth() === monthIndex
-                              ))
-                            : ""}
+                        <td key={monthIndex} style={{
+                          backgroundColor: course.enrollments.some((enrollment) => {
+                            const plannedDateForMonth = course.plannedDates.find(
+                              (plannedDate) => new Date(plannedDate).getMonth() === monthIndex
+                            );
+                            console.log(`Planned Date for month ${monthIndex}:`, plannedDateForMonth);
+                            console.log(`Enrollment evaluation date:`, enrollment.dateOfEvaluation);
+                            return enrollment.dateOfEvaluation && plannedDateForMonth;
+                          }) ? 'yellow' : ''
+                        }}>
+ {courseInThisMonth ? course.enrollments.map((enrollment) => {
+        const plannedDateForMonth = course.plannedDates.find(
+          (plannedDate) => new Date(plannedDate).getMonth() === monthIndex
+        );
+
+        // If evaluation date exists, show it, otherwise show planned date
+        return enrollment.dateOfEvaluation
+          ? formatDate(enrollment.dateOfEvaluation)  // Show evaluation date
+          : plannedDateForMonth ? formatDate(plannedDateForMonth) : "";  // Fall back to planned date
+      }) : ""}
                         </td>
+                        
                       );
                     })}
                     <td rowSpan="2"></td>
@@ -269,6 +284,7 @@ const TrainingCalendar = () => {
 
                       return (
                         <td key={monthIndex} style={{ backgroundColor: bgColor }}>
+                          
                           {actualDate && <div>{actualDate}</div>}
                         </td>
                       );

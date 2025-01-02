@@ -369,7 +369,7 @@ const CourseTable = () => {
     try {
       for (const courseId of selectedCourses) {
         const response = await fetch(
-          `http://localhost:3000/api/courses/${categoryId}/${courseId}`,
+          `http://localhost:3000/api/courses/${courseId}`,
           {
             method: "DELETE",
             headers: {

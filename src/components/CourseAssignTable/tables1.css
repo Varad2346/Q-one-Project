@@ -428,3 +428,40 @@ button svg, .add-course-button svg, .drop-course-button svg,
   width: 70px; /* Adjust the width for the fourth column */
 }
 /* Add more columns as needed and set widths accordingly */
+
+.plan-next-year-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #fffaf0; /* Optional: Light background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.plan-next-year-text {
+  margin-bottom: 15px; /* Add space between text and button */
+  text-align: center; /* Center-align text */
+}
+
+.plan-next-year-button {
+  margin-top: 10px; /* Optional: Fine-tune button spacing */
+}
+
+.plan-date-button {
+  background-color: #ff8c00; /* Same as other buttons */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.plan-date-button:hover {
+  background-color: #e67e00;
+  transform: translateY(-2px);
+}

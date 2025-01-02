@@ -648,35 +648,31 @@ const CourseTable = () => {
           </button>
         </div>
 
-        <div className="button" style={{ marginTop: "50px" }}>
-          {viewMode === "next" && (
-            <div>
-              <h3 style={{ fontWeight: "bold" }}>
-                Planning for Next Year: {currentYear + 1}
-              </h3>
-              <p>
-                You are currently planning courses for the next year. Please
-                ensure dates and months align with the selected year.
-              </p>
-            </div>
-          )}
-          <button
-            type="button"
-            className="plan-date-button"
-            onClick={toggleYearView}
-            style={{
-              marginTop: "10px",
-              backgroundColor: "#FF6347",
-              color: "#fff",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            {viewMode === "current" ? "Plan Next Year" : "Plan Current Year"}
-          </button>
-        </div>
+        <div className="plan-next-year-container">
+  <div className="plan-next-year-text">
+    {viewMode === "next" && (
+      <div>
+        <h3 style={{ fontWeight: "bold" }}>
+          Planning for Next Year: {currentYear + 1}
+        </h3>
+        <p>
+          You are currently planning courses for the next year. Please ensure
+          dates and months align with the selected year.
+        </p>
+      </div>
+    )}
+  </div>
+  <div className="plan-next-year-button">
+    <button
+      type="button"
+      className="plan-date-button"
+      onClick={toggleYearView}
+    >
+      {viewMode === "current" ? "Plan Next Year" : "Plan Current Year"}
+    </button>
+  </div>
+</div>
+
       </div>
 
       <ToastContainer />

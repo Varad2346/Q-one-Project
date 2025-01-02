@@ -38,28 +38,24 @@ export const FAQ_HEADING = 'FAQ';
 
 export const FAQ_LIST = [
   {
-    question: 'What is React?',
-    answer: 'React is a JavaScript library for building user interfaces.',
+    question: 'How do I calculate annual training package cost for my Company?',
+    answer: 'Training subscription cost is annual based upon total manpower working in the company',
   },
   {
-    question: 'What is a component?',
-    answer: 'A component in React is an independent, reusable piece of UI.',
+    question: 'I have subscribed annual Training package for my organization, What happens next?',
+    answer: 'Our Training calendar is published on Upmyskill Website. You can plan at your end accordingly. 1-3 days Before Training date you will receive a Link to join the Training',
   },
   {
-    question: 'What is a component?',
-    answer: 'A component in React is an independent, reusable piece of UI.',
+    question: 'Can I customize Online courses?',
+    answer: 'Yes customized online Training can be planned for you at separate cost. This is not considered under annual Subscription Plan',
   },
   {
-    question: 'What is a component?',
-    answer: 'A component in React is an independent, reusable piece of UI.',
+    question: 'What are the advantages of Web-based training?',
+    answer: 'One of the major advantages of Web-based training is the costs savings over traditional classroom training. Traditional training methods typically involve travel and time off from work, both costly components for employers',
   },
   {
-    question: 'What is a component?',
-    answer: 'A component in React is an independent, reusable piece of UI.',
-  },
-  {
-    question: 'What is a component?',
-    answer: 'A component in React is an independent, reusable piece of UI.',
+    question: 'What languages is the course delivered in?',
+    answer: 'This course is delivered in English.',
   },
   // Add more FAQs as needed
 ];

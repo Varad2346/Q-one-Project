@@ -19,7 +19,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../store/auth';
 import './styles/responsive.css';
 
-// Icon options to choose from
 const iconOptions = [
   { name: 'COMPUTER SKILL', icon: <FaLaptop /> },
   { name: 'TECHNICAL SKILL', icon: <FaTools /> },
@@ -44,6 +43,7 @@ const Services = () => {
   const [serviceToDelete, setServiceToDelete] = useState(null);
   const [showDeleteButtons, setShowDeleteButtons] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -105,28 +105,78 @@ const Services = () => {
     }
   };
 
-  const handleDeleteService = async (id) => {
+  const deleteCourses = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/courseCategory/${id}`, {
+      // Fetch all courses associated with the category
+      const response = await fetch(`http://localhost:3000/api/courses/${categoryId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch courses for category ${categoryId}`);
+      }
+  
+      const result = await response.json();
+      const courses = result.data; // Assuming this contains a list of courses
+  
+      // Iterate through each course and delete it
+      for (const course of courses) {
+        const deleteResponse = await fetch(`http://localhost:3000/api/courses/${course.courseId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+  
+        if (!deleteResponse.ok) {
+          throw new Error(`Failed to delete course ${course.courseId}`);
+        }
+      }
+    } catch (err) {
+      console.error('Error deleting courses:', err);
+      throw new Error('Failed to delete associated courses');
+    }
+  };
+  
+
+  const handleDeleteService = async (categoryId) => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+  
+    try {
+      console.log(`Deleting all courses for category ${categoryId}`);
+      await deleteCourses(categoryId); // Delete all courses in the category
+  
+      console.log(`Deleting category ${categoryId}`);
+      const response = await fetch(`http://localhost:3000/api/courseCategory/${categoryId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`,
         },
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to delete service');
+        throw new Error('Failed to delete category');
       }
-
-      setServices((prevServices) => prevServices.filter((service) => service.categoryId !== id));
+  
+      // Update the state to remove the category
+      setServices((prevServices) => prevServices.filter((service) => service.categoryId !== categoryId));
       setServiceToDelete(null);
-      toast.success('Training Topic deleted successfully!');
+      toast.success('Training Topic and associated courses deleted successfully!');
     } catch (err) {
-      setError(err.message);
+      console.error('Error deleting category:', err);
       toast.error('Failed to delete training topic. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
   };
+  
 
   const toggleDeleteButtons = () => {
     setShowDeleteButtons(!showDeleteButtons);
@@ -135,6 +185,14 @@ const Services = () => {
   const getServiceIcon = (iconName) => {
     const foundIcon = iconOptions.find((option) => option.name === iconName);
     return foundIcon ? foundIcon.icon : <FaClipboardList />;
+  };
+
+  const handleCardClick = (categoryId) => {
+    if (!showDeleteButtons) {
+      navigate(`/coursetable/${categoryId}`);
+    } else {
+      setServiceToDelete(categoryId);
+    }
   };
 
   return (
@@ -150,19 +208,17 @@ const Services = () => {
 
       <div className="services-grid">
         {services.map((service) => (
-          <div key={service.categoryId} className="service-card" onClick={() => navigate(`/coursetable/${service.categoryId}`)}>
+          <div 
+            key={service.categoryId} 
+            className={`service-card ${showDeleteButtons ? 'delete-mode' : ''}`}
+            onClick={() => handleCardClick(service.categoryId)}
+          >
             <div className="service-icon">{getServiceIcon(service.name)}</div>
             <h3 className="service-title">{service.name}</h3>
             {showDeleteButtons && (
-              <button
-                className="delete-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setServiceToDelete(service.categoryId);
-                }}
-              >
+              <div className="delete-button">
                 <FaTimes />
-              </button>
+              </div>
             )}
           </div>
         ))}
@@ -172,7 +228,10 @@ const Services = () => {
         <button className="add-button" onClick={() => setModalOpen(true)}>
           Add Training Topic
         </button>
-        <button className="drop-button" onClick={toggleDeleteButtons}>
+        <button 
+          className={`drop-button ${showDeleteButtons ? 'active' : ''}`} 
+          onClick={toggleDeleteButtons}
+        >
           {showDeleteButtons ? 'Cancel' : 'Drop Training Topic'}
         </button>
       </div>
@@ -210,7 +269,7 @@ const Services = () => {
               ))}
             </div>
 
-            <div className="service-buttons">
+            <div className="modal-buttons">
               <button onClick={handleAddTopic}>Submit</button>
               <button onClick={() => setModalOpen(false)}>Close</button>
             </div>
@@ -222,9 +281,12 @@ const Services = () => {
         <div className="modal-overlay">
           <div className="modal">
             <h2>Confirm Deletion</h2>
-            <p>Are you sure you want to delete this service?</p>
-            <button onClick={() => handleDeleteService(serviceToDelete)}>Yes</button>
-            <button onClick={() => setServiceToDelete(null)}>Cancel</button>
+            <p>Are you sure you want to delete this Training Topic?</p>
+            <p className="warning-text">This will also delete all courses associated with this topic!</p>
+            <div className="confirm-buttons">
+              <button onClick={() => handleDeleteService(serviceToDelete)}>Yes</button>
+              <button onClick={() => setServiceToDelete(null)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}

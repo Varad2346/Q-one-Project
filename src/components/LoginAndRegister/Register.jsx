@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Register.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -13,14 +15,18 @@ const Register = () => {
     role: 'admin',
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Automatically capitalize the first letter of fname and lname
+    let formattedValue = value;
+    if (name === 'fname' || name === 'lname') {
+      formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: formattedValue,
     });
   };
 
@@ -29,7 +35,7 @@ const Register = () => {
 
     const mobileRegex = /^[0-9]{10}$/;
     if (!mobileRegex.test(formData.mobilenumber)) {
-      setError('Please enter a valid mobile number (10 digits)');
+      toast.error('Please enter a valid mobile number (10 digits)');
       return;
     }
 
@@ -42,7 +48,7 @@ const Register = () => {
       password: formData.password,
       role: formData.role,
     };
-    console.log(dataToSend);
+
     try {
       const response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
@@ -54,13 +60,11 @@ const Register = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+        toast.error(errorData.message || 'Registration failed');
+        return;
       }
 
-      await response.json();
-      setSuccess('Registration successful!');
-      setError('');
-
+      toast.success('Registration successful!');
       setFormData({
         fname: '',
         lname: '',
@@ -68,136 +72,131 @@ const Register = () => {
         email: '',
         mobilenumber: '',
         password: '',
-        role: '',
+        role: 'admin',
       });
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || 'An error occurred while registering');
     }
   };
 
   return (
     <div className="register-page">
+      <ToastContainer />
       <div className="register-container">
         <div className="left-section">
           <img src="logo.jpg" className="register-img" alt="Illustration" />
         </div>
-        <div className='right-section'>
+        <div className="right-section">
           <h2>Create Account</h2>
-          <form onSubmit={handleSubmit} className='register-form'>
-            <div className='field-row'>
-              <div className='field-group'>
-                <label htmlFor='fname'>First Name</label>
+          <form onSubmit={handleSubmit} className="register-form">
+            <div className="field-row">
+              <div className="field-group">
+                <label htmlFor="fname">First Name</label>
                 <input
                   type="text"
-                  id='fname'
+                  id="fname"
                   className="input-field"
-                  placeholder='First Name'
-                  name='fname'
+                  placeholder="First Name"
+                  name="fname"
                   value={formData.fname}
                   onChange={handleChange}
                   required
                 />
               </div>
-              <div className='field-group'>
-                <label htmlFor='lname'>Last Name</label>
+              <div className="field-group">
+                <label htmlFor="lname">Last Name</label>
                 <input
                   type="text"
-                  id='lname'
+                  id="lname"
                   className="input-field"
-                  placeholder='Last Name'
-                  name='lname'
+                  placeholder="Last Name"
+                  name="lname"
                   value={formData.lname}
                   onChange={handleChange}
                   required
                 />
               </div>
             </div>
-            <div className='field-row'>
-              <div className='field-group'>
-                <label htmlFor='gender'>Gender</label>
+            <div className="field-row">
+              <div className="field-group">
+                <label htmlFor="gender">Gender</label>
                 <select
-                  id='gender'
-                  name='gender'
+                  id="gender"
+                  name="gender"
                   className="input-field"
                   value={formData.gender}
                   onChange={handleChange}
                   required
                 >
-                  <option value='Male'>Male</option>
-                  <option value='Female'>Female</option>
-                  {/* <option value='Other'>Other</option> */}
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
-              <div className='field-group'>
-                <label htmlFor='role'>Role</label>
+              <div className="field-group">
+                <label htmlFor="role">Role</label>
                 <select
-                  id='role'
-                  name='role'
+                  id="role"
+                  name="role"
                   className="input-field"
                   value={formData.role}
                   onChange={handleChange}
                   required
                 >
-                  {/* <option value='employee'>Employee</option> */}
-                  <option value='admin'>Admin</option>
-                  <option value='hr'>HR</option>
+                  <option value="admin">Admin</option>
+                  <option value="hr">HR</option>
                 </select>
               </div>
             </div>
-            <div className='field-row'>
-              <div className='field-group'>
-                <label htmlFor='email'>Email</label>
+            <div className="field-row">
+              <div className="field-group">
+                <label htmlFor="email">Email</label>
                 <input
                   type="email"
-                  id='email'
+                  id="email"
                   className="input-field"
-                  placeholder='Email'
-                  name='email'
+                  placeholder="Email"
+                  name="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
                 />
               </div>
-              <div className='field-group'>
-                <label htmlFor='password'>Password</label>
+              <div className="field-group">
+                <label htmlFor="password">Password</label>
                 <input
                   type="password"
-                  id='password'
+                  id="password"
                   className="input-field"
-                  placeholder='Password'
-                  name='password'
+                  placeholder="Password"
+                  name="password"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
               </div>
             </div>
-            <div className='field-row'>
-            <div className='field-group'>
-              <label htmlFor='mobilenumber'>Mobile Number</label>
-              <input
-                type="text"
-                id='mobilenumber'
-                className="input-field"
-                placeholder='Mobile Number'
-                name='mobilenumber'
-                value={formData.mobilenumber}
-                onChange={handleChange}
-                required
-              />
+            <div className="field-row">
+              <div className="field-group">
+                <label htmlFor="mobilenumber">Mobile Number</label>
+                <input
+                  type="text"
+                  id="mobilenumber"
+                  className="input-field"
+                  placeholder="Mobile Number"
+                  name="mobilenumber"
+                  value={formData.mobilenumber}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-            
-            </div>
-           
-            <button className='register-button' type='submit'>
+            <button className="register-button" type="submit">
               Register
             </button>
           </form>
-          {error && <p className='error-message'>{error}</p>}
-          {success && <p className='success-message'>{success}</p>}
-          <div className='login-prompt'>
+          <div className="login-prompt">
             Already have an account?{' '}
-            <Link className='login-link' to="/">
+            <Link className="login-link" to="/">
               Login
             </Link>
           </div>

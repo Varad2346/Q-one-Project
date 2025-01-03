@@ -60,47 +60,50 @@ const Login = () => {
         <div className="login-right">
           <h2>Welcome Back</h2>
           <p>Please login to your account</p>
-          <form className="login-form" onSubmit={(e) => e.preventDefault()}>
-            <label htmlFor="email">Email ID</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email address"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              autoComplete="email" // Add autoComplete for email
-            />
-            {/* {errors.email && <p className="error-message">{errors.email}</p>} Display email error */}
+          <form 
+  className="login-form" 
+  onSubmit={(e) => {
+    e.preventDefault(); // Prevent the default form submission
+    handleLogin(); // Call the login function
+  }}
+>
+<label htmlFor="email" className="form-label">Email ID</label>
+<input
+  type="email"
+  name="email"
+  placeholder="Email address"
+  value={formData.email}
+  onChange={handleChange}
+  required
+  autoComplete="email"
+/>
+<label htmlFor="password" className="form-label">Password</label>
+<input
+  type={showPassword ? "text" : "password"}
+  name="password"
+  placeholder="Password"
+  value={formData.password}
+  onChange={handleChange}
+  required
+  autoComplete="current-password"
+/>
 
-            <label htmlFor="password">Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              autoComplete="current-password" // Add autoComplete for password
-            />
-            {/* {errors.password && <p className="error-message">{errors.password}</p>} Display password error */}
+  <div
+    className="show-password"
+    onClick={togglePasswordVisibility}
+    aria-label={showPassword ? "Hide password" : "Show password"}
+  >
+    {showPassword ? "Hide password" : "Show password"}
+  </div>
+  <button
+    type="submit" // Correct type for triggering on Enter
+    className="login-button"
+    disabled={isLoading}
+  >
+    {isLoading ? "Logging in..." : "Login"}
+  </button>
+</form>
 
-            <div
-              className="show-password"
-              onClick={togglePasswordVisibility}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? "Hide password" : "Show password"}
-            </div>
-            <button
-              type="button"
-              className="login-button"
-              onClick={handleLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </button>
-          </form>
           <p className="signup-text">
             Don't have an account?{" "}
             <Link className="signup-link" to="/register">

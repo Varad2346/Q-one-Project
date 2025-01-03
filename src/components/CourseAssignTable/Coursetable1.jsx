@@ -605,7 +605,8 @@ const handleAddCourse = async (e) => {
                     onChange={(e) => setNewDescription(e.target.value)}
                     required
                   />
-                  <label htmlFor="trainer-select">Select Trainer</label>
+                  {/* <label for="trainer-select" class="bold-label">Select Trainer</label> */}
+
 
                   <Select
                     options={trainers}

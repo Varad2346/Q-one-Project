@@ -310,7 +310,7 @@ opacity: 0.9;
 display: flex;
 justify-content: end;
 gap: 20px;
-
+margin-right: 70px
 }
 .modal-input-fields{
 gap: 4px;
@@ -464,4 +464,16 @@ button svg, .add-course-button svg, .drop-course-button svg,
 .plan-date-button:hover {
   background-color: #e67e00;
   transform: translateY(-2px);
+}
+
+/* .bold-label {
+  font-weight: bold;
+} */
+.css-1jqq78o-placeholder {
+  grid-area: 1 / 1 / 2 / 3;
+  color: hsl(0, 0%, 50%);
+  margin-left: 2px;
+  margin-right: 2px;
+  box-sizing: border-box;
+  text-align: left;
 }

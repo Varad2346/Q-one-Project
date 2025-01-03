@@ -274,3 +274,8 @@ input[type="password"] {
         font-size: 0.8rem;
     }
 }
+
+.form-label {
+    font-weight: bold !important; /* Force bold style */
+}
+

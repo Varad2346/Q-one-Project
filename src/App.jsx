@@ -16,23 +16,25 @@ import './App.css';
 function App() {
   const { isLoggedIn } = useAuth(); // Get authentication state
 
-  return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        {/* Redirect to Home if logged in, otherwise show Login */}
-        <Route path="/" element={isLoggedIn ? <Navigate to="/home" /> : <Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />} />
-        <Route path="/add-employee" element={isLoggedIn ? <AddEmployee /> : <Navigate to="/" />} />
-        <Route path="/coursetable/:categoryId" element={isLoggedIn ? <Coursetable /> : <Navigate to="/" />} />
-        <Route path="/training-calendar" element={isLoggedIn ? <TrainingCalendar /> : <Navigate to="/" />} />
-        <Route path="/training-attendance" element={isLoggedIn ? <TrainingAttendance /> : <Navigate to="/" />} />
-        <Route path="/training-evaluation" element={isLoggedIn ? <TrainingTable /> : <Navigate to="/" />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
 
-export default App;
+    return (
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          {/* Show Login as default for "/" */}
+          <Route path="/" element={!isLoggedIn ? <Login /> : <Navigate to="/home" />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />} />
+          <Route path="/add-employee" element={isLoggedIn ? <AddEmployee /> : <Navigate to="/" />} />
+          <Route path="/coursetable/:categoryId" element={isLoggedIn ? <Coursetable /> : <Navigate to="/" />} />
+          <Route path="/training-calendar" element={isLoggedIn ? <TrainingCalendar /> : <Navigate to="/" />} />
+          <Route path="/training-attendance" element={isLoggedIn ? <TrainingAttendance /> : <Navigate to="/" />} />
+          <Route path="/training-evaluation" element={isLoggedIn ? <TrainingTable /> : <Navigate to="/" />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+  
+  export default App;
+  

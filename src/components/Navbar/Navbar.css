@@ -3,16 +3,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 75px;
+  height: 65px;
   width: 100%;
   background-color: white;
   border-bottom: 2px solid #ddd; /* Subtle bottom border */
   padding: 0 5%; /* Use percentage padding for better responsiveness */
   font-family: 'Roboto', sans-serif;
-  font-size: 1.1em; /* Increased font size for better readability */
+  /* font-size: em; Increased font size for better readability */
   position: sticky; /* Keeps the navbar fixed at the top */
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, .05);
 }
 
@@ -37,7 +37,7 @@
 /* Navbar link styling */
 .navbar-link {
   font-weight: 500;
-  font-size:1.3rem ;
+  font-size:1.1rem ;
   text-decoration: none;
   margin: 0 15px; /* Space between items */
   cursor: pointer; /* Pointer cursor for interactive items */
@@ -141,6 +141,110 @@
 
 .navbar-dropdown.open .navbar-dropdown-menu {
   display: block; /* Show dropdown menu when open */
+}
+
+
+/* Profile Card Transition */
+.profile-card {
+  position: fixed;
+  top: -200px;
+  right: 30px; /* Start off-screen to the right */
+  width: 310px;
+  height: 160px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 0px 0px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  justify-content: space-between;
+  z-index: 500;
+  box-shadow: -3px 10px 20px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid whitesmoke;
+  transition: top 0.4s ease; /* Smooth slide transition */
+}
+
+.profile-card.open {
+  top: 55px; /* When the profile card is open, it will slide in */
+}
+
+.one {
+  height: 56%;
+  width: 100%;
+  padding: 20px 5px 14px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.two {
+  align-items: center;
+  height: 40%;
+  width: 100%;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.designation {
+  display: flex;
+  flex-direction: row;
+  font-size: 18px;
+  color: rgb(78, 64, 64);
+  margin-right: 15px;
+}
+
+.circle {
+  border: 1px solid #e7e7f1;
+  border-radius: 50%;
+  padding: 4px 7px;
+  width: 65px;
+  height: 60px;
+}
+
+.name {
+  font-family: Mulish, Mulish, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+}
+
+.log-button {
+  font-size: 18px;
+  color: #fb813e;
+  cursor: pointer;
+  box-shadow: #e7e7f1;
+}
+
+.user-image {
+
+  width: 38px;
+  margin-left: 20px;
+  /* margin-top: 2px; */
+  margin-top: 2px;
+  border: none;
+  padding: 1px;
+  border: 1px solid rgb(215, 207, 207);
+  border-radius: 50%;
+  /* margin-left: 30px; */
+  /* padding-left: 10px; */
+  /* border-left: 2px solid rgb(208, 187, 187); */
+}
+
+.user-image1 {
+
+  width: 50px;
+  margin-left: 20px;
+  /* margin-top: 2px; */
+  /* margin-top: 2px; */
+  border: none;
+  padding: 1px;
+  border: 1px solid rgb(215, 207, 207);
+  border-radius: 50%;
+  /* margin-left: 30px; */
+  /* padding-left: 10px; */
+  /* border-left: 2px solid rgb(208, 187, 187); */
 }
 
 /* Media Queries for Responsive Navbar */

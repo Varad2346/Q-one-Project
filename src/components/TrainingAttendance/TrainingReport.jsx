@@ -42,7 +42,7 @@ const TrainingReport = () => {
         if (response.ok) {
           const data = await response.json();
           setCategories(data.data);
-          fetchCoursesForAllCategories(data.data);
+          // fetchCoursesForAllCategories(data.data);
         } else {
           console.error('Failed to fetch categories:', response.statusText);
         }
@@ -156,7 +156,7 @@ const TrainingReport = () => {
             'Authorization': `Bearer ${authToken}`,
           },
         });
-
+  
         if (response.ok) {
           const courses = await response.json();
           coursesData[category.categoryId] = courses.data;
@@ -167,27 +167,41 @@ const TrainingReport = () => {
         console.error(`Error fetching courses for category ${category.categoryId}:`, error);
       }
     }
-
+  
     setCoursesByCategory(coursesData);
-
     const topicsOptions = [];
+    
     categories.forEach((category) => {
       if (coursesData[category.categoryId]) {
         coursesData[category.categoryId].forEach((course) => {
-          topicsOptions.push({
-            value: course.courseId,
-            label: `${course.name}`,
-            categoryId: category.categoryId,
-            trainerName:`${course.trainer.firstName} ${course.trainer.lastName}`,
-            trainerDepartment:course.trainer.department
+          // Check if the courseId is in plannedCourses
+          const plannedCoursesForThisCourse = plannedCourses.filter((plannedCourse) => plannedCourse.courseId === course.courseId);
+          
+          plannedCoursesForThisCourse.forEach((plannedCourse) => {
+            // Add to the dropdown, showing both course name and planned date
+            topicsOptions.push({
+              value: course.courseId, // Use courseId as value
+              label: `${course.name} - Planned Date: ${new Date(plannedCourse.plannedDate).toISOString().split('T')[0]}`, // Include the planned date
+              categoryId: category.categoryId,
+              trainerName: `${course.trainer.firstName} ${course.trainer.lastName}`,
+              trainerDepartment: course.trainer.department,
+              plannedDate: plannedCourse.plannedDate, // Include planned date for reference
+            });
           });
         });
       }
     });
+  
     setTrainingTopics(topicsOptions);
     setTopicsLoading(false);
   };
-
+  
+  useEffect(() => {
+    if (plannedCourses.length > 0) {
+      fetchCoursesForAllCategories(categories);
+    }
+  }, [plannedCourses, categories]);
+  
   // Period options
   const periodOptions = [
     { value: '1', label: '1 Month' },
@@ -239,7 +253,7 @@ const TrainingReport = () => {
 
   const handleCommitChanges = async () => {
     const actualDate = new Date().toISOString().split('T')[0];
-
+  
     // Step 1: Create the report by sending details to /api/reports
     const reportData = {
       actualDate,
@@ -247,7 +261,7 @@ const TrainingReport = () => {
       trainingEffectivenessPeriod: effectivenessPeriod.label,
       dueDate: calculateDueDate(plannedDate, effectivenessPeriod.value),
     };
-
+  
     try {
       const response = await fetch('http://localhost:3000/api/reports/', {
         method: 'POST',
@@ -257,17 +271,16 @@ const TrainingReport = () => {
         },
         body: JSON.stringify(reportData),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to create the report');
       }
-
+  
       const report = await response.json();
-      console.log("rport",report);
       const reportId = report.data.reportId;
-
+  
       toast.success('Training report created successfully!');
-
+  
       // Step 2: Now, for each participant, update their enrollment status and feedback
       for (const user of filteredUsers || []) {
         const enrollmentData = {
@@ -275,15 +288,20 @@ const TrainingReport = () => {
           trainingFeedback: feedback[user.userId] || '8',
           reportId,
         };
-        console.log("enrolledmend",enrollmentData);
-        console.log(enrollments);
-        
-        // Find the enrollment matching the userId
-        const userEnrollment = enrollments.find((data) => data.userId === user.userId);
-        console.log(userEnrollment);
-        if (userEnrollment) {
+  
+        // Find the enrollment matching the userId and courseId/plannedDate
+        const userEnrollments = enrollments.filter((enrollment) =>
+          enrollment.userId === user.userId &&
+          plannedCourses.some((plannedCourse) =>
+            plannedCourse.courseId === trainingTopic?.value &&
+            plannedCourse.plannedDate === trainingTopic?.plannedDate && // Match the planned date
+            plannedCourse.plannedCourseId === enrollment.plannedCourseId
+          )
+        );
+  
+        // For each valid enrollment found for this user
+        for (const userEnrollment of userEnrollments) {
           try {
-            // Update the enrollment using the enrollmentId from the found enrollment
             const enrollmentResponse = await fetch(`http://localhost:3000/api/enrollments/${userEnrollment.enrollmentId}`, {
               method: 'PUT',
               headers: {
@@ -292,7 +310,7 @@ const TrainingReport = () => {
               },
               body: JSON.stringify(enrollmentData),
             });
-      
+  
             if (enrollmentResponse.ok) {
               console.log(`Enrollment for ${user.firstName} ${user.lastName} updated successfully!`);
             } else {
@@ -301,16 +319,16 @@ const TrainingReport = () => {
           } catch (error) {
             console.error('Error submitting data for user:', user.firstName, error);
           }
-        } else {
-          console.error(`No enrollment found for user ${user.firstName} ${user.lastName}`);
         }
       }
+  
       toast.success('Changes committed successfully for all participants!');
     } catch (error) {
       console.error('Error creating the training report:', error);
       toast.error('Failed to create the training report');
     }
   };
+  
 
   // Filter users based on enrollments for selected training topic
   const filteredUsers = users.filter(user =>
@@ -318,7 +336,7 @@ const TrainingReport = () => {
       enrollment.userId === user.userId &&
       plannedCourses.some(plannedCourse =>
         plannedCourse.plannedCourseId === enrollment.plannedCourseId &&
-        plannedCourse.courseId === trainingTopic?.value
+        plannedCourse.courseId === trainingTopic?.value && !enrollment.reportId &&   plannedCourse.plannedDate === trainingTopic?.plannedDate 
       )
     )
   );
@@ -332,6 +350,7 @@ const TrainingReport = () => {
             <tr>
               <td className="label merged" rowSpan="2">Training Topic</td>
               <td className="blank" rowSpan="2">
+                {console.log(trainingTopics)}
                 <Select
                   value={trainingTopic}
                   onChange={(selectedTopic) => setTrainingTopic(selectedTopic)}
@@ -394,6 +413,7 @@ const TrainingReport = () => {
             </tr>
           </thead>
           <tbody>
+            {console.log(filteredUsers)}
             {filteredUsers.length > 0 ? filteredUsers.map((user, index) => (
               <tr key={user.userId}>
                 <td>{index + 1}</td>

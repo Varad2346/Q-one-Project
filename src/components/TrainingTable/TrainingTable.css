@@ -2,20 +2,21 @@
   
   /* Container Styling */
   .eval-container {
-    width: 98vw;
+    width: 99vw;
     /* max-width: 1500px; */
     margin: auto;
     text-align: left;
     background: #ffffff;
     padding: 20px;
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-top: 10px;
     margin: 5px auto;
     background-color: white;
-    border-radius: 20px;
-    border: 8px solid whitesmoke;
-    min-height: 89vh;
+    /* border-radius: 20px; */
+    border: 1px solid whitesmoke;
+    min-height: 87vh;
+    /* overflow-y: scroll; */
   }
   
   /* HOD Table Styling */
@@ -112,23 +113,23 @@
   
   /* Align 'Actual Date' column to center */
   .training-table .actual-date-column {
-    width: 6%;
+    width: 3%;
     text-align: center;
   }
   
   /* Adjusting 'Trainer' column width (doubled size) */
   .training-table .trainer-column {
-    width: 14%;
+    width: 19%;
   }
   
   /* Adjusting 'Remark' column width */
   .training-table .remark-column {
-    width: 8%; /* Doubled width */
+    width: 4%; /* Doubled width */
   }
   
   /* Adjusting 'DOE' column width (same as 'Actual Date') */
   .training-table .doe-column {
-    width: 5%;
+    width: 4%;
   }
   .grade-input{
     border: none;
@@ -140,7 +141,30 @@
     width: 7%;
 }
 /* Commit Button Styling */
-.commit-button-container {
+.commit-button {
   text-align: center;
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+
   margin-top: 20px;
+}
+.grade-input{
+  width: 5%;
+}
+.date-field{
+  width: 7%;
+}
+.remark-field{
+  width: 7%;
+}
+.duration-field{
+  width: 6%;
+}
+.large-input {
+  /* width: 80px; */
+  height: 30px;
+  font-size: 15px;
+  padding: 5px 0px;
+  border-radius: 4px;
 }

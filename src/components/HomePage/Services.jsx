@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack'; // Import Notistack's hook
 import './styles/Services.css';
 import {
   FaLaptop,
@@ -33,6 +34,7 @@ const iconOptions = [
 ];
 
 const Services = () => {
+  const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
   const { authToken } = useAuth();
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
@@ -76,7 +78,7 @@ const Services = () => {
 
   const handleAddTopic = async () => {
     if (!newTopic.name || !newTopic.description || !newTopic.icon) {
-      toast.error('Please fill in all fields and select an icon.');
+      enqueueSnackbar('Please fill in all fields and select an icon.', { variant: 'error' });
       return;
     }
 
@@ -98,7 +100,7 @@ const Services = () => {
       setServices((prevServices) => [...prevServices, result.data]);
       setModalOpen(false);
       setNewTopic({ name: '', description: '', icon: null });
-      toast.success('Training Topic added successfully!');
+      enqueueSnackbar('Training Topic added successfully!', { variant: 'success' });
     } catch (err) {
       setError(err.message);
       toast.error('Failed to add training topic. Please try again.');
@@ -168,7 +170,7 @@ const Services = () => {
       // Update the state to remove the category
       setServices((prevServices) => prevServices.filter((service) => service.categoryId !== categoryId));
       setServiceToDelete(null);
-      toast.success('Training Topic and associated courses deleted successfully!');
+      enqueueSnackbar('Training Topic and associated courses deleted successfully!', { variant: 'success' });
     } catch (err) {
       console.error('Error deleting category:', err);
       toast.error('Failed to delete training topic. Please try again.');

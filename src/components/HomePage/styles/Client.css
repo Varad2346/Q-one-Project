@@ -17,7 +17,7 @@
 
 .client-heading {
   position: absolute;
-  top: 15%; /* Use relative spacing */
+  top: 5%; /* Use relative spacing */
   font-size: 3.1em; /* This could also be in `rem` */
   color: black;
   margin: 0;
@@ -25,6 +25,14 @@
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+.client-heading::after {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 4px;
+  background-color: #ff5733;
+  margin: 10px auto 0;
+}
 .client-logos {
   overflow: hidden;
   position: relative;

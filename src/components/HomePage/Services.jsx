@@ -78,7 +78,7 @@ const Services = () => {
 
   const handleAddTopic = async () => {
     if (!newTopic.name || !newTopic.description || !newTopic.icon) {
-      enqueueSnackbar('Please fill in all fields and select an icon.', { variant: 'error' });
+      enqueueSnackbar('Please fill in all fields and select an icon.', { variant: 'info' });
       return;
     }
 

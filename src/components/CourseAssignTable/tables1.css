@@ -477,3 +477,9 @@ button svg, .add-course-button svg, .drop-course-button svg,
   box-sizing: border-box;
   text-align: left;
 }
+.date-input-field{
+  /* border-radius: 4px; */
+    /* padding: 5px 58px; */
+    color: rgba(128, 128, 128, 0.849);
+    /* border: 1px solid #ccc; */
+}

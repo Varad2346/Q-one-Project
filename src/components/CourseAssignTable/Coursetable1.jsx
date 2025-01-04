@@ -2,23 +2,17 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "./tables1.css";
 import Select from "react-select";
-import { useSnackbar } from 'notistack'; // Import Notistack's hook
-
+import { useSnackbar } from "notistack"; // Import Notistack's hook
 import { useAuth } from "../../store/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-// import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import { Tooltip } from "react-tooltip";
 
 const CourseTable = () => {
   const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
-
   const { authToken } = useAuth();
   const { categoryId } = useParams();
   const [employees, setEmployees] = useState([]);
   const [trainers, setTrainers] = useState([]);
-  console.log("trainers",trainers);
   const [courses, setCourses] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
@@ -35,7 +29,6 @@ const CourseTable = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [viewMode, setViewMode] = useState("current");
   const dropdownRef = useRef(null);
-
 
   const durations = [
     "1 to 2 hrs",
@@ -89,7 +82,7 @@ const CourseTable = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-  
+
   const getLastDateOfMonth = (month, year) => {
     const monthNumber = monthMapping[month];
     return new Date(year, monthNumber + 1, 0).toISOString().split("T")[0];
@@ -102,34 +95,32 @@ const CourseTable = () => {
   const getMaxDate = () => {
     return "2100-12-31";
   };
-  
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Close all dropdowns if the clicked element is not within any dropdown
-      if (!event.target.closest('.custom-dropdown')) {
+      if (!event.target.closest(".custom-dropdown")) {
         setDropdownOpen({});
       }
     };
-  
-    document.addEventListener('click', handleClickOutside);
-  
+
+    document.addEventListener("click", handleClickOutside);
+
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-  
-  
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await fetch("http://localhost:3000/api/users", {
           headers: { Authorization: `Bearer ${authToken}` },
         });
+
         if (!response.ok)
           throw new Error(`Failed to fetch users: ${response.statusText}`);
         const data = await response.json();
-        console.log("emp", data.data);
-        console.log(Array.isArray(data.data));
         const employeeOptions = Array.isArray(data.data)
           ? data.data
               .filter((emp) => emp.role.toLowerCase() === "employee")
@@ -138,6 +129,7 @@ const CourseTable = () => {
                 label: `${emp.firstName} ${emp.lastName}`,
               }))
           : []; // Fallback to an empty array if `data` is not an array
+
         const trainerOptions = Array.isArray(data.data)
           ? data.data
               .filter((emp) => emp.role.toLowerCase() === "trainer")
@@ -147,12 +139,8 @@ const CourseTable = () => {
               }))
           : []; // Fallback to an empty array if `data` is not an array
 
-          
-          setEmployees(employeeOptions);
-          setTrainers(trainerOptions);
-          console.log("opt", employeeOptions);
-        console.log("fit", employeeOptions);
-        console.log("tra", trainerOptions);
+        setEmployees(employeeOptions);
+        setTrainers(trainerOptions);
       } catch (error) {
         console.log("Failed to fetch user data.", error);
       }
@@ -170,7 +158,7 @@ const CourseTable = () => {
         if (!response.ok)
           throw new Error(`Failed to fetch courses: ${response.statusText}`);
         const data = await response.json();
-        console.log("courses",data.data);
+        console.log("courses", data.data);
         setCourses(data.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -224,27 +212,29 @@ const CourseTable = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (selectedCourses.length === 0) {
-      enqueueSnackbar("Please select at least one course",{variant:'info'});
+      enqueueSnackbar("Please select at least one course", { variant: "info" });
       return;
     }
     if (selectedEmployees.length === 0) {
-      enqueueSnackbar("Please select at least one employee",{variant:'info'});
+      enqueueSnackbar("Please select at least one employee", {
+        variant: "info",
+      });
       return;
     }
-  
+
     const incompleteSelections = selectedCourses.filter(
       (course) =>
         !selectedDurations[course] ||
         (!selectedMonths[course] && !planDates[course])
     );
-  
+
     if (incompleteSelections.length > 0) {
-      enqueueSnackbar("Please complete all selections",{variant:'info'});
+      enqueueSnackbar("Please complete all selections", { variant: "info" });
       return;
     }
-  
+
     try {
       // Step 1: Create Planned Courses
       const plannedCourses = [];
@@ -255,20 +245,25 @@ const CourseTable = () => {
           plannedDate: planDates[courseId] || null,
           status: "pending", // Assuming status remains pending
         };
-  
-        const response = await fetch("http://localhost:3000/api/planned-courses/", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(request),
-        });
-  
+
+        const response = await fetch(
+          "http://localhost:3000/api/planned-courses/",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request),
+          }
+        );
+
         if (!response.ok) {
-          throw new Error(`Failed to create planned course for course ${courseId}`);
+          throw new Error(
+            `Failed to create planned course for course ${courseId}`
+          );
         }
-  
+
         const data = await response.json();
         if (data.success) {
           plannedCourses.push(data.data); // Save the planned course response data
@@ -276,7 +271,7 @@ const CourseTable = () => {
           throw new Error(data.message || "Failed to create planned course");
         }
       }
-  
+
       // Step 2: Enroll Employees
       for (const plannedCourse of plannedCourses) {
         for (const employee of selectedEmployees) {
@@ -284,7 +279,7 @@ const CourseTable = () => {
             plannedCourseId: plannedCourse.plannedCourseId,
             userId: employee.value,
           };
-  
+
           const enrollmentResponse = await fetch(
             "http://localhost:3000/api/enrollments",
             {
@@ -296,13 +291,13 @@ const CourseTable = () => {
               body: JSON.stringify(enrollmentRequest),
             }
           );
-  
+
           if (!enrollmentResponse.ok) {
             throw new Error(
               `Failed to enroll employee ${employee.label} for course ${plannedCourse.courseId}`
             );
           }
-  
+
           const enrollmentData = await enrollmentResponse.json();
           if (!enrollmentData.success) {
             throw new Error(
@@ -311,12 +306,14 @@ const CourseTable = () => {
           }
         }
       }
-  
-      enqueueSnackbar("Courses assigned and employees enrolled successfully",{variant:'success'});
+
+      enqueueSnackbar("Courses assigned and employees enrolled successfully", {
+        variant: "success",
+      });
       handleReset();
     } catch (error) {
       console.error("Error submitting data:", error);
-      enqueueSnackbar("Failed to submit data",{variant:'error'});
+      enqueueSnackbar("Failed to submit data", { variant: "error" });
     }
   };
 
@@ -331,64 +328,66 @@ const CourseTable = () => {
     setDropdownOpen({});
   };
 
-const handleAddCourse = async (e) => {
-  e.preventDefault();
+  const handleAddCourse = async (e) => {
+    e.preventDefault();
 
-  if (!selectedTrainer) {
-    enqueueSnackbar("Please select a trainer",{variant:'info'});
-    return;
-  }
+    if (!selectedTrainer) {
+      enqueueSnackbar("Please select a trainer", { variant: "info" });
+      return;
+    }
 
-  const newCourse = {
-    name: capitalizeWords(newCourseName), // Capitalize course name
-    description: newDescription,
-    trainerId: selectedTrainer.value,
-    categoryId: categoryId,
+    const newCourse = {
+      name: capitalizeWords(newCourseName), // Capitalize course name
+      description: newDescription,
+      trainerId: selectedTrainer.value,
+      categoryId: categoryId,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/courses/${categoryId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newCourse),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to add course: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        const addedCourse = {
+          courseId: result.data.courseId,
+          name: result.data.name,
+          description: result.data.description,
+          trainerId: result.data.trainerId,
+        };
+
+        setCourses((prevCourses) => [...prevCourses, addedCourse]);
+
+        enqueueSnackbar(result.message, { variant: "success" });
+        handleCloseModal();
+      } else {
+        throw new Error(result.message || "Failed to add course");
+      }
+    } catch (error) {
+      console.error("Error adding course:", error);
+      enqueueSnackbar("Failed to add course", { variant: "error" });
+    }
   };
 
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/courses/${categoryId}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newCourse),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to add course: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-
-    if (result.success) {
-      const addedCourse = {
-        courseId: result.data.courseId,
-        name: result.data.name,
-        description: result.data.description,
-        trainerId: result.data.trainerId,
-      };
-
-      setCourses((prevCourses) => [...prevCourses, addedCourse]);
-
-     enqueueSnackbar(result.message,{variant:'success'});
-      handleCloseModal();
-    } else {
-      throw new Error(result.message || "Failed to add course");
-    }
-  } catch (error) {
-    console.error("Error adding course:", error);
-    enqueueSnackbar("Failed to add course",{variant:'error'});
-  }
-};
-  
   const handleDropCourse = async () => {
     if (selectedCourses.length === 0) {
-      enqueueSnackbar("Please select at least one course to drop",{variant:'info'});
+      enqueueSnackbar("Please select at least one course to drop", {
+        variant: "info",
+      });
       return;
     }
 
@@ -421,10 +420,10 @@ const handleAddCourse = async (e) => {
       );
 
       setSelectedCourses([]);
-     enqueueSnackbar("Courses dropped successfully",{variant:'success'});
+      enqueueSnackbar("Courses dropped successfully", { variant: "success" });
     } catch (error) {
       console.error("Error dropping courses:", error);
-      enqueueSnackbar("Failed to drop courses",{variant:'error'});
+      enqueueSnackbar("Failed to drop courses", { variant: "error" });
     }
   };
 
@@ -496,94 +495,117 @@ const handleAddCourse = async (e) => {
                 </tr>
               </thead>
               <tbody>
-                {courses.map((course, index) => (
-                  console.log("courses1",courses),
-                  <tr key={course.courseId}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <div
-                        className="topic-cell"
-                      >
-                        {course.name}
-                      </div>
-                    </td>
-                    <td>
-  <div className="custom-dropdown" ref={dropdownRef}>
-    <div
-      className="dropdown-selected"
-      onClick={() => toggleDropdown(`${course.courseId}-duration`)}
-    >
-      {selectedDurations[course.courseId] || "N/A"}
-    </div>
-    <ul
-  className={`dropdown-list ${
-    dropdownOpen[`${course.courseId}-duration`] ? "visible" : ""
-  }`}
-  onClick={(e) => e.stopPropagation()} // Prevent click event from bubbling up
->
-  {durations.map((duration) => (
-    <li
-      key={duration}
-      className="dropdown-item"
-      onClick={() => handleDurationSelect(course.courseId, duration)}
-    >
-      {duration}
-    </li>
-  ))}
-</ul>
-  </div>
-</td>
+                {courses.map(
+                  (course, index) => (
+                    console.log("courses1", courses),
+                    (
+                      <tr key={course.courseId}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <div className="topic-cell">{course.name}</div>
+                        </td>
+                        <td>
+                          <div className="custom-dropdown" ref={dropdownRef}>
+                            <div
+                              className="dropdown-selected"
+                              onClick={() =>
+                                toggleDropdown(`${course.courseId}-duration`)
+                              }
+                            >
+                              {selectedDurations[course.courseId] || "N/A"}
+                            </div>
+                            <ul
+                              className={`dropdown-list ${
+                                dropdownOpen[`${course.courseId}-duration`]
+                                  ? "visible"
+                                  : ""
+                              }`}
+                              onClick={(e) => e.stopPropagation()} // Prevent click event from bubbling up
+                            >
+                              {durations.map((duration) => (
+                                <li
+                                  key={duration}
+                                  className="dropdown-item"
+                                  onClick={() =>
+                                    handleDurationSelect(
+                                      course.courseId,
+                                      duration
+                                    )
+                                  }
+                                >
+                                  {duration}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </td>
 
-<td>
-  {isMonthView ? (
-    <div className="custom-dropdown" ref={dropdownRef}>
-      <div
-        className="dropdown-selected"
-        onClick={() => toggleDropdown(`${course.courseId}-month`)}
-      >
-        {selectedMonths[course.courseId] || "N/A"}
-      </div>
-      <ul
-  className={`dropdown-list ${
-    dropdownOpen[`${course.courseId}-month`] ? "visible" : ""
-  }`}
-  onClick={(e) => e.stopPropagation()} // Prevent click event from bubbling up
->
-  {getMonthsForYear(
-    viewMode === "current" ? currentYear : currentYear + 1
-  ).map((month) => (
-    <li
-      key={month}
-      className="dropdown-item"
-      onClick={() => handleMonthSelect(course.courseId, month)}
-    >
-      {month}
-    </li>
-  ))}
-</ul>
-    </div>
-  ) : (
-    <input
-      type="date"
-      value={planDates[course.courseId] || ""}
-      onChange={(e) => handlePlanDateChange(course.courseId, e.target.value)}
-      min={getMinDate()}
-      max={getMaxDate()}
-    />
-  )}
-</td>
+                        <td>
+                          {isMonthView ? (
+                            <div className="custom-dropdown" ref={dropdownRef}>
+                              <div
+                                className="dropdown-selected"
+                                onClick={() =>
+                                  toggleDropdown(`${course.courseId}-month`)
+                                }
+                              >
+                                {selectedMonths[course.courseId] || "N/A"}
+                              </div>
+                              <ul
+                                className={`dropdown-list ${
+                                  dropdownOpen[`${course.courseId}-month`]
+                                    ? "visible"
+                                    : ""
+                                }`}
+                                onClick={(e) => e.stopPropagation()} // Prevent click event from bubbling up
+                              >
+                                {getMonthsForYear(
+                                  viewMode === "current"
+                                    ? currentYear
+                                    : currentYear + 1
+                                ).map((month) => (
+                                  <li
+                                    key={month}
+                                    className="dropdown-item"
+                                    onClick={() =>
+                                      handleMonthSelect(course.courseId, month)
+                                    }
+                                  >
+                                    {month}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : (
+                            <input
+                            className="date-input-field"
+                              type="date"
+                              value={planDates[course.courseId] || " "}
+                              onChange={(e) =>
+                                handlePlanDateChange(
+                                  course.courseId,
+                                  e.target.value
+                                )
+                              }
+                              min={getMinDate()}
+                              max={getMaxDate()}
+                            />
+                          )}
+                        </td>
 
-                    <td>
-                      <input
-                        className="checkbox"
-                        type="checkbox"
-                        value={course.courseId}
-                        checked={selectedCourses.includes(course.courseId)}
-                        onChange={handleCourseChange}
-                      />
-                    </td>
-                  </tr>
-                ))}
+                        <td>
+                          <input
+                            className="checkbox"
+                            type="checkbox"
+                            value={course.courseId}
+                            checked={selectedCourses.includes(course.courseId)}
+                            onChange={handleCourseChange}
+                          />
+                        </td>
+                      </tr>
+                    )
+                  )
+                )}
               </tbody>
             </table>
           </div>
@@ -610,7 +632,6 @@ const handleAddCourse = async (e) => {
                     required
                   />
                   {/* <label for="trainer-select" class="bold-label">Select Trainer</label> */}
-
 
                   <Select
                     options={trainers}
@@ -660,33 +681,30 @@ const handleAddCourse = async (e) => {
         </div>
 
         <div className="plan-next-year-container">
-  <div className="plan-next-year-text">
-    {viewMode === "next" && (
-      <div>
-        <h3 style={{ fontWeight: "bold" }}>
-          Planning for Next Year: {currentYear + 1}
-        </h3>
-        <p>
-          You are currently planning courses for the next year. Please ensure
-          dates and months align with the selected year.
-        </p>
+          <div className="plan-next-year-text">
+            {viewMode === "next" && (
+              <div>
+                <h3 style={{ fontWeight: "bold" }}>
+                  Planning for Next Year: {currentYear + 1}
+                </h3>
+                <p>
+                  You are currently planning courses for the next year. Please
+                  ensure dates and months align with the selected year.
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="plan-next-year-button">
+            <button
+              type="button"
+              className="plan-date-button"
+              onClick={toggleYearView}
+            >
+              {viewMode === "current" ? "Plan Next Year" : "Plan Current Year"}
+            </button>
+          </div>
+        </div>
       </div>
-    )}
-  </div>
-  <div className="plan-next-year-button">
-    <button
-      type="button"
-      className="plan-date-button"
-      onClick={toggleYearView}
-    >
-      {viewMode === "current" ? "Plan Next Year" : "Plan Current Year"}
-    </button>
-  </div>
-</div>
-
-      </div>
-
-      {/* <ToastContainer /> */}
     </div>
   );
 };

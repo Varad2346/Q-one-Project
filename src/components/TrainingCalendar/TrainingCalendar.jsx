@@ -116,7 +116,7 @@ function TrainingCalendar() {
         }
 
         const reportsData = await reportsResponse.json();
-
+        console.log("report",reportsData);
         // Add report details to enrollments (only the first enrollment per course)
         const finalCourses = updatedCourses.map((course) => {
           course.enrollments.forEach((enrollment, index) => {

@@ -173,9 +173,12 @@ input {
 
 /* Commit button styles */
 .commit-button-container {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+  /* position: absolute; */
+  /* bottom: 20px; */
+  /* right: 20px; */
+  width: 200px;
+  display: flex;
+  flex-direction: row;
 }
 
 .commit-button {
@@ -230,4 +233,19 @@ input {
 .centered-cell {
   text-align: center;        /* Centers content horizontally */
   vertical-align: middle;    /* Centers content vertically */
+}
+.report-serial-number{
+  width: 6%;
+}
+.report-sign-field{
+  width: 15%;
+}
+.report-feedback-field{
+  width: 15%;
+}
+.report-department-name{
+  width: 26%;
+}
+.report-participant-name{
+  width: 38%;
 }

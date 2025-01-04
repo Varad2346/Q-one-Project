@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import "./TrainingTable.css";
+import { useSnackbar } from 'notistack'; // Import Notistack's hook
 
 const TrainingTable = () => {
   const [trainingData, setTrainingData] = useState([]);
@@ -10,6 +11,8 @@ const TrainingTable = () => {
   const [filteredUsersByDepartment, setFilteredUsersByDepartment] = useState(
     []
   );
+  const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
+
   const [loading, setLoading] = useState(true);
   const [hodName, setHodName] = useState("");
   const [department, setDepartment] = useState("");
@@ -83,77 +86,7 @@ const TrainingTable = () => {
   };
   console.log(updatedEvaluations);
   
-  const handleCommit = async () => {
-    const token = localStorage.getItem("token");
 
-    if (!token) {
-      console.error("No token found. User must be logged in.");
-      return;
-    }
-
-    try {
-      // Loop through each updated evaluation and submit to the API
-      for (const evaluation of updatedEvaluations) {
-        const {
-          enrollmentId,
-          criteriaA,
-          criteriaB,
-          criteriaC,
-          criteriaD,
-          criteriaE,
-          criteriaF,
-          dateOfEvaluation,
-        } = evaluation;
-
-        // Convert dateOfEvaluation to yyyy-mm-dd format
-        const formattedDate = new Date(dateOfEvaluation)
-          .toISOString()
-          .split("T")[0];
-
-        // Prepare the data to send to the API (only send criteria and dateOfEvaluation)
-        const dataToSubmit = {
-          criteriaA,
-          criteriaB,
-          criteriaC,
-          criteriaD,
-          criteriaE,
-          criteriaF,
-          evaluationRemark: "completed",
-          dateOfEvaluation: formattedDate, // Ensure date is in yyyy-mm-dd format
-        };
-        console.log("dts", dataToSubmit);
-        // Send the request to the backend
-        const response = await fetch(
-          `http://localhost:3000/api/enrollments/${enrollmentId}`,
-          {
-            method: "PUT", // Assuming you're updating an existing record
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(dataToSubmit),
-          }
-        );
-
-        const result = await response.json();
-
-        if (result.success) {
-          console.log(
-            `Successfully committed evaluation for enrollment ID: ${enrollmentId}`
-          );
-        } else {
-          console.error(
-            `Failed to commit evaluation for enrollment ID: ${enrollmentId}: ${result.message}`
-          );
-        }
-      }
-
-      // Optionally, refresh the evaluations after commit
-      setUpdatedEvaluations([]); // Clear or reset the evaluations if necessary
-    } catch (error) {
-      console.error("Error committing evaluations:", error);
-    }
-  };
 
   const fetchUserData = async (token, decodedUserId) => {
     try {
@@ -360,7 +293,77 @@ const TrainingTable = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
- 
+  const handleCommit = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found. User must be logged in.");
+      return;
+    }
+
+    try {
+      // Loop through each updated evaluation and submit to the API
+      for (const evaluation of updatedEvaluations) {
+        const {
+          enrollmentId,
+          criteriaA,
+          criteriaB,
+          criteriaC,
+          criteriaD,
+          criteriaE,
+          criteriaF,
+          dateOfEvaluation,
+        } = evaluation;
+
+        // Convert dateOfEvaluation to yyyy-mm-dd format
+        const formattedDate = new Date(dateOfEvaluation)
+          .toISOString()
+          .split("T")[0];
+
+        // Prepare the data to send to the API (only send criteria and dateOfEvaluation)
+        const dataToSubmit = {
+          criteriaA,
+          criteriaB,
+          criteriaC,
+          criteriaD,
+          criteriaE,
+          criteriaF,
+          evaluationRemark: "completed",
+          dateOfEvaluation: formattedDate, // Ensure date is in yyyy-mm-dd format
+        };
+        console.log("dts", dataToSubmit);
+        // Send the request to the backend
+        const response = await fetch(
+          `http://localhost:3000/api/enrollments/${enrollmentId}`,
+          {
+            method: "PUT", // Assuming you're updating an existing record
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(dataToSubmit),
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          enqueueSnackbar(
+            `Successfully committed evaluation`,{variant:'success'}
+          );
+        } else {
+          console.error(
+            `Failed to commit evaluation for enrollment ID: ${enrollmentId}: ${result.message}`
+          );
+        }
+      }
+      
+      // Optionally, refresh the evaluations after commit
+      setUpdatedEvaluations([]); // Clear or reset the evaluations if necessary
+    } catch (error) {
+      console.error("Error committing evaluations:", error);
+    }
+  };
   return (
     <div className="eval-container">
       <h2 className="eval-heading">Training Evaluation-2025</h2>
@@ -469,7 +472,7 @@ const TrainingTable = () => {
                     ].map((grade) => (
                       <td key={grade} className="grade-input">
                         <input
-                          type="number"
+                          type="text"
                           min="0"
                           max="4"
                           defaultValue={enrollment[grade.toLowerCase()] || ""}

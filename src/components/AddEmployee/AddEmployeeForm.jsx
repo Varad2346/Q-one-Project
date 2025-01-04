@@ -1,9 +1,10 @@
 //file updated by varad
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { toast, ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import './AddEmployeeForm.css';
 import { useAuth } from '../../store/auth';
+import { useSnackbar } from 'notistack'; // Import Notistack's hook
 
 import {
   ADD_EMPLOYEE_FORM_TITLE,
@@ -29,7 +30,8 @@ import {
 const AddEmployeeForm = () => {
 
     const { authToken }=useAuth();
-  
+    const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -58,13 +60,13 @@ const AddEmployeeForm = () => {
     if (role === 'hr' || role === 'hod') {
       // Check if password and confirm password match
       if (formData.password !== formData.confirmPassword) {
-        toast.error('Password and Confirm Password do not match!');
+        enqueueSnackbar('Password and Confirm Password do not match!',{variant:'error'});
         return;
       }
 
       // Check if password is at least 6 characters long
       if (formData.password.length < 6) {
-        toast.error('Password must be at least 6 characters long!');
+        enqueueSnackbar('Password must be at least 6 characters long!',{variant:'info'});
         return;
       }
     }
@@ -96,10 +98,10 @@ const AddEmployeeForm = () => {
 
       const data = await response.json();
       console.log('User created:', data);
-      toast.success('User added successfully!');
+      enqueueSnackbar('User added successfully!',{variant:'success'});
       resetForm();
     } catch (error) {
-      toast.error(error.message || 'Error creating user');
+      enqueueSnackbar(error.message || 'Error creating user',{variant:'error'});
       console.error('Error creating user:', error);
     }
   };
@@ -289,7 +291,7 @@ const AddEmployeeForm = () => {
       </form>
 
       {/* ToastContainer for notifications */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

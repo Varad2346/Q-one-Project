@@ -3,7 +3,7 @@ import "./TrainingCalendar.css";
 import { useAuth } from "../../store/auth";
 // import { formatDate } from "../../utils/dateUtils"; // Utility function for date formatting
 
-const TrainingCalendar = () => {
+function TrainingCalendar() {
   const { authToken } = useAuth();
   const [courseData, setCourseData] = useState([]); // State to hold course data with planned dates, enrollments, and reports
   const [loading, setLoading] = useState(true); // Loading state for API calls
@@ -16,6 +16,7 @@ const TrainingCalendar = () => {
   const months = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
   ]; // Month array
+
 
   // Fetch planned courses data
   useEffect(() => {
@@ -132,7 +133,26 @@ const TrainingCalendar = () => {
           });
           return course;
         });
+        // Add this right before setCourseData(finalCourses)
+        const groupedByName = finalCourses.reduce((acc, course) => {
+          if (!acc[course.courseName]) {
+            acc[course.courseName] = {
+              courseName: course.courseName,
+              instances: []
+            };
+          }
+          acc[course.courseName].instances.push({
+            plannedCourseId: course.plannedCourseId,
+            plannedDate: course.plannedDate,
+            dateOfEvaluation: course.dateOfEvaluation,
+            reportDetails: course.reportDetails,
+            enrollments: course.enrollments
+          });
+          return acc;
+        }, {});
 
+        const groupedCoursesArray = Object.values(groupedByName);
+        setGroupedCourses(groupedCoursesArray);
         setCourseData(finalCourses);
         setLoading(false); // Set loading to false after all data is fetched
 
@@ -193,74 +213,94 @@ const TrainingCalendar = () => {
               </tr>
             </thead>
             <tbody>
-              {console.log(courseData)}
-              {courseData.map((course, index) => (
-                <React.Fragment key={course.plannedCourseId}>
-                  
+              {groupedCourses.map((course, index) => (
+                <React.Fragment key={course.courseName}>
                   <tr>
                     <td rowSpan="2">{index + 1}</td>
                     <td rowSpan="2">{course.courseName}</td>
                     {months.map((month, monthIndex) => {
-                      const plannedDate = new Date(course.plannedDate);
-                      const dateOfEvaluationExists = course.dateOfEvaluation && plannedDate.getMonth() === monthIndex;
+                      const instancesThisMonth = course.instances.filter(
+                        instance => new Date(instance.plannedDate).getMonth() === monthIndex
+                      );
 
-                      // Get the report dueDate and check if the difference is greater than 14
-                      const reportDueDate = course.reportDetails ? course.reportDetails.dueDate : null;
-                      const dueDateExists = reportDueDate && new Date(reportDueDate).getMonth() === monthIndex;
-                      const daysDifference = dueDateExists
-                        ? getDaysDifference(new Date(), reportDueDate)
+                      const hasEvaluation = instancesThisMonth.some(
+                        instance => instance.dateOfEvaluation
+                      );
+
+                      const hasDueDate = instancesThisMonth.some(
+                        instance => instance.reportDetails?.dueDate
+                      );
+
+                      const daysDifference = hasDueDate
+                        ? getDaysDifference(
+                          new Date(),
+                          new Date(instancesThisMonth[0].reportDetails.dueDate)
+                        )
                         : 0;
 
-                      const showOrangeBackground =
-                        !course.dateOfEvaluation && dueDateExists && daysDifference > 14;
+                      const showOrangeBackground = !hasEvaluation && hasDueDate && daysDifference > 14;
 
                       return (
                         <td
                           key={monthIndex}
                           style={{
-                            backgroundColor: dateOfEvaluationExists
+                            backgroundColor: hasEvaluation
                               ? "yellow"
                               : showOrangeBackground
-                              ? "orange"
-                              : "",
+                                ? "orange"
+                                : "",
                           }}
                         >
-                          {dateOfEvaluationExists && !showOrangeBackground
-                            ? formatDate(course.dateOfEvaluation)
-                            : plannedDate.getMonth() === monthIndex && !showOrangeBackground
-                            ? formatDate(course.plannedDate)
-                            : ""}
+                          {instancesThisMonth.map((instance, idx) => (
+                            <div key={idx}>
+                              {instance.dateOfEvaluation
+                                ? formatDate(instance.dateOfEvaluation)
+                                : formatDate(instance.plannedDate)}
+                            </div>
+                          ))}
                         </td>
                       );
                     })}
                     <td rowSpan="2"><input type="text" /></td>
                   </tr>
                   <tr>
-                    {/* Second row: Check if reportDetails and plannedDate exist */}
                     {months.map((month, monthIndex) => {
-                      const reportExists = course.reportDetails && course.reportDetails.actualDate;
-                      const plannedDateExists = new Date(course.plannedDate).getMonth() === monthIndex;
-                      const plannedDate = new Date(course.plannedDate);
-                      const daysDifference = Math.floor((new Date() - plannedDate) / (1000 * 60 * 60 * 24));
+                      const instancesThisMonth = course.instances.filter(
+                        instance => new Date(instance.plannedDate).getMonth() === monthIndex
+                      );
 
-                      const showRedBackground = !reportExists && plannedDateExists && daysDifference > 14;
+                      const hasReport = instancesThisMonth.some(
+                        instance => instance.reportDetails?.actualDate
+                      );
+
+                      const daysDifference = instancesThisMonth.length > 0
+                        ? getDaysDifference(
+                          new Date(),
+                          new Date(instancesThisMonth[0].plannedDate)
+                        )
+                        : 0;
+
+                      const showRedBackground = !hasReport &&
+                        instancesThisMonth.length > 0 &&
+                        daysDifference > 14;
 
                       return (
                         <td
                           key={monthIndex}
                           style={{
-                            backgroundColor:
-                              reportExists && plannedDateExists
-                                ? "lightgreen"
-                                : showRedBackground
+                            backgroundColor: hasReport
+                              ? "lightgreen"
+                              : showRedBackground
                                 ? "red"
                                 : "",
                           }}
                         >
-                          {/* Display the planned date if it exists */}
-                          {reportExists && plannedDateExists
-                            ? formatDate(course.reportDetails.actualDate)
-                            : ""}
+                          {instancesThisMonth.map((instance, idx) => (
+                            <div key={idx}>
+                              {instance.reportDetails?.actualDate &&
+                                formatDate(instance.reportDetails.actualDate)}
+                            </div>
+                          ))}
                         </td>
                       );
                     })}
@@ -274,6 +314,5 @@ const TrainingCalendar = () => {
       <button onClick={downloadPDF}>Download PDF</button>
     </>
   );
-};
-
+}
 export default TrainingCalendar;

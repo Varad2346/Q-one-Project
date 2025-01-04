@@ -67,7 +67,7 @@ const Services = () => {
         setServices(activeServices);
       } catch (err) {
         setError(err.message);
-        toast.error('Failed to load services. Please try again later.');
+        // toast.error('Failed to load services. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -103,7 +103,7 @@ const Services = () => {
       enqueueSnackbar('Training Topic added successfully!', { variant: 'success' });
     } catch (err) {
       setError(err.message);
-      toast.error('Failed to add training topic. Please try again.');
+      enqueueSnackbar('Failed to add training topic. Please try again.',{variant:'error'});
     }
   };
 
@@ -173,7 +173,7 @@ const Services = () => {
       enqueueSnackbar('Training Topic and associated courses deleted successfully!', { variant: 'success' });
     } catch (err) {
       console.error('Error deleting category:', err);
-      toast.error('Failed to delete training topic. Please try again.');
+      enqueueSnackbar('Failed to delete training topic. Please try again.',{variant:'error'});
     } finally {
       setIsDeleting(false);
     }

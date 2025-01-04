@@ -87,3 +87,6 @@ th {
 .download-btn:hover {
   background-color: #45a049;
 }
+.number{
+  width: 15px;
+}

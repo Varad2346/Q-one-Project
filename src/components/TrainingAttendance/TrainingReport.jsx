@@ -210,8 +210,8 @@ const TrainingReport = () => {
     { value: 'Immediate', label: 'Immediate' },
   ];
 
-  const calculateDueDate = (plannedDate, effectivenessPeriod) => {
-    if (!plannedDate || !effectivenessPeriod) {
+  const calculateDueDate = (actualDate, effectivenessPeriod) => {
+    if (!actualDate || !effectivenessPeriod) {
       return 'N/A';
     }
 
@@ -220,7 +220,7 @@ const TrainingReport = () => {
       return new Date().toISOString().split('T')[0]; // Current date as 'YYYY-MM-DD'
     }
 
-    const date = new Date(plannedDate);
+    const date = new Date(actualDate);
     const period = parseInt(effectivenessPeriod); // Convert the string to an integer
 
     // Add months to the plan date
@@ -253,13 +253,13 @@ const TrainingReport = () => {
 
   const handleCommitChanges = async () => {
     const actualDate = new Date().toISOString().split('T')[0];
-  
+    
     // Step 1: Create the report by sending details to /api/reports
     const reportData = {
       actualDate,
       trainingTime: "120", // Hardcoded training time, modify as needed
       trainingEffectivenessPeriod: effectivenessPeriod.label,
-      dueDate: calculateDueDate(plannedDate, effectivenessPeriod.value),
+      dueDate: calculateDueDate(actualDate, effectivenessPeriod.value),
     };
   
     try {
@@ -388,7 +388,7 @@ const TrainingReport = () => {
             <tr>
               <td className="label">Due Date</td>
               <td className="blank">
-                {calculateDueDate(plannedDate, effectivenessPeriod.value)}
+                {calculateDueDate(new Date().toISOString().split('T')[0], effectivenessPeriod.value)}
               </td>
             </tr>
 

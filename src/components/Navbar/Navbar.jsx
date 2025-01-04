@@ -122,7 +122,7 @@ const Navbar = () => {
         {/* User Icon (opens profile card) */}
         <div
           className="navbar-link1"
-          onMouseEnter={handleProfileIconHover} // Detect mouse hover on profile icon
+          onClick={handleProfileIconHover} // Detect mouse hover on profile icon
           onMouseLeave={handleProfileIconLeave} // Detect when mouse leaves profile icon
         >
           <img
@@ -138,7 +138,7 @@ const Navbar = () => {
     </div>
     <div
     className={`profile-card ${isProfileCardOpen ? "open" : ""}`}
-    onMouseEnter={handleProfileCardHover} // Keep the card open when hovering over it
+    onClick={handleProfileCardHover} // Keep the card open when hovering over it
     onMouseLeave={handleProfileCardLeave} // Hide the card when mouse leaves it
   >
     <div className="one">

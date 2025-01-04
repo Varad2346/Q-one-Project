@@ -2,14 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "./tables1.css";
 import Select from "react-select";
+import { useSnackbar } from 'notistack'; // Import Notistack's hook
+
 import { useAuth } from "../../store/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Tooltip } from "react-tooltip";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { Tooltip } from "react-tooltip";
 
 const CourseTable = () => {
+  const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
+
   const { authToken } = useAuth();
   const { categoryId } = useParams();
   const [employees, setEmployees] = useState([]);
@@ -222,11 +226,11 @@ const CourseTable = () => {
     e.preventDefault();
   
     if (selectedCourses.length === 0) {
-      toast.error("Please select at least one course");
+      enqueueSnackbar("Please select at least one course",{variant:'info'});
       return;
     }
     if (selectedEmployees.length === 0) {
-      toast.error("Please select at least one employee");
+      enqueueSnackbar("Please select at least one employee",{variant:'info'});
       return;
     }
   
@@ -237,7 +241,7 @@ const CourseTable = () => {
     );
   
     if (incompleteSelections.length > 0) {
-      toast.error("Please complete all selections");
+      enqueueSnackbar("Please complete all selections",{variant:'info'});
       return;
     }
   
@@ -308,11 +312,11 @@ const CourseTable = () => {
         }
       }
   
-      toast.success("Courses assigned and employees enrolled successfully");
+      enqueueSnackbar("Courses assigned and employees enrolled successfully",{variant:'success'});
       handleReset();
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to submit data");
+      enqueueSnackbar("Failed to submit data",{variant:'error'});
     }
   };
 
@@ -331,7 +335,7 @@ const handleAddCourse = async (e) => {
   e.preventDefault();
 
   if (!selectedTrainer) {
-    toast.error("Please select a trainer");
+    enqueueSnackbar("Please select a trainer",{variant:'info'});
     return;
   }
 
@@ -371,20 +375,20 @@ const handleAddCourse = async (e) => {
 
       setCourses((prevCourses) => [...prevCourses, addedCourse]);
 
-      toast.success(result.message);
+     enqueueSnackbar(result.message,{variant:'success'});
       handleCloseModal();
     } else {
       throw new Error(result.message || "Failed to add course");
     }
   } catch (error) {
     console.error("Error adding course:", error);
-    toast.error("Failed to add course");
+    enqueueSnackbar("Failed to add course",{variant:'error'});
   }
 };
   
   const handleDropCourse = async () => {
     if (selectedCourses.length === 0) {
-      toast.error("Please select at least one course to drop");
+      enqueueSnackbar("Please select at least one course to drop",{variant:'info'});
       return;
     }
 
@@ -417,10 +421,10 @@ const handleAddCourse = async (e) => {
       );
 
       setSelectedCourses([]);
-      toast.success("Courses dropped successfully");
+     enqueueSnackbar("Courses dropped successfully",{variant:'success'});
     } catch (error) {
       console.error("Error dropping courses:", error);
-      toast.error("Failed to drop courses");
+      enqueueSnackbar("Failed to drop courses",{variant:'error'});
     }
   };
 
@@ -682,7 +686,7 @@ const handleAddCourse = async (e) => {
 
       </div>
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

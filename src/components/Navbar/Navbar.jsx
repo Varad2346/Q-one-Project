@@ -61,28 +61,7 @@ const Navbar = () => {
   };
 
   const handleProfileClick = () => {
-    setIsProfileCardOpen((prevState) => !prevState); // Toggle profile card visibility
-  };
-
-  // Logic for hovering over profile icon or profile card
-  const handleProfileIconHover = () => {
-    setIsProfileCardOpen(true); // Show the profile card when hovering over the profile icon
-  };
-
-  const handleProfileCardHover = () => {
-    setIsProfileCardOpen(true); // Keep the profile card visible when hovering over the card itself
-  };
-
-  const handleProfileIconLeave = () => {
-    // Hide the profile card when leaving the profile icon, but only if not hovering over the card
-    if (!isProfileCardOpen) {
-      setIsProfileCardOpen(false);
-    }
-  };
-
-  const handleProfileCardLeave = () => {
-    // Hide the profile card when leaving the profile card itself
-    setIsProfileCardOpen(false);
+    setIsProfileCardOpen(prevState => !prevState); // Toggle profile card visibility on click
   };
 
   if (!isLoggedIn) {
@@ -91,72 +70,68 @@ const Navbar = () => {
 
   return (
     <>
-    <div className={`navbar ${navbarActive ? "active" : ""}`}>
-      <NavLink to="/" className="navbar-logo">
-        <img className="navbar-logo-img" src={LOGO_SRC} alt="web-logo" />
-      </NavLink>
-      
-      <div className="hamburger" onClick={toggleNavbar}>
-        <div></div>
-        <div></div>
-        <div></div>
+      <div className={`navbar ${navbarActive ? "active" : ""}`}>
+        <NavLink to="/" className="navbar-logo">
+          <img className="navbar-logo-img" src={LOGO_SRC} alt="web-logo" />
+        </NavLink>
+        
+        <div className="hamburger" onClick={toggleNavbar}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
+        <div className={`navbar-links ${navbarActive ? "active" : ""}`}>
+          {location.pathname === "/home" ? (
+            NAVBAR_LINKS.map(link => (
+              <div
+                key={link.label}
+                className="navbar-link"
+                onClick={() => link.scrollTo ? handleScrollToSection(link.scrollTo) : navigate(link.path)}
+              >
+                {link.label}
+              </div>
+            ))
+          ) : (
+            <NavLink to="/home" className="navbar-link">
+              Home
+            </NavLink>
+          )}
+
+          {/* User Icon (opens profile card on click) */}
+          <div
+            className="navbar-link1"
+            onClick={handleProfileClick} // Toggle profile card visibility on click
+          >
+            <img
+              className="user-image"
+              src="https://files.codingninjas.in/avatar-1710924338.png"
+              alt=""
+            />
+          </div>
+        </div>
       </div>
 
-      <div className={`navbar-links ${navbarActive ? "active" : ""}`}>
-        {location.pathname === "/home" ? (
-          NAVBAR_LINKS.map(link => (
-            <div
-              key={link.label}
-              className="navbar-link"
-              onClick={() => link.scrollTo ? handleScrollToSection(link.scrollTo) : navigate(link.path)}
-            >
-              {link.label}
-            </div>
-          ))
-        ) : (
-          <NavLink to="/home" className="navbar-link">
-            Home
-          </NavLink>
-        )}
-
-        {/* User Icon (opens profile card) */}
-        <div
-          className="navbar-link1"
-          onClick={handleProfileIconHover} // Detect mouse hover on profile icon
-          onMouseLeave={handleProfileIconLeave} // Detect when mouse leaves profile icon
-        >
+      {/* Profile Card */}
+      <div
+        className={`profile-card ${isProfileCardOpen ? "open" : ""}`}
+      >
+        <div className="one">
           <img
-            className="user-image"
+            className="user-image1"
             src="https://files.codingninjas.in/avatar-1710924338.png"
             alt=""
           />
+          <span className="name">{filteredUser ? filteredUser.firstName + " " + filteredUser.lastName : "NA"}</span>
+        </div>
+        <div className="two">
+          <div className="log-button" onClick={handleLogout}>
+            <FaSignOutAlt /> Logout
+          </div>
+          <div className="designation">{filteredUser ? filteredUser.role : "NA"}</div>
         </div>
       </div>
-      
-      {/* Profile Card */}
-      
-    </div>
-    <div
-    className={`profile-card ${isProfileCardOpen ? "open" : ""}`}
-    onClick={handleProfileCardHover} // Keep the card open when hovering over it
-    onMouseLeave={handleProfileCardLeave} // Hide the card when mouse leaves it
-  >
-    <div className="one">
-      <img
-        className="user-image1"
-        src="https://files.codingninjas.in/avatar-1710924338.png"
-        alt=""
-      />
-      <span className="name">{filteredUser ? filteredUser.firstName + " " + filteredUser.lastName : "NA"}</span>
-    </div>
-    <div className="two">
-      <div className="log-button" onClick={handleLogout}>
-        <FaSignOutAlt /> Logout
-      </div>
-      <div className="designation">{filteredUser ? filteredUser.role : "NA"}</div>
-    </div>
-  </div>
-  </>
+    </>
   );
 };
 

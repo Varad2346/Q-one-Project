@@ -5,7 +5,6 @@ import Login from './components/LoginAndRegister/Login';
 import Register from './components/LoginAndRegister/Register';
 import Navbar from './components/Navbar/Navbar';
 import { SnackbarProvider } from "notistack"; // Import SnackbarProvider
-
 import PageNotFound from './components/PageNotFound';
 import AddEmployee from './components/AddEmployee/AddEmployeeForm';
 import Coursetable from './components/CourseAssignTable/Coursetable1';
@@ -17,7 +16,6 @@ import './App.css';
 
 function App() {
   const { isLoggedIn } = useAuth(); // Get authentication state
-
 
     return (
       <SnackbarProvider maxSnack={3}> {/* Configuring the maximum number of visible snackbars */}

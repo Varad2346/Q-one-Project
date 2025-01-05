@@ -28,9 +28,9 @@
 .client-heading::after {
   content: '';
   display: block;
-  width: 40%;
+  width: 20%;
   height: 4px;
-  background-color: #ff5733;
+  background-color: #e88402;
   margin: 10px auto 0;
 }
 .client-logos {

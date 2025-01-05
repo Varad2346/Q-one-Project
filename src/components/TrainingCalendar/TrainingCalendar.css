@@ -5,7 +5,18 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
+  position: relative; /* Enable positioning for ::after */
 }
+
+.title::after {
+  content: '';
+  display: block;
+  width: 100%; /* Adjust as needed */
+  height: 4px; /* Thickness of the underline */
+  background-color: orange; /* Orange underline */
+  margin: 5px auto 0; /* Centers and adds spacing */
+}
+
 
 /* Outer container styling */
 .training-calendar {
@@ -75,18 +86,65 @@ th {
       padding: 5px;
   }
 }
+.table-container {
+  position: relative; /* This makes the button positioning relative to this container */
+}
+
 .download-btn {
-  margin-bottom: 20px;
+  position: absolute;  /* Positioned relative to .table-container */
+  bottom: -50px;       /* Adjust this value to move the button just outside the table */
+  right: 0;            /* Aligns the button to the right */
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: orange;
   color: white;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  z-index: 1000;
+}
+
+th.sr-col, td.sr-col {
+  width: 50px; /* Adjust to desired width */
+  max-width: 50px;
+}
+
+/* Add these new styles to your existing CSS */
+th, td {
+  border: 1px solid grey;
+  padding: 9px;
+  width: 150px;
+  height: 50px;
+  box-sizing: border-box;
+  font-size: 15px; /* Smaller font size for dates */
+}
+
+.date-cell {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.remark-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 5px;
+  font-size: 12px;
+  outline: none;
+  background: transparent;
+}
+
+.remark-input:hover {
+  background: #f5f5f5;
 }
 
 .download-btn:hover {
-  background-color: #45a049;
+  background-color: #ff8c00;
 }
-.number{
-  width: 15px;
+
+.sr-col {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
 }

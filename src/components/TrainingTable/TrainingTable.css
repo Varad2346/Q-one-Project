@@ -10,8 +10,8 @@
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    margin-top: 10px;
-    margin: 5px auto;
+    /* margin-top: 10px; */
+    /* margin: 5px auto; */
     background-color: white;
     /* border-radius: 20px; */
     border: 1px solid whitesmoke;
@@ -21,7 +21,7 @@
   
   /* HOD Table Styling */
   .hod-table {
-    margin-top: 20px;
+    margin-top: 10px;
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
@@ -141,14 +141,14 @@
     width: 7%;
 }
 /* Commit Button Styling */
-.commit-button {
+/* .commit-button {
   text-align: center;
   position: fixed;
   bottom: 20px;
   right: 40px;
 
   margin-top: 20px;
-}
+} */
 .grade-input{
   width: 5%;
 }

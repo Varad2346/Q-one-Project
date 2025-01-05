@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./TrainingCalendar.css";
 import { useAuth } from "../../store/auth";
+import html2pdf from "html2pdf.js";
 // import { formatDate } from "../../utils/dateUtils"; // Utility function for date formatting
 
 function TrainingCalendar() {
@@ -8,15 +9,22 @@ function TrainingCalendar() {
   const [courseData, setCourseData] = useState([]); // State to hold course data with planned dates, enrollments, and reports
   const [loading, setLoading] = useState(true); // Loading state for API calls
   const [groupedCourses, setGroupedCourses] = useState([]); // New state for grouped courses
-
-
-
-
+  const [remarks, setRemarks] = useState({});
 
   const months = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ]; // Month array
-
 
   // Fetch planned courses data
   useEffect(() => {
@@ -28,13 +36,16 @@ function TrainingCalendar() {
     const fetchData = async () => {
       try {
         // Fetch planned courses
-        const plannedCoursesResponse = await fetch("http://localhost:3000/api/planned-courses/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
+        const plannedCoursesResponse = await fetch(
+          "http://localhost:3000/api/planned-courses/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
 
         if (!plannedCoursesResponse.ok) {
           throw new Error("Failed to fetch planned courses");
@@ -50,16 +61,21 @@ function TrainingCalendar() {
 
         // Fetch course details for each planned course
         const courseDetailsPromises = plannedCourses.map(async (course) => {
-          const courseResponse = await fetch(`http://localhost:3000/api/courses/courseId/${course.courseId}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`,
-            },
-          });
+          const courseResponse = await fetch(
+            `http://localhost:3000/api/courses/courseId/${course.courseId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
 
           if (!courseResponse.ok) {
-            throw new Error(`Failed to fetch course details for courseId ${course.courseId}`);
+            throw new Error(
+              `Failed to fetch course details for courseId ${course.courseId}`
+            );
           }
 
           const courseData = await courseResponse.json();
@@ -74,13 +90,16 @@ function TrainingCalendar() {
         const coursesWithDetails = await Promise.all(courseDetailsPromises);
 
         // Fetch enrollments for each course
-        const enrollmentsResponse = await fetch("http://localhost:3000/api/enrollments", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
+        const enrollmentsResponse = await fetch(
+          "http://localhost:3000/api/enrollments",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
 
         if (!enrollmentsResponse.ok) {
           throw new Error("Failed to fetch enrollments");
@@ -91,11 +110,14 @@ function TrainingCalendar() {
         // Add enrollments and dateOfEvaluation to courses
         const updatedCourses = coursesWithDetails.map((course) => {
           const enrollments = enrollmentsData.data.filter(
-            (enrollment) => enrollment.plannedCourseId === course.plannedCourseId
+            (enrollment) =>
+              enrollment.plannedCourseId === course.plannedCourseId
           );
 
           // Check if any enrollment has a dateOfEvaluation
-          const dateOfEvaluation = enrollments.some((enrollment) => enrollment.dateOfEvaluation)
+          const dateOfEvaluation = enrollments.some(
+            (enrollment) => enrollment.dateOfEvaluation
+          )
             ? enrollments[0].dateOfEvaluation // Get the first enrollment's dateOfEvaluation
             : null;
 
@@ -103,25 +125,30 @@ function TrainingCalendar() {
         });
 
         // Fetch reports data
-        const reportsResponse = await fetch("http://localhost:3000/api/reports/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
+        const reportsResponse = await fetch(
+          "http://localhost:3000/api/reports/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
 
         if (!reportsResponse.ok) {
           throw new Error("Failed to fetch reports");
         }
 
         const reportsData = await reportsResponse.json();
-        console.log("report",reportsData);
+
         // Add report details to enrollments (only the first enrollment per course)
         const finalCourses = updatedCourses.map((course) => {
           course.enrollments.forEach((enrollment, index) => {
             if (index === 0) {
-              const report = reportsData.data.find((report) => report.reportId === enrollment.reportId);
+              const report = reportsData.data.find(
+                (report) => report.reportId === enrollment.reportId
+              );
               if (report) {
                 course.reportDetails = {
                   reportId: report.reportId,
@@ -138,7 +165,7 @@ function TrainingCalendar() {
           if (!acc[course.courseName]) {
             acc[course.courseName] = {
               courseName: course.courseName,
-              instances: []
+              instances: [],
             };
           }
           acc[course.courseName].instances.push({
@@ -146,7 +173,7 @@ function TrainingCalendar() {
             plannedDate: course.plannedDate,
             dateOfEvaluation: course.dateOfEvaluation,
             reportDetails: course.reportDetails,
-            enrollments: course.enrollments
+            enrollments: course.enrollments,
           });
           return acc;
         }, {});
@@ -155,7 +182,6 @@ function TrainingCalendar() {
         setGroupedCourses(groupedCoursesArray);
         setCourseData(finalCourses);
         setLoading(false); // Set loading to false after all data is fetched
-
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false); // Set loading to false on error
@@ -179,7 +205,7 @@ function TrainingCalendar() {
     const options = {
       filename: "training-calendar.pdf",
       html2canvas: { scale: 6 },
-      jsPDF: { unit: "mm", format: "a3", orientation: "landscape" },
+      jsPDF: { unit: "mm", format: "a2", orientation: "landscape" },
     };
     html2pdf().from(element).set(options).save();
   };
@@ -194,8 +220,6 @@ function TrainingCalendar() {
     return <div>Loading...</div>;
   }
 
-
-
   return (
     <>
       <div className="training-calendar" id="training-table">
@@ -204,7 +228,7 @@ function TrainingCalendar() {
           <table>
             <thead>
               <tr>
-                <th style={{ width: 1 }}>SR. No.</th>
+                <th className="sr-col">SR. No.</th>
                 <th style={{ width: 1 }}>TRAINING PROGRAM DETAILS</th>
                 {months.map((month, index) => (
                   <th key={index}>{month}</th>
@@ -216,29 +240,36 @@ function TrainingCalendar() {
               {groupedCourses.map((course, index) => (
                 <React.Fragment key={course.courseName}>
                   <tr>
-                    <td rowSpan="2">{index + 1}</td>
+                    <td className="sr-col" rowSpan="2">
+                      {index + 1}
+                    </td>
                     <td rowSpan="2">{course.courseName}</td>
                     {months.map((month, monthIndex) => {
                       const instancesThisMonth = course.instances.filter(
-                        instance => new Date(instance.plannedDate).getMonth() === monthIndex
+                        (instance) =>
+                          new Date(instance.plannedDate).getMonth() ===
+                          monthIndex
                       );
 
                       const hasEvaluation = instancesThisMonth.some(
-                        instance => instance.dateOfEvaluation
+                        (instance) => instance.dateOfEvaluation
                       );
 
                       const hasDueDate = instancesThisMonth.some(
-                        instance => instance.reportDetails?.dueDate
+                        (instance) => instance.reportDetails?.dueDate
                       );
 
                       const daysDifference = hasDueDate
                         ? getDaysDifference(
-                          new Date(),
-                          new Date(instancesThisMonth[0].reportDetails.dueDate)
-                        )
+                            new Date(),
+                            new Date(
+                              instancesThisMonth[0].reportDetails.dueDate
+                            )
+                          )
                         : 0;
 
-                      const showOrangeBackground = !hasEvaluation && hasDueDate && daysDifference > 14;
+                      const showOrangeBackground =
+                        !hasEvaluation && hasDueDate && daysDifference > 14;
 
                       return (
                         <td
@@ -247,8 +278,8 @@ function TrainingCalendar() {
                             backgroundColor: hasEvaluation
                               ? "yellow"
                               : showOrangeBackground
-                                ? "orange"
-                                : "",
+                              ? "orange"
+                              : "",
                           }}
                         >
                           {instancesThisMonth.map((instance, idx) => (
@@ -261,26 +292,53 @@ function TrainingCalendar() {
                         </td>
                       );
                     })}
-                    <td rowSpan="2"><input type="text" /></td>
+                    <td rowSpan="2">
+                      <input
+                        type="text"
+                        value={
+                          remarks[course.plannedCourseId] || course.status || ""
+                        }
+                        onChange={(e) => {
+                          const newRemarks = {
+                            ...remarks,
+                            [course.plannedCourseId]: e.target.value,
+                          };
+                          setRemarks(newRemarks);
+                        }}
+                        style={{
+                          width: "100%",
+                          border: "none",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                        placeholder="remark"
+                        title="Enter remark here"
+                      />
+                    </td>
                   </tr>
                   <tr>
                     {months.map((month, monthIndex) => {
                       const instancesThisMonth = course.instances.filter(
-                        instance => new Date(instance.plannedDate).getMonth() === monthIndex
+                        (instance) =>
+                          new Date(instance.plannedDate).getMonth() ===
+                          monthIndex
                       );
 
                       const hasReport = instancesThisMonth.some(
-                        instance => instance.reportDetails?.actualDate
+                        (instance) => instance.reportDetails?.actualDate
                       );
 
-                      const daysDifference = instancesThisMonth.length > 0
-                        ? getDaysDifference(
-                          new Date(),
-                          new Date(instancesThisMonth[0].plannedDate)
-                        )
-                        : 0;
+                      const daysDifference =
+                        instancesThisMonth.length > 0
+                          ? getDaysDifference(
+                              new Date(),
+                              new Date(instancesThisMonth[0].plannedDate)
+                            )
+                          : 0;
 
-                      const showRedBackground = !hasReport &&
+                      const showRedBackground =
+                        !hasReport &&
                         instancesThisMonth.length > 0 &&
                         daysDifference > 14;
 
@@ -291,8 +349,8 @@ function TrainingCalendar() {
                             backgroundColor: hasReport
                               ? "lightgreen"
                               : showRedBackground
-                                ? "red"
-                                : "",
+                              ? "red"
+                              : "",
                           }}
                         >
                           {instancesThisMonth.map((instance, idx) => (
@@ -309,9 +367,11 @@ function TrainingCalendar() {
               ))}
             </tbody>
           </table>
+          <button className="download-btn" onClick={downloadPDF}>
+            Download PDF
+          </button>
         </div>
       </div>
-      <button onClick={downloadPDF}>Download PDF</button>
     </>
   );
 }

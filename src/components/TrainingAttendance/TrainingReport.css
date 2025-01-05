@@ -7,7 +7,7 @@
   padding: 25px;
   /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   border-radius: 8px;
-  margin: 5px auto;
+  margin: 0px auto;
   background-color: white;
   border-radius: 20px;
   border: 2px solid whitesmoke;
@@ -17,7 +17,7 @@
 
 /* Title styles */
 .report-heading {
-  margin-top: 15px;
+  /* margin-top: px; */
   font-size: 30px;
   font-weight: bold;
   text-align: center;
@@ -45,7 +45,7 @@
 .attendance-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 25px;
+  margin-top: 15px;
 }
 
 /* Styles for table cells and headers */
@@ -248,4 +248,16 @@ input {
 }
 .report-participant-name{
   width: 38%;
+}
+
+.report-button-container{
+  width: 25vw;
+  gap: 10px;
+  display: flex;
+  justify-content: end;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px;
+  /* border: 2px solid black; */
+  margin-left: 1200px;
 }

@@ -6,7 +6,12 @@ import { useAuth } from "../../store/auth";
 // import { toast, ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
+import  html2pdf  from "html2pdf.js";
+
 const TrainingReport = () => {
+ 
+  const [refreshKey, setRefreshKey] = useState(0); // Key for forcing a component re-render
+
   const { authToken } = useAuth();
   const [trainingData, setTrainingData] = useState(null);
   const [effectivenessPeriod, setEffectivenessPeriod] = useState({
@@ -61,7 +66,7 @@ const TrainingReport = () => {
     };
 
     fetchCategories();
-  }, [authToken]);
+  }, [authToken,refreshKey]);
 
   // Fetch all users
   useEffect(() => {
@@ -94,7 +99,7 @@ const TrainingReport = () => {
     };
 
     fetchUsers();
-  }, [authToken]);
+  }, [authToken,refreshKey]);
 
   // Fetch enrollments data
   useEffect(() => {
@@ -124,7 +129,7 @@ const TrainingReport = () => {
     };
 
     fetchEnrollments();
-  }, [authToken]);
+  }, [authToken,refreshKey]);
 
   // Fetch planned courses when a topic is selected
   useEffect(() => {
@@ -364,9 +369,12 @@ setTopicsLoading(false);
             );
 
             if (enrollmentResponse.ok) {
+              handleRefresh(); // Reset form and trigger refresh
+
               console.log(
                 `Enrollment for ${user.firstName} ${user.lastName} updated successfully!`
               );
+
             } else {
               console.error(
                 `Failed to update enrollment for ${user.firstName} ${user.lastName}:`,
@@ -390,6 +398,30 @@ setTopicsLoading(false);
     }
   };
 
+  const downloadPDF = () => {
+    const element = document.getElementById("training-report"); // Get the table element
+    const options = {
+      filename: "training-calendar.pdf",
+      html2canvas: { scale: 6 },
+      jsPDF: { unit: "mm", format: "a2", orientation: "landscape" },
+    };
+    html2pdf().from(element).set(options).save();
+  };
+
+  const handleRefresh = () => {
+    // Reset form fields and states
+    setTrainingTopic(null);
+    setEffectivenessPeriod({ value: "1", label: "1 Month" });
+    setFeedback({});
+    setAttendanceStatus({});
+    setPlannedDate(null);
+    // Force a refresh by updating the key
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
+  
+
+
+
   // Filter users based on enrollments for selected training topic
   const filteredUsers = users.filter((user) =>
     enrollments.some(
@@ -409,7 +441,15 @@ setTopicsLoading(false);
     <>
       <div className="container">
         <h1 className="report-heading">TRAINING ATTENDANCE-2025</h1>
-        <table className="training-report">
+        <div className="report-button-container">
+          <button className="commit-button" onClick={downloadPDF}>
+            Download Report
+          </button>
+          <button className="commit-button" onClick={handleCommitChanges}>
+            Commit Changes
+          </button>
+        </div>
+        <table className="training-report" id="training-report">
           <tbody>
             <tr>
               <td className="label merged" rowSpan="2">
@@ -544,18 +584,7 @@ setTopicsLoading(false);
           </tbody>
         </table>
 
-        <div className="commit-button-container">
-          {/* <button
-            className="commit-button"
-            style={{ backgroundColor: "red", marginRight: "10px" }}
-            onClick={handleCommitChanges}
-          >
-            Download Report
-          </button> */}
-          <button className="commit-button" onClick={handleCommitChanges}>
-            Commit Changes
-          </button>
-        </div>
+        
       </div>
       {/* <ToastContainer /> */}
     </>

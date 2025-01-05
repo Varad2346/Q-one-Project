@@ -481,5 +481,6 @@ button svg, .add-course-button svg, .drop-course-button svg,
   /* border-radius: 4px; */
     /* padding: 5px 58px; */
     color: rgba(128, 128, 128, 0.849);
+    cursor: pointer;
     /* border: 1px solid #ccc; */
 }

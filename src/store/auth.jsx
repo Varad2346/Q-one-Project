@@ -11,13 +11,41 @@ export const AuthProvider = ({ children }) => {
   // Initialize authentication state
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setAuthToken(storedToken);
-      setIsLoggedIn(true); // User is logged in if token exists
+    
+    // If a token is found, check if it is expired
+    if (storedToken && !isTokenExpired(storedToken)) {
+      setAuthToken(storedToken); 
+      setIsLoggedIn(true); 
     } else {
-      setIsLoggedIn(false); // No token means not logged in
+      // If token is expired or not found, log out
+      setIsLoggedIn(false);
+      setAuthToken(null);
+      localStorage.removeItem('token');
     }
   }, []);
+  
+
+  const decodeToken = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decode the JWT payload
+      return payload;
+    } catch (error) {
+      console.error("Error decoding token", error);
+      return null;
+    }
+  };
+  
+  const isTokenExpired = (token) => {
+    const decoded = decodeToken(token);
+    if (decoded && decoded.exp) {
+      const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+      return decoded.exp < currentTime;
+    }
+    return false;
+  };
+  
+
+
 
   // Login function
   const login = async (email, password) => {

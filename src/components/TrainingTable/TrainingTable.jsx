@@ -2,17 +2,14 @@ import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import "./TrainingTable.css";
 import { useSnackbar } from 'notistack'; // Import Notistack's hook
-
+import { html2pdf } from "html2pdf.js";
 const TrainingTable = () => {
   const [trainingData, setTrainingData] = useState([]);
   const [courseData, setCourseData] = useState(null);
   const [usersData, setUsersData] = useState([]);
   const [filteredUser, setFilteredUser] = useState(null);
-  const [filteredUsersByDepartment, setFilteredUsersByDepartment] = useState(
-    []
-  );
+  const [filteredUsersByDepartment, setFilteredUsersByDepartment] = useState([]);
   const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
-
   const [loading, setLoading] = useState(true);
   const [hodName, setHodName] = useState("");
   const [department, setDepartment] = useState("");
@@ -41,6 +38,7 @@ const TrainingTable = () => {
       }
     }
   }, []);
+
   const handleInputChange = (enrollmentId, plannedCourseId, field, value) => {
     setUpdatedEvaluations((prevEvaluations) => {
       const todayDate = new Date(); // This is a full Date object
@@ -84,9 +82,6 @@ const TrainingTable = () => {
       }
     });
   };
-  console.log(updatedEvaluations);
-  
-
 
   const fetchUserData = async (token, decodedUserId) => {
     try {
@@ -290,10 +285,7 @@ const TrainingTable = () => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  const handleCommit = async () => {
+  const handleCommitChanges = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -331,7 +323,7 @@ const TrainingTable = () => {
           evaluationRemark: "completed",
           dateOfEvaluation: formattedDate, // Ensure date is in yyyy-mm-dd format
         };
-        console.log("dts", dataToSubmit);
+
         // Send the request to the backend
         const response = await fetch(
           `http://localhost:3000/api/enrollments/${enrollmentId}`,
@@ -349,7 +341,7 @@ const TrainingTable = () => {
 
         if (result.success) {
           enqueueSnackbar(
-            `Successfully committed evaluation`,{variant:'success'}
+            `Successfully committed evaluation`, { variant: 'success' }
           );
         } else {
           console.error(
@@ -357,16 +349,37 @@ const TrainingTable = () => {
           );
         }
       }
-      
+
       // Optionally, refresh the evaluations after commit
       setUpdatedEvaluations([]); // Clear or reset the evaluations if necessary
+
+      // Fetch data again to refresh the table after commit
+      fetchUserData(token, filteredUser ? filteredUser.userId : "");
+
     } catch (error) {
       console.error("Error committing evaluations:", error);
     }
   };
+    const downloadPDF = () => {
+      const element = document.getElementById("training-report"); // Get the table element
+      const options = {
+        filename: "training-calendar.pdf",
+        html2canvas: { scale: 6 },
+        jsPDF: { unit: "mm", format: "a3", orientation: "landscape" },
+      };
+      html2pdf().from(element).set(options).save();
+    };
   return (
     <div className="eval-container">
       <h2 className="eval-heading">Training Evaluation-2025</h2>
+      <div className="report-button-container">
+          <button className="commit-button" onClick={downloadPDF}>
+            Download Report
+          </button>
+          <button className="commit-button" onClick={handleCommitChanges}>
+            Commit Changes
+          </button>
+        </div>
       <table className="hod-table">
         <thead>
           <tr>
@@ -508,9 +521,7 @@ const TrainingTable = () => {
                 );
               })
           )}
-          <button className="commit-button" onClick={handleCommit}>
-            Commit
-          </button>
+        
         </tbody>
       </table>
     </div>

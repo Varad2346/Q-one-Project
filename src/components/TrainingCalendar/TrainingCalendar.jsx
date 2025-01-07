@@ -273,48 +273,38 @@ function TrainingCalendar() {
 
                       return (
                         <td
-                          key={monthIndex}
-                          style={{
-                            backgroundColor: hasEvaluation
-                              ? "yellow"
-                              : showOrangeBackground
-                              ? "orange"
-                              : "",
-                          }}
-                        >
-                          {instancesThisMonth.map((instance, idx) => (
-                            <div key={idx}>
-                              {instance.dateOfEvaluation
-                                ? formatDate(instance.dateOfEvaluation)
-                                : formatDate(instance.plannedDate)}
-                            </div>
-                          ))}
-                        </td>
+                        
+                        key={monthIndex}
+                        className={
+                          hasEvaluation ? "has-evaluation" : showOrangeBackground ? "show-orange-background" : ""
+                        }
+                      >
+                        {instancesThisMonth.map((instance, idx) => (
+                          <div key={idx}>
+                            {instance.dateOfEvaluation
+                              ? formatDate(instance.dateOfEvaluation)
+                              : formatDate(instance.plannedDate)}
+                          </div>
+                        ))}
+                      </td>
+                      
                       );
                     })}
                     <td rowSpan="2">
-                      <input
-                        type="text"
-                        value={
-                          remarks[course.plannedCourseId] || course.status || ""
-                        }
-                        onChange={(e) => {
-                          const newRemarks = {
-                            ...remarks,
-                            [course.plannedCourseId]: e.target.value,
-                          };
-                          setRemarks(newRemarks);
-                        }}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                        }}
-                        placeholder="remark"
-                        title="Enter remark here"
-                      />
+                    <input
+    type="text"
+    value={remarks[course.plannedCourseId] || course.status || ""}
+    onChange={(e) => {
+      const newRemarks = {
+        ...remarks,
+        [course.plannedCourseId]: e.target.value,
+      };
+      setRemarks(newRemarks);
+    }}
+    className="remark-input"
+    placeholder="remark"
+    title="Enter remark here"
+  />
                     </td>
                   </tr>
                   <tr>
@@ -343,23 +333,20 @@ function TrainingCalendar() {
                         daysDifference > 14;
 
                       return (
-                        <td
-                          key={monthIndex}
-                          style={{
-                            backgroundColor: hasReport
-                              ? "lightgreen"
-                              : showRedBackground
-                              ? "red"
-                              : "",
-                          }}
-                        >
-                          {instancesThisMonth.map((instance, idx) => (
-                            <div key={idx}>
-                              {instance.reportDetails?.actualDate &&
-                                formatDate(instance.reportDetails.actualDate)}
-                            </div>
-                          ))}
-                        </td>
+<td
+  key={monthIndex}
+  className={
+    hasReport ? "has-report" : showRedBackground ? "show-red-background" : ""
+  }
+>
+  {instancesThisMonth.map((instance, idx) => (
+    <div key={idx}>
+      {instance.reportDetails?.actualDate &&
+        formatDate(instance.reportDetails.actualDate)}
+    </div>
+  ))}
+</td>
+
                       );
                     })}
                   </tr>

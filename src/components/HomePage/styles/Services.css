@@ -169,7 +169,7 @@
   color: white;
 }
 
-.icon-button.active {
+.icon-button .active {
   background: #ff5733;
   color: white;
 }

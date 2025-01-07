@@ -2,11 +2,11 @@
   display: flex;
   justify-content: space-between;
   padding: 5px;
-} 
+}
 
 .left-container {
-  width: 100%; /* Adjust width as needed */
-  background-color:white; /* Original box background color */
+  width: 100%;
+  background-color: white;
   padding: 20px;
   height: 89vh;
   border-radius: 10px;
@@ -17,11 +17,11 @@
 }
 
 .right-container {
-  width: 27%; /* Adjust width as needed */
-  background-color: #fff; /* Original background color for the employee selection box */
+  width: 27%;
+  background-color: #fff;
   padding: 20px;
   border-radius: 10px;
-  height: 89vh;   
+  height: 89vh;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-top-left-radius: 0%;
   border-bottom-left-radius: 0%;
@@ -52,8 +52,35 @@
   gap: 10px;
 }
 
+.add-course-button {
+  background-color: #ff8c00;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
 
+.drop-course-button {
+  background-color: #f44336;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
 
+.reset-button,
+.drop-course-button:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+}
 .course-table {
   width: 100%;
   border-radius: 40px;
@@ -61,14 +88,11 @@
   position: relative;
 }
 
- .course-table td {
+.course-table td {
   border: 1px solid #ddd;
   padding: 5px;
   text-align: left;
-
-
 }
-
 
 .course-table th {
   border: 1px solid #ddd;
@@ -77,33 +101,13 @@
   background-color: #ff8c00;
   color: white;
   font-weight: bold;
-  /* position: sticky; Sticky positioning */
-  top: 0; /* Stick to the top of the scrolling container */
-  z-index: 1; /* Ensure the header is above other table content */
+  top: 0;
+  z-index: 1;
 }
 
 .form-error {
   color: red;
   margin-top: 10px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .custom-dropdown {
@@ -117,7 +121,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
-  color: rgba(128, 128, 128, 0.849); /* Faint grey color */
+  color: rgba(128, 128, 128, 0.849);
 }
 
 .dropdown-list {
@@ -140,13 +144,12 @@
 .dropdown-item {
   padding: 8px;
   cursor: pointer;
-  
+
 }
 
 .dropdown-item:hover {
-  background-color: #f0f0f0; /* Original hover color */
+  background-color: #f0f0f0;
 }
-
 
 .employee-selection {
   margin: 0px 20px;
@@ -157,6 +160,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .employee-select {
   width: 100%;
   margin-top: 10px;
@@ -164,25 +168,14 @@
   padding: 8px;
 }
 
-/* Button Group Styles */
 .button-group {
   justify-content: end;
   margin: 15px 20px;
   display: flex;
   gap: 30px;
 }
-.add-course-button{
-  background-color: #ff8c00;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-.submit-button{
+
+.submit-button {
   background-color: #ff8c00;
   color: white;
   padding: 12px 24px;
@@ -194,29 +187,21 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
-.add-course-button:hover{
+
+.add-course-button:hover {
   background-color: #e67e00;
   transform: translateY(-2px);
 }
-.submit-button{
+
+.submit-button {
   background-color: #e67e00;
   transform: translateY(-2px);
 }
-.reset-button{
+
+.reset-button {
   background-color: #f44336;
   color: white;
   width: 200px;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-.drop-course-button {
-  background-color: #f44336;
-  color: white;
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
@@ -226,64 +211,58 @@
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.reset-button,.drop-course-button:hover {
-  background-color: #d32f2f;
-  transform: translateY(-2px);
+.checkbox{
+  width: 14px;
+  height: 14px;
+  transform: scale(1.5);
+  margin-left: 10px;
+  cursor: pointer;
+  accent-color: #485aff;
 }
-input[type="checkbox"] {
-  width: 14px; /* Set the desired width */
-  height: 14px; /* Set the desired height */
-  transform: scale(1.5); /* Increase the size */
-  margin-left: 10px; /* Optional: Add some space to the right */
-  cursor: pointer; /* Change cursor to pointer */
-  /* Optional: Set styles for better visibility */
-  accent-color: #485aff; /* Change the color of the checkbox */
-}
+
 .header {
-      display: flex;
-      flex-direction: row;
-   /* Adjust margin */
-      padding: 1px 15px;
-      width: 100%;
-      background-color: #fffaf0;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      position: sticky; /* Sticky positioning */
-      top: 0; /* Stick to the top of the container */
-      z-index: 1000; /* Ensure it stays above other content */
-  
+  display: flex;
+  flex-direction: row;
+  padding: 1px 15px;
+  width: 100%;
+  background-color: #fffaf0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .course-table-out {
   width: 100;
-  padding:4px;
-   /* Adjust based on header height */
-  overflow-y: auto; /* Allow scrolling */
-  height: 70vh /* Adjust height considering the fixed header */
+  padding: 4px;
+  overflow-y: auto;
+  height: 70vh
 }
+
 .modal-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5);
-display: flex;
-justify-content: center;
-align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
-text-align: center;
-background: white;
-padding: 20px;
-border-radius: 8px;
-width: 400px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-container {
-margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 button {
@@ -300,24 +279,27 @@ button {
 }
 
 button[type="button"] {
-background-color: #f44336;
+  background-color: #f44336;
 }
 
-button[type="submit"]:hover, button[type="button"]:hover {
-opacity: 0.9;
+button[type="submit"]:hover,
+button[type="button"]:hover {
+  opacity: 0.9;
 }
-.modal-buttons{
-display: flex;
-justify-content: end;
-gap: 20px;
-margin-right: 70px
+
+.modal-buttons {
+  display: flex;
+  justify-content: end;
+  gap: 20px;
+  margin-right: 70px
 }
-.modal-input-fields{
-gap: 4px;
-display: flex;
-flex-direction: column;
-margin-bottom: 9px;
-margin-top: 7px;
+
+.modal-input-fields {
+  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 9px;
+  margin-top: 7px;
 }
 
 .toggle-view-button {
@@ -338,51 +320,50 @@ margin-top: 7px;
 }
 
 /* Consistent button animations */
-button, .add-course-button, .drop-course-button, .toggle-view-button, .reset-button, .submit-button {
+button,
+.add-course-button,
+.drop-course-button,
+.toggle-view-button,
+.reset-button,
+.submit-button {
   transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-button:hover, .add-course-button:hover, .drop-course-button:hover, 
-.toggle-view-button:hover, .reset-button:hover, .submit-button:hover {
-  transform: translateY(-2px); /* Consistent hover animation */
-  background-color: #e67e00; /* Highlight color for all buttons */
+button:hover,
+.add-course-button:hover,
+.drop-course-button:hover,
+.toggle-view-button:hover,
+.reset-button:hover,
+.submit-button:hover {
+  transform: translateY(-2px);
+  background-color: #e67e00;
 }
 
-/* Add gap between icons and text */
-button svg, .add-course-button svg, .drop-course-button svg, 
-.toggle-view-button svg, .reset-button svg, .submit-button svg {
-  margin-right: 8px; /* Add gap */
+button svg,
+.add-course-button svg,
+.drop-course-button svg,
+.toggle-view-button svg,
+.reset-button svg,
+.submit-button svg {
+  margin-right: 8px;
 }
 
 /* Adjust hover color for specific buttons if needed */
-.drop-course-button:hover, .reset-button:hover {
-  background-color: #d32f2f; /* Red button hover color */
+.drop-course-button:hover,
+.reset-button:hover {
+  background-color: #d32f2f;
 }
 
 .drop-course-button:hover {
-  background-color: #e67e00; /* Red hover color */
-  transform: translateY(-2px); /* Make the hover effect consistent */
+  background-color: #e67e00;
+  transform: translateY(-2px);
 }
 
-/* Add these styles to your existing tables1.css file */
-
-
-/* Update existing styles to accommodate the new button */
 .button-group {
   display: flex;
   gap: 10px;
   align-items: center;
-}
-
-/* Tooltip styles */
-.react-tooltip {
-  background-color: #333;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  z-index: 1000;
 }
 
 .course-table {
@@ -390,10 +371,9 @@ button svg, .add-course-button svg, .drop-course-button svg,
   border-radius: 40px;
   border-collapse: collapse;
   position: relative;
-  table-layout: fixed; /* Fix the table layout */
+  table-layout: fixed;
 }
 
-/* Set fixed width for table columns */
 .course-table th,
 .course-table td {
   border: 1px solid #ddd;
@@ -401,33 +381,32 @@ button svg, .add-course-button svg, .drop-course-button svg,
   text-align: center;
 }
 
-/* Example of setting fixed column widths for the table headers */
-.course-table th:nth-child(1), /* First column */
+.course-table th:nth-child(1),
+/* First column */
 .course-table td:nth-child(1) {
-  width: 70px; /* Adjust the width for the first column */
+  width: 70px;
+  /* Adjust the width for the first column */
 }
 
-.course-table th:nth-child(2), /* Second column */
+.course-table th:nth-child(2),
 .course-table td:nth-child(2) {
   width: 350px;
- /* Adjust the width for the second column */
 }
 
-.course-table th:nth-child(3), /* Third column */
+.course-table th:nth-child(3),
 .course-table td:nth-child(3) {
-  width: 150px; /* Adjust the width for the third column */
+  width: 150px;
 }
 
-.course-table th:nth-child(4), /* Fourth column */
+.course-table th:nth-child(4),
 .course-table td:nth-child(4) {
-  width: 150px; /* Adjust the width for the fourth column */
+  width: 150px;
 }
 
-.course-table th:nth-child(5), /* Fourth column */
+.course-table th:nth-child(5),
 .course-table td:nth-child(5) {
-  width: 70px; /* Adjust the width for the fourth column */
+  width: 70px;
 }
-/* Add more columns as needed and set widths accordingly */
 
 .plan-next-year-container {
   display: flex;
@@ -436,22 +415,22 @@ button svg, .add-course-button svg, .drop-course-button svg,
   justify-content: center;
   padding: 20px;
   margin-top: 20px;
-  background-color: #fffaf0; /* Optional: Light background */
+  background-color: #fffaf0;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .plan-next-year-text {
-  margin-bottom: 15px; /* Add space between text and button */
-  text-align: center; /* Center-align text */
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 .plan-next-year-button {
-  margin-top: 10px; /* Optional: Fine-tune button spacing */
+  margin-top: 10px;
 }
 
 .plan-date-button {
-  background-color: #ff8c00; /* Same as other buttons */
+  background-color: #ff8c00;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -466,21 +445,7 @@ button svg, .add-course-button svg, .drop-course-button svg,
   transform: translateY(-2px);
 }
 
-/* .bold-label {
-  font-weight: bold;
-} */
-.css-1jqq78o-placeholder {
-  grid-area: 1 / 1 / 2 / 3;
-  color: hsl(0, 0%, 50%);
-  margin-left: 2px;
-  margin-right: 2px;
-  box-sizing: border-box;
-  text-align: left;
-}
-.date-input-field{
-  /* border-radius: 4px; */
-    /* padding: 5px 58px; */
-    color: rgba(128, 128, 128, 0.849);
-    cursor: pointer;
-    /* border: 1px solid #ccc; */
+.date-input-field {
+  color: rgba(128, 128, 128, 0.849);
+  cursor: pointer;
 }

@@ -6,11 +6,14 @@ import { useSnackbar } from "notistack"; // Import Notistack's hook
 import { useAuth } from "../../store/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {months,durations,monthMapping} from "../CourseAssignTable/coursetableconstants"
 
 const CourseTable = () => {
+
   const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
   const { authToken } = useAuth();
   const { categoryId } = useParams();
+  
   const [employees, setEmployees] = useState([]);
   const [trainers, setTrainers] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -30,13 +33,6 @@ const CourseTable = () => {
   const [viewMode, setViewMode] = useState("current");
   const dropdownRef = useRef(null);
 
-  const durations = [
-    "1 to 2 hrs",
-    "2 to 4 hrs",
-    "4 to 6 hrs",
-    "more than 6 hours",
-  ];
-
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -45,35 +41,7 @@ const CourseTable = () => {
     return [...months];
   };
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
-  const monthMapping = {
-    January: 0,
-    February: 1,
-    March: 2,
-    April: 3,
-    May: 4,
-    June: 5,
-    July: 6,
-    August: 7,
-    September: 8,
-    October: 9,
-    November: 10,
-    December: 11,
-  };
 
   const capitalizeWords = (str) => {
     return str
@@ -437,10 +405,10 @@ const CourseTable = () => {
     setNewDescription("");
     setSelectedTrainer(null);
   };
-
-  // const filteredCourses = courses.filter((course) =>
-  //   course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  console.log("course",courses)
+  const filteredCourses = courses.filter((course) =>
+    course.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="course-container">
@@ -495,7 +463,7 @@ const CourseTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {courses.map(
+                {filteredCourses.map(
                   (course, index) => (
                     console.log("courses1", courses),
                     (
@@ -631,8 +599,7 @@ const CourseTable = () => {
                     onChange={(e) => setNewDescription(e.target.value)}
                     required
                   />
-                  {/* <label for="trainer-select" class="bold-label">Select Trainer</label> */}
-
+                 
                   <Select
                     options={trainers}
                     value={selectedTrainer}

@@ -1,36 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack'; // Import Notistack's hook
 import './styles/Services.css';
-import {
-  FaLaptop,
-  FaTools,
-  FaTimes,
-  FaHandshake,
-  FaCertificate,
-  FaAward,
-  FaClipboardList,
-  FaRecycle,
-  FaCogs,
-  FaChartLine,
-  FaHeartbeat,
-} from 'react-icons/fa';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import * as Fa from 'react-icons/fa';
 import { useAuth } from '../../store/auth';
 import './styles/responsive.css';
 
 const iconOptions = [
-  { name: 'COMPUTER SKILL', icon: <FaLaptop /> },
-  { name: 'TECHNICAL SKILL', icon: <FaTools /> },
-  { name: 'SOFT_SKILL', icon: <FaHandshake /> },
-  { name: 'ISO17025(NABL)', icon: <FaCertificate /> },
-  { name: 'CERTIFICATION TRAINING', icon: <FaAward /> },
-  { name: 'IATF19649', icon: <FaClipboardList /> },
-  { name: 'EMS TRAINING', icon: <FaRecycle /> },
-  { name: 'QMS TRAINING', icon: <FaCogs /> },
-  { name: 'BUSINESS EXCELLENCE', icon: <FaChartLine /> },
-  { name: 'HEALTH & SAFETY', icon: <FaHeartbeat /> },
+  { name: 'COMPUTER SKILL', icon: <Fa.FaLaptop /> },
+  { name: 'TECHNICAL SKILL', icon: <Fa.FaTools /> },
+  { name: 'SOFT_SKILL', icon: <Fa.FaHandshake /> },
+  { name: 'ISO17025(NABL)', icon: <Fa.FaCertificate /> },
+  { name: 'CERTIFICATION TRAINING', icon: <Fa.FaAward /> },
+  { name: 'IATF19649', icon: <Fa.FaClipboardList /> },
+  { name: 'EMS TRAINING', icon: <Fa.FaRecycle /> },
+  { name: 'QMS TRAINING', icon: <Fa.FaCogs /> },
+  { name: 'BUSINESS EXCELLENCE', icon: <Fa.FaChartLine /> },
+  { name: 'HEALTH & SAFETY', icon: <Fa.FaHeartbeat /> },
 ];
 
 const Services = () => {
@@ -46,6 +32,12 @@ const Services = () => {
   const [showDeleteButtons, setShowDeleteButtons] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Function to get the icon component based on the icon name
+  const getServiceIcon = (iconName) => {
+    const foundIcon = iconOptions.find((option) => option.name === iconName);
+    return foundIcon ? foundIcon.icon : <Fa.FaClipboardList />;
+  };
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -64,10 +56,16 @@ const Services = () => {
 
         const result = await response.json();
         const activeServices = result.data.filter((service) => !service.deletedAt);
-        setServices(activeServices);
+
+        // Map icon names to actual icon components
+        const servicesWithIcons = activeServices.map((service) => ({
+          ...service,
+          iconComponent: getServiceIcon(service.icon), // Map the icon name to an icon component
+        }));
+
+        setServices(servicesWithIcons);
       } catch (err) {
         setError(err.message);
-        // toast.error('Failed to load services. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -89,7 +87,11 @@ const Services = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(newTopic),
+        body: JSON.stringify({
+          name: newTopic.name,
+          description: newTopic.description,
+          icon: newTopic.icon, // Send the icon name
+        }),
       });
 
       if (!response.ok) {
@@ -97,19 +99,24 @@ const Services = () => {
       }
 
       const result = await response.json();
-      setServices((prevServices) => [...prevServices, result.data]);
+      // Map icon name to actual icon after adding
+      const newService = {
+        ...result.data,
+        iconComponent: getServiceIcon(result.data.icon), // Map the icon name to an icon component
+      };
+
+      setServices((prevServices) => [...prevServices, newService]);
       setModalOpen(false);
       setNewTopic({ name: '', description: '', icon: null });
       enqueueSnackbar('Training Topic added successfully!', { variant: 'success' });
     } catch (err) {
       setError(err.message);
-      enqueueSnackbar('Failed to add training topic. Please try again.',{variant:'error'});
+      enqueueSnackbar('Failed to add training topic. Please try again.', { variant: 'error' });
     }
   };
 
   const deleteCourses = async (categoryId) => {
     try {
-      // Fetch all courses associated with the category
       const response = await fetch(`http://localhost:3000/api/courses/${categoryId}`, {
         method: 'GET',
         headers: {
@@ -117,15 +124,14 @@ const Services = () => {
           Authorization: `Bearer ${authToken}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to fetch courses for category ${categoryId}`);
       }
-  
+
       const result = await response.json();
-      const courses = result.data; // Assuming this contains a list of courses
-  
-      // Iterate through each course and delete it
+      const courses = result.data;
+
       for (const course of courses) {
         const deleteResponse = await fetch(`http://localhost:3000/api/courses/${course.courseId}`, {
           method: 'DELETE',
@@ -134,7 +140,7 @@ const Services = () => {
             Authorization: `Bearer ${authToken}`,
           },
         });
-  
+
         if (!deleteResponse.ok) {
           throw new Error(`Failed to delete course ${course.courseId}`);
         }
@@ -144,16 +150,15 @@ const Services = () => {
       throw new Error('Failed to delete associated courses');
     }
   };
-  
 
   const handleDeleteService = async (categoryId) => {
     if (isDeleting) return;
     setIsDeleting(true);
-  
+
     try {
       console.log(`Deleting all courses for category ${categoryId}`);
-      await deleteCourses(categoryId); // Delete all courses in the category
-  
+      await deleteCourses(categoryId);
+
       console.log(`Deleting category ${categoryId}`);
       const response = await fetch(`http://localhost:3000/api/courseCategory/${categoryId}`, {
         method: 'DELETE',
@@ -162,31 +167,25 @@ const Services = () => {
           Authorization: `Bearer ${authToken}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to delete category');
       }
-  
-      // Update the state to remove the category
+
       setServices((prevServices) => prevServices.filter((service) => service.categoryId !== categoryId));
+      setShowDeleteButtons(false);
       setServiceToDelete(null);
       enqueueSnackbar('Training Topic and associated courses deleted successfully!', { variant: 'success' });
     } catch (err) {
       console.error('Error deleting category:', err);
-      enqueueSnackbar('Failed to delete training topic. Please try again.',{variant:'error'});
+      enqueueSnackbar('Failed to delete training topic. Please try again.', { variant: 'error' });
     } finally {
       setIsDeleting(false);
     }
   };
-  
 
   const toggleDeleteButtons = () => {
     setShowDeleteButtons(!showDeleteButtons);
-  };
-
-  const getServiceIcon = (iconName) => {
-    const foundIcon = iconOptions.find((option) => option.name === iconName);
-    return foundIcon ? foundIcon.icon : <FaClipboardList />;
   };
 
   const handleCardClick = (categoryId) => {
@@ -199,12 +198,12 @@ const Services = () => {
 
   return (
     <section id="services" className="services-section">
-      {loading && <p>Loading courses...</p>}
+      {loading && <h2>Loading courses...</h2>}
       <h2 className="services-heading">Training Topics</h2>
 
       {services.length === 0 && !loading && (
         <div className="no-services-message">
-          <p>No training topics available.</p>
+          <h1>No training topics available.</h1>
         </div>
       )}
 
@@ -215,11 +214,11 @@ const Services = () => {
             className={`service-card ${showDeleteButtons ? 'delete-mode' : ''}`}
             onClick={() => handleCardClick(service.categoryId)}
           >
-            <div className="service-icon">{getServiceIcon(service.name)}</div>
+            <div className="service-icon">{service.iconComponent}</div>
             <h3 className="service-title">{service.name}</h3>
             {showDeleteButtons && (
               <div className="delete-button">
-                <FaTimes />
+                <Fa.FaTimes />
               </div>
             )}
           </div>
@@ -293,7 +292,6 @@ const Services = () => {
         </div>
       )}
 
-      <ToastContainer />
     </section>
   );
 };

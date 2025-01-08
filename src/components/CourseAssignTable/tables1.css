@@ -291,7 +291,7 @@ button[type="button"]:hover {
   display: flex;
   justify-content: end;
   gap: 20px;
-  margin-right: 70px
+  margin-right: 120px
 }
 
 .modal-input-fields {

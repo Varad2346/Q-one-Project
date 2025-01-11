@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeroSection from './HeroSection';
 import Services from './Services';
-import Faq from './Faq';
 import Client from './Client';
 import "./styles/Home.css";
 import "./styles/responsive.css";
@@ -39,7 +38,7 @@ const Home = () => {
       <HeroSection />
       <Services />
       <Client />
-      <Faq />
+      
 
       {/* Scroll to top button */}
       {showScroll && (

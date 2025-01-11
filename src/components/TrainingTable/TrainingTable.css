@@ -161,10 +161,40 @@
 .duration-field{
   width: 6%;
 }
-.large-input {
+/* .large-input {
   /* width: 80px; */
-  height: 30px;
+  /* height: 30px;
   font-size: 15px;
   padding: 5px 10px;
   border-radius: 4px;
+} */ 
+
+.large-input {
+  text-align: center;       
+  vertical-align: middle;    /* Vertically aligns the text inside */
+  padding: 17px 7px;            
+  font-size: large;          /* Larger text size */
+  width: 58px;
+  height: 30px;              /* Fixed height for consistency */
+  border: 1px solid #ccc;    /* Border to make it visually distinct */
+  display: inline-block;     /* Prevent stretching */
+  box-sizing: border-box;    /* Ensures padding and border are included in width */
+}
+.eval-button-container{
+  width: 97vw;
+  gap: 20px;
+  display: flex;
+  justify-content: end;
+  flex-direction: row;
+  align-items: center;
+  padding:4px 14px;
+  /* border: 2px solid black; */
+  /* float: right; */
+}
+
+.eval-upper-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

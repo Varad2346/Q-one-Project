@@ -33,32 +33,6 @@ export const CLIENTS = [
 // Text constants for Client.jsx
 export const CLIENT_SECTION_HEADING = "Our Clients";
 
-// Constants for Faq.jsx
-export const FAQ_HEADING = 'FAQ';
-
-export const FAQ_LIST = [
-  {
-    question: 'How do I calculate annual training package cost for my Company?',
-    answer: 'Training subscription cost is annual based upon total manpower working in the company',
-  },
-  {
-    question: 'I have subscribed annual Training package for my organization, What happens next?',
-    answer: 'Our Training calendar is published on Upmyskill Website. You can plan at your end accordingly. 1-3 days Before Training date you will receive a Link to join the Training',
-  },
-  {
-    question: 'Can I customize Online courses?',
-    answer: 'Yes customized online Training can be planned for you at separate cost. This is not considered under annual Subscription Plan',
-  },
-  {
-    question: 'What are the advantages of Web-based training?',
-    answer: 'One of the major advantages of Web-based training is the costs savings over traditional classroom training. Traditional training methods typically involve travel and time off from work, both costly components for employers',
-  },
-  {
-    question: 'What languages is the course delivered in?',
-    answer: 'This course is delivered in English.',
-  },
-  // Add more FAQs as needed
-];
 
 // Constants for HeroSection.jsx
 

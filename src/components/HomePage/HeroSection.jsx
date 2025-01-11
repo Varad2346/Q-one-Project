@@ -16,16 +16,29 @@ const HeroSection = () => {
     <div className='hero'>
       <div className='overlay'></div>
       <div className='card-container'>
-        {DROPDOWN_OPTIONS.map((option, index) => (
-          <div 
-            key={index} 
-            className='card'
-            onClick={() => handleCardClick(option.path)} // Make entire card clickable
-          >
-            {option.icon && <div className='card-icon'>{option.icon}</div>}
-            <h2 className='card-title'>{option.label}</h2>
-          </div>
-        ))}
+      {DROPDOWN_OPTIONS.map(({ icon, label, path }, index) => (
+  <div 
+    key={index} 
+    className='card'
+    onClick={() => handleCardClick(path)} 
+  >
+    {icon && <div className='card-icon'>{icon}</div>}
+    <h2 className='card-title'>
+      {label === 'Add New Role' ? (
+        <>
+          Add New<br />Role
+        </>
+      ) : label === 'Training Calendar' ? (
+        <>
+          Training<br />Calendar
+        </>
+      ) : (
+        label
+      )}
+    </h2>
+  </div>
+))}
+
       </div>
     </div>
   );

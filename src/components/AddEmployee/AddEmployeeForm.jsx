@@ -1,11 +1,7 @@
-//file updated by varad
-import React, { useState, useEffect } from 'react';
-// import { toast, ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-import './AddEmployeeForm.css';
+import React, { useState } from 'react';
 import { useAuth } from '../../store/auth';
-import { useSnackbar } from 'notistack'; // Import Notistack's hook
-
+import { useSnackbar } from 'notistack';
+import './AddEmployeeForm.css';
 import {
   ADD_EMPLOYEE_FORM_TITLE,
   FIRST_NAME_LABEL,
@@ -22,31 +18,28 @@ import {
   HOD_LABEL,
   ADD_TRAINER_FORM_TITLE,
   TRAINER_LABEL,
-  DEPARTMENT_LABEL, // New department label
+  DEPARTMENT_LABEL,
   SAVE_BUTTON_TEXT,
   CANCEL_BUTTON_TEXT
 } from '../../constants/constant';
 
 const AddEmployeeForm = () => {
-
-    const { authToken }=useAuth();
-    const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
+  const { authToken } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     gender: 'Male',
     email: '',
-    password: '', // Default password for Employee and Trainer
-    confirmPassword: '', // Add this
+    password: '',
+    confirmPassword: '',
     mobileNumber: '',
-    department: '',  // This field will be conditionally excluded for HR
+    department: '',
     role: 'employee',
   });
 
   const [role, setRole] = useState('employee');
-
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,29 +49,25 @@ const AddEmployeeForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation for HR and HOD roles
-    if (role === 'hr' || role === 'hod') {
-      // Check if password and confirm password match
-      if (formData.password !== formData.confirmPassword) {
-        enqueueSnackbar('Password and Confirm Password do not match!',{variant:'error'});
-        return;
-      }
-
-      // Check if password is at least 6 characters long
-      if (formData.password.length < 6) {
-        enqueueSnackbar('Password must be at least 6 characters long!',{variant:'info'});
-        return;
-      }
+    if ((role === 'hr' || role === 'hod') && formData.password !== formData.confirmPassword) {
+      enqueueSnackbar('Password and Confirm Password do not match!', { variant: 'error' });
+      return;
     }
 
-    console.log('Form Data Submitted:', formData);
+    if ((role === 'hr' || role === 'hod') && formData.password.length < 6) {
+      enqueueSnackbar('Password must be at least 6 characters long!', { variant: 'info' });
+      return;
+    }
 
-    // Conditionally set the password based on the role
     const submitData = { ...formData };
 
-    // If role is Employee or Trainer, set a default password
-    if (role === 'employee' || role === 'trainer') {
-      submitData.password = '123456'; // Default password
+    if (role === 'employee' || role === 'trainer' || role === 'department') {
+      submitData.password = '123456';
+    }
+
+    if (role === 'department') {
+      submitData.role = 'department';
+      submitData.department = formData.firstName; // Use firstName field as department name
     }
 
     try {
@@ -97,12 +86,10 @@ const AddEmployeeForm = () => {
       }
 
       const data = await response.json();
-      console.log('User created:', data);
-      enqueueSnackbar('User added successfully!',{variant:'success'});
+      enqueueSnackbar(role === 'department' ? 'Department added successfully!' : 'User added successfully!', { variant: 'success' });
       resetForm();
     } catch (error) {
-      enqueueSnackbar(error.message || 'Error creating user',{variant:'error'});
-      console.error('Error creating user:', error);
+      enqueueSnackbar(error.message || 'Error creating user', { variant: 'error' });
     }
   };
 
@@ -112,10 +99,10 @@ const AddEmployeeForm = () => {
       lastName: '',
       gender: 'Male',
       email: '',
-      password: '', // Keep empty for HOD and HR
-      confirmPassword: '', // Ensure confirmPassword is reset
+      password: '',
+      confirmPassword: '',
       mobileNumber: '',
-      department: '', // Reset department field
+      department: '',
       role: role,
     });
   };
@@ -125,14 +112,13 @@ const AddEmployeeForm = () => {
     setFormData((prevData) => ({
       ...prevData,
       role: selectedRole,
-      password: selectedRole === 'employee' || selectedRole === 'trainer' ? '123456' : '', // Keep empty for HOD and HR
-      confirmPassword: '', // Ensure confirmPassword is cleared when switching roles
+      password: selectedRole === 'employee' || selectedRole === 'trainer' ? '123456' : '',
+      confirmPassword: '',
     }));
   };
 
   return (
     <div className="form-container">
-      {/* Role toggle section */}
       <div className="role-toggle">
         <button
           className={`role-button ${role === 'employee' ? 'active' : ''}`}
@@ -158,11 +144,18 @@ const AddEmployeeForm = () => {
         >
           {TRAINER_LABEL}
         </button>
+        <button
+          className={`role-button ${role === 'department' ? 'active' : ''}`}
+          onClick={() => toggleRole('department')}
+        >
+          Department
+        </button>
       </div>
 
-      {/* Form Title */}
       <h2 className="form-title">
-        {role === 'employee'
+        {role === 'department' 
+          ? 'Add Department'
+          : role === 'employee'
           ? ADD_EMPLOYEE_FORM_TITLE
           : role === 'hr'
           ? ADD_HR_FORM_TITLE
@@ -172,126 +165,145 @@ const AddEmployeeForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-row">
-          <div className="form-group1">
-            <label htmlFor="firstName">{FIRST_NAME_LABEL}</label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group1">
-            <label htmlFor="lastName">{LAST_NAME_LABEL}</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="form-row">
-          <div className="form-group1">
-            <label htmlFor="gender">{GENDER_LABEL}</label>
-            <select
-              id="gender"
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div className="form-group1">
-            <label htmlFor="mobileNumber">{MOBILE_NUMBER_LABEL}</label>
-            <input
-              type="text"
-              id="mobileNumber"
-              name="mobileNumber"
-              value={formData.mobileNumber}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-
-        {/* Email and Department in one row */}
-        <div className="form-row">
-          <div className="form-group1">
-            <label htmlFor="email">{EMAIL_LABEL}</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          {role !== 'hr' && (
-            <div className="form-group1">
-              <label htmlFor="department">{DEPARTMENT_LABEL}</label>
-              <input
-                type="text"
-                id="department"
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Password and Confirm Password in one row */}
-        {(role === 'hr' || role === 'hod') && (
+        {role === 'department' ? (
           <div className="form-row">
             <div className="form-group1">
-              <label htmlFor="password">{PASSWORD_LABEL}</label>
+              <label htmlFor="firstName">Department Name</label>
               <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group1">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword || ''}
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleChange}
                 required
               />
             </div>
           </div>
+        ) : (
+          <>
+            <div className="form-row">
+              <div className="form-group1">
+                <label htmlFor="firstName">{FIRST_NAME_LABEL}</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group1">
+                <label htmlFor="lastName">{LAST_NAME_LABEL}</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group1">
+                <label htmlFor="gender">{GENDER_LABEL}</label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div className="form-group1">
+                <label htmlFor="mobileNumber">{MOBILE_NUMBER_LABEL}</label>
+                <input
+                  type="text"
+                  id="mobileNumber"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group1">
+                <label htmlFor="email">{EMAIL_LABEL}</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              {role !== 'hr' && (
+                <div className="form-group1">
+                  <label htmlFor="department">{DEPARTMENT_LABEL}</label>
+                  <select
+                    id="department"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Department</option>
+                    <option value="IT">IT</option>
+                    <option value="HR">HR</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Operations">Operations</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {(role === 'hr' || role === 'hod') && (
+              <div className="form-row">
+                <div className="form-group1">
+                  <label htmlFor="password">{PASSWORD_LABEL}</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form-group1">
+                  <label htmlFor="confirmPassword">Confirm Password</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword || ''}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         <div className="form-buttons">
           <button type="submit" className="Add-employee-button">
-            {SAVE_BUTTON_TEXT}
+            {role === 'department' ? 'Save Department' : SAVE_BUTTON_TEXT}
           </button>
           <button type="button" className="Add-employee-button" onClick={resetForm}>
             {CANCEL_BUTTON_TEXT}
           </button>
         </div>
       </form>
-
-      {/* ToastContainer for notifications */}
-      {/* <ToastContainer /> */}
     </div>
   );
 };

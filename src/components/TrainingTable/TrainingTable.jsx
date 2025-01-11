@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from "react";
+import  { useEffect, useState } from "react";
+import { useAuth } from "../../store/auth";
 import { jwtDecode } from "jwt-decode";
-import "./TrainingTable.css";
-import { useSnackbar } from 'notistack'; // Import Notistack's hook
+import { useSnackbar } from "notistack";
 import { html2pdf } from "html2pdf.js";
-const TrainingTable = () => {
-  const [trainingData, setTrainingData] = useState([]);
-  const [courseData, setCourseData] = useState(null);
-  const [usersData, setUsersData] = useState([]);
-  const [filteredUser, setFilteredUser] = useState(null);
-  const [filteredUsersByDepartment, setFilteredUsersByDepartment] = useState([]);
-  const { enqueueSnackbar } = useSnackbar(); // Initialize Notistack's enqueueSnackbar
-  const [loading, setLoading] = useState(true);
+import "./TrainingTable.css";
+
+const TrainingTable1 = () => {
+
+  const { authToken } = useAuth();
+  const [updatedEvaluations, setUpdatedEvaluations] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
   const [hodName, setHodName] = useState("");
   const [department, setDepartment] = useState("");
   const [year, setYear] = useState("");
-  const [enrollments, setEnrollments] = useState([]);
-  const [plannedCourses, setPlannedCourses] = useState([]);
-  const [reports, setReports] = useState([]);
-  const [newdata, setNewdata] = useState([]);
-  const [updatedEvaluations, setUpdatedEvaluations] = useState([]);
-
+  const [filteredUser, setFilteredUser] = useState(null);
+  const { enqueueSnackbar } = useSnackbar(); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  console.log(updatedEvaluations);
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = authToken || localStorage.getItem("token");
+
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -31,13 +30,205 @@ const TrainingTable = () => {
         setDepartment(decoded.department || "Information Technology");
         setYear(decoded.year || "2025");
 
-        // Refetch user data
-        fetchUserData(token, decoded.id);
+        // Fetch HOD data
+        fetchHodData(token, decoded.id);
       } catch (error) {
         console.error("Error decoding the token:", error);
       }
     }
-  }, []);
+  }, [authToken]);
+
+  // Fetch HOD data
+  const fetchHodData = async (token, decodedUserId) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData = await response.json();
+      if (userData.success) {
+        const filteredUser = userData.data.find(
+          (user) => user.userId === decodedUserId
+        );
+        setFilteredUser(filteredUser);
+        console.log(filteredUser);
+      } else {
+        console.error("Failed to fetch users:", userData.message);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (authToken) {
+      fetchEnrollments(authToken);
+    }
+  }, [authToken]);
+
+  // Fetch enrollments after checking authToken
+  const fetchEnrollments = async (token) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/enrollments", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const enrollmentData = await response.json();
+      if (enrollmentData.success) {
+        // After fetching enrollments, fetch user data
+        fetchUserData(token, enrollmentData.data);
+      } else {
+        console.error("Failed to fetch enrollments:", enrollmentData.message);
+      }
+    } catch (error) {
+      console.error("Error fetching enrollments:", error);
+    }
+  };
+
+  // Enrich enrollments with user data and course details
+  const enrichEnrollmentsWithUsersAndCourses = async (
+    enrollmentData,
+    userData,
+    plannedCourses
+  ) => {
+    const enrichedEnrollments = await Promise.all(
+      enrollmentData.map(async (enrollment) => {
+        const user = userData.find((user) => user.userId === enrollment.userId);
+        const plannedCourse = plannedCourses.find(
+          (course) => course.plannedCourseId === enrollment.plannedCourseId
+        );
+        let courseDetails = null;
+        if (plannedCourse) {
+          courseDetails = await fetchCourseDetails(
+            authToken,
+            plannedCourse.courseId
+          );
+        }
+        return {
+          ...enrollment,
+          user,
+          plannedCourse,
+          courseDetails,
+        };
+      })
+    );
+    return enrichedEnrollments;
+  };
+
+  // Fetch user data after fetching enrollments
+  const fetchUserData = async (token, enrollmentData) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData = await response.json();
+      if (userData.success) {
+        fetchPlannedCourses(token, enrollmentData, userData.data);
+      } else {
+        console.error("Failed to fetch users:", userData.message);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  // Fetch planned courses after fetching user data
+  const fetchPlannedCourses = async (token, enrollmentData, userData) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/planned-courses",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const plannedCourseData = await response.json();
+      if (plannedCourseData.success) {
+        const enrichedEnrollments = await enrichEnrollmentsWithUsersAndCourses(
+          enrollmentData,
+          userData,
+          plannedCourseData.data
+        );
+        fetchReports(token, enrichedEnrollments);
+      } else {
+        console.error(
+          "Failed to fetch planned courses:",
+          plannedCourseData.message
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching planned courses:", error);
+    }
+  };
+
+  // Fetch reports after fetching planned courses
+  const fetchReports = async (token, enrichedEnrollments) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/reports", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const reportData = await response.json();
+      if (reportData.success) {
+        const enrichedWithReports = enrichedEnrollments.map((enrollment) => {
+          const report = reportData.data.find(
+            (report) => report.reportId === enrollment.reportId
+          );
+          if (report) {
+            return { ...enrollment, report };
+          }
+          return enrollment;
+        });
+        setEnrollments(enrichedWithReports);
+      } else {
+        console.error("Failed to fetch reports:", reportData.message);
+      }
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+    }
+  };
+
+  // Fetch course details for the given courseId
+  const fetchCourseDetails = async (token, courseId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/courses/courseId/${courseId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const courseData = await response.json();
+      if (courseData.success) {
+        return courseData.data;
+      } else {
+        console.error("Failed to fetch course data:", courseData.message);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching course data:", error);
+      return null;
+    }
+  };
 
   const handleInputChange = (enrollmentId, plannedCourseId, field, value) => {
     setUpdatedEvaluations((prevEvaluations) => {
@@ -73,6 +264,7 @@ const TrainingTable = () => {
           criteriaD: "0",
           criteriaE: "0",
           criteriaF: "0",
+          evaluationRemark:"",
         };
 
         // Add the field value (e.g., 'criteriaA', 'criteriaB', etc.)
@@ -82,217 +274,14 @@ const TrainingTable = () => {
       }
     });
   };
-
-  const fetchUserData = async (token, decodedUserId) => {
-    try {
-      const response = await fetch("http://localhost:3000/api/users", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        setUsersData(data.data);
-        const filteredUser = data.data.find(
-          (user) => user.userId === decodedUserId
-        );
-        setFilteredUser(filteredUser);
-        const usersInSameDepartment = data.data.filter(
-          (user) =>
-            user.department === filteredUser.department &&
-            user.role === "employee"
-        );
-        setFilteredUsersByDepartment(usersInSameDepartment);
-
-        // Fetch enrollments data after users data is set
-        fetchEnrollments(token, usersInSameDepartment);
-      } else {
-        console.error("Failed to fetch users:", data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
-  const fetchEnrollments = async (token, usersInSameDepartment) => {
-    try {
-      const response = await fetch("http://localhost:3000/api/enrollments", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const enrollmentData = await response.json();
-
-      if (enrollmentData.success) {
-        const enrichedUsers = usersInSameDepartment.map((user) => {
-          const userEnrollments = enrollmentData.data.filter(
-            (enrollment) => enrollment.userId === user.userId
-          );
-          return { ...user, enrollments: userEnrollments };
-        });
-        setEnrollments(enrichedUsers);
-
-        // Now fetch planned courses data
-        fetchPlannedCourses(token, enrichedUsers);
-      } else {
-        console.error("Failed to fetch enrollments:", enrollmentData.message);
-      }
-    } catch (error) {
-      console.error("Error fetching enrollments:", error);
-    }
-  };
-
-  const fetchPlannedCourses = async (token, enrichedUsers) => {
-    try {
-      const response = await fetch(
-        "http://localhost:3000/api/planned-courses",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const plannedCourseData = await response.json();
-
-      if (plannedCourseData.success) {
-        const plannedCoursesMap = new Map();
-
-        plannedCourseData.data.forEach((course) => {
-          plannedCoursesMap.set(course.plannedCourseId, course);
-        });
-
-        const enrichedUsersWithPlannedCourses = enrichedUsers.map((user) => {
-          const enrichedEnrollments = user.enrollments.map((enrollment) => {
-            const plannedCourse = plannedCoursesMap.get(
-              enrollment.plannedCourseId
-            );
-
-            if (plannedCourse) {
-              return { ...enrollment, plannedCourse };
-            }
-
-            return enrollment; // Return as is if no planned course found
-          });
-
-          return { ...user, enrollments: enrichedEnrollments };
-        });
-
-        setPlannedCourses(plannedCourseData.data);
-        setNewdata(enrichedUsersWithPlannedCourses);
-
-        // Fetch reports data after planned courses are fetched
-        fetchReports(token, enrichedUsersWithPlannedCourses);
-      } else {
-        console.error(
-          "Failed to fetch planned courses:",
-          plannedCourseData.message
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching planned courses:", error);
-    }
-  };
-
-  const fetchReports = async (token, enrichedEnrollments) => {
-    try {
-      const response = await fetch("http://localhost:3000/api/reports", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const reportData = await response.json();
-
-      if (reportData.success) {
-        setReports(reportData.data);
-
-        const enrichedEnrollmentsWithReports = enrichedEnrollments.map(
-          (user) => {
-            const userEnrollments = user.enrollments.map((enrollment) => {
-              const report = reportData.data.find(
-                (r) => r.reportId === enrollment.reportId
-              );
-              if (report) {
-                return {
-                  ...enrollment,
-                  actualDate: report.actualDate,
-                  dueDate: report.dueDate,
-                };
-              }
-              return enrollment;
-            });
-            return { ...user, enrollments: userEnrollments };
-          }
-        );
-
-        // Now, for each enrollment, fetch course details
-        const enrichedEnrollmentsWithCourseDetails = await Promise.all(
-          enrichedEnrollmentsWithReports.map(async (user) => {
-            const enrichedEnrollmentsWithCourses = await Promise.all(
-              user.enrollments.map(async (enrollment) => {
-                const courseDetails = await fetchCourseDetails(
-                  token,
-                  enrollment.plannedCourse.courseId
-                );
-                return { ...enrollment, courseDetails };
-              })
-            );
-            return { ...user, enrollments: enrichedEnrollmentsWithCourses };
-          })
-        );
-
-        setNewdata(enrichedEnrollmentsWithCourseDetails);
-        setLoading(false);
-      } else {
-        console.error("Failed to fetch reports:", reportData.message);
-      }
-    } catch (error) {
-      console.error("Error fetching reports:", error);
-    }
-  };
-
-  const fetchCourseDetails = async (token, courseId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/courses/courseId/${courseId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const courseData = await response.json();
-
-      if (courseData.success) {
-        return courseData.data;
-      } else {
-        console.error("Failed to fetch course data:", courseData.message);
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching course data:", error);
-      return null;
-    }
-  };
-
   const handleCommitChanges = async () => {
-    const token = localStorage.getItem("token");
-
+    const token = authToken || localStorage.getItem("token");
+  
     if (!token) {
       console.error("No token found. User must be logged in.");
       return;
     }
-
+  
     try {
       // Loop through each updated evaluation and submit to the API
       for (const evaluation of updatedEvaluations) {
@@ -305,30 +294,33 @@ const TrainingTable = () => {
           criteriaE,
           criteriaF,
           dateOfEvaluation,
+          evaluationRemark,
         } = evaluation;
-
-        // Convert dateOfEvaluation to yyyy-mm-dd format
-        const formattedDate = new Date(dateOfEvaluation)
-          .toISOString()
-          .split("T")[0];
-
-        // Prepare the data to send to the API (only send criteria and dateOfEvaluation)
-        const dataToSubmit = {
-          criteriaA,
-          criteriaB,
-          criteriaC,
-          criteriaD,
-          criteriaE,
-          criteriaF,
-          evaluationRemark: "completed",
-          dateOfEvaluation: formattedDate, // Ensure date is in yyyy-mm-dd format
-        };
-
+  
+        const formattedDate = new Date(dateOfEvaluation).toISOString().split("T")[0];
+  
+        // Prepare data to send, only including fields that have changed or are non-zero
+        const dataToSubmit = {};
+  
+        if (criteriaA !== "0") dataToSubmit.criteriaA = criteriaA;
+        if (criteriaB !== "0") dataToSubmit.criteriaB = criteriaB;
+        if (criteriaC !== "0") dataToSubmit.criteriaC = criteriaC;
+        if (criteriaD !== "0") dataToSubmit.criteriaD = criteriaD;
+        if (criteriaE !== "0") dataToSubmit.criteriaE = criteriaE;
+        if (criteriaF !== "0") dataToSubmit.criteriaF = criteriaF;
+        if (evaluationRemark) dataToSubmit.evaluationRemark = evaluationRemark;
+        if (dateOfEvaluation) dataToSubmit.dateOfEvaluation = formattedDate;
+  
+        // If no fields were changed, skip this evaluation
+        if (Object.keys(dataToSubmit).length === 0) {
+          continue;
+        }
+  
         // Send the request to the backend
         const response = await fetch(
           `http://localhost:3000/api/enrollments/${enrollmentId}`,
           {
-            method: "PUT", // Assuming you're updating an existing record
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
@@ -336,50 +328,91 @@ const TrainingTable = () => {
             body: JSON.stringify(dataToSubmit),
           }
         );
-
+  
         const result = await response.json();
-
+  
         if (result.success) {
-          enqueueSnackbar(
-            `Successfully committed evaluation`, { variant: 'success' }
-          );
+          enqueueSnackbar(`Successfully committed evaluation for enrollment ID: ${enrollmentId}`, {
+            variant: "success",
+          });
         } else {
-          console.error(
-            `Failed to commit evaluation for enrollment ID: ${enrollmentId}: ${result.message}`
-          );
+          console.error(`Failed to commit evaluation for enrollment ID: ${enrollmentId}: ${result.message}`);
         }
       }
-
-      // Optionally, refresh the evaluations after commit
-      setUpdatedEvaluations([]); // Clear or reset the evaluations if necessary
-
-      // Fetch data again to refresh the table after commit
-      fetchUserData(token, filteredUser ? filteredUser.userId : "");
-
+  
+      setUpdatedEvaluations([]);  // Clear the updated evaluations list
+      fetchEnrollments(token);  // Fetch enrollments again after commit
+  
     } catch (error) {
       console.error("Error committing evaluations:", error);
     }
   };
+  
+
     const downloadPDF = () => {
-      const element = document.getElementById("training-report"); // Get the table element
-      const options = {
-        filename: "training-calendar.pdf",
-        html2canvas: { scale: 6 },
-        jsPDF: { unit: "mm", format: "a3", orientation: "landscape" },
-      };
-      html2pdf().from(element).set(options).save();
+        const element = document.getElementById("training-report"); // Get the table element
+        const options = {
+          filename: "training-calendar.pdf",
+          html2canvas: { scale: 6 },
+          jsPDF: { unit: "mm", format: "a3", orientation: "landscape" },
+        };
+        html2pdf().from(element).set(options).save();
     };
+    const handleSearchChange = (e) => {
+      setSearchQuery(e.target.value);
+    };
+    const handleEditChanges = () => {
+      if (isEditMode) {
+        // When leaving edit mode, reset the updated evaluations to null values or empty
+        setUpdatedEvaluations([]);
+
+        
+      }
+    
+      // Toggle the edit mode
+      setIsEditMode((prevMode) => !prevMode);
+    };
+    useEffect(() => {
+      if (isEditMode && enrollments.length > 0) {
+        // Ensure `updatedEvaluations` is populated with backend values when entering edit mode
+        const evaluations = enrollments.map((enrollment) => {
+          return {
+            enrollmentId: enrollment.enrollmentId,
+            plannedCourseId: enrollment.plannedCourseId,
+            criteriaA: enrollment.criteriaA || null,
+            criteriaB: enrollment.criteriaB || null,
+            criteriaC: enrollment.criteriaC || null,
+            criteriaD: enrollment.criteriaD || null,
+            criteriaE: enrollment.criteriaE || null,
+            criteriaF: enrollment.criteriaF || null,
+            evaluationRemark: enrollment.evaluationRemark || null,
+            dateOfEvaluation: enrollment.dateOfEvaluation || null,
+          };
+        });
+        setUpdatedEvaluations(evaluations); // Update the `updatedEvaluations` with backend values
+      }
+    }, [isEditMode, enrollments]); // Trigger the effect when `isEditMode` or `enrollments` change
+    
+    
   return (
     <div className="eval-container">
       <h2 className="eval-heading">Training Evaluation-2025</h2>
-      <div className="report-button-container">
-          <button className="commit-button" onClick={downloadPDF}>
-            Download Report
-          </button>
-          <button className="commit-button" onClick={handleCommitChanges}>
-            Commit Changes
-          </button>
+        <div className="eval-upper-container">
+        <input
+        type="text"
+        placeholder="Search by Employee Name"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+        <div className="eval-button-container">
+        <button className="commit-button" onClick={handleEditChanges}>{isEditMode ? "Cancel Edit" : "Edit Changes"}</button>
+        <button className="commit-button" onClick={handleCommitChanges}>Search By Training Topic</button>
+        <button className="commit-button" onClick={handleCommitChanges}>Download Report</button>
+        <button className="commit-button" onClick={handleCommitChanges}>
+          Commit Changes
+        </button>
         </div>
+      </div>
       <table className="hod-table">
         <thead>
           <tr>
@@ -430,102 +463,121 @@ const TrainingTable = () => {
           </tr>
         </thead>
         <tbody>
-          {console.log(newdata)}
-          {newdata.map((user) =>
-            user.enrollments
-              .filter((enrollment) => {
-                // Check if reportId is NULL (exclude such enrollments)
-                if (enrollment.reportId === null) {
-                  return false;
-                }
-                
-                // Check if both reportId exists and dateOfEvaluation exists (exclude such enrollments)
-                if (enrollment.reportId && enrollment.dateOfEvaluation !== null) {
-                  return false;
-                }
-          
-                // Include only if reportId exists and dateOfEvaluation is NULL
-                return enrollment.reportId && enrollment.dateOfEvaluation === null;
-              })
-              .map((enrollment, index) => {
-                const actualDate = enrollment.actualDate
-                  ? new Date(enrollment.actualDate).toLocaleDateString("en-CA")
-                  : "N/A";
+          {/* // enrollment?.dateOfEvaluation != null && */}
+          {console.log(enrollments)}
+          {enrollments
+          ?.filter(
+            (enrollment) =>
+              enrollment?.reportId != null &&
+              enrollment?.user?.department === filteredUser?.department &&
+              (enrollment.user?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               enrollment.user?.lastName.toLowerCase().includes(searchQuery.toLowerCase())) && ( (isEditMode && enrollment.dateOfEvaluation != null)|| (!isEditMode && enrollment.dateOfEvaluation == null))
+          ).map((enrollment, index) => {
+              const actualDate = enrollment.report?.actualDate
+                ? new Date(enrollment.report?.actualDate).toLocaleDateString(
+                    "en-CA"
+                  )
+                : "N/A";
 
-                const dueDate = enrollment.dueDate
-                  ? new Date(enrollment.dueDate).toLocaleDateString("en-CA")
-                  : "N/A";
+              const dueDate = enrollment.report?.dueDate
+                ? new Date(enrollment.report?.dueDate).toLocaleDateString(
+                    "en-CA"
+                  )
+                : "N/A";
 
-                const courseName = enrollment.courseDetails?.name || "N/A";
-                const trainerName = enrollment.courseDetails?.trainer
-                  ? `${enrollment.courseDetails.trainer.firstName} ${enrollment.courseDetails.trainer.lastName}`
-                  : "N/A";
+              const courseName = enrollment.courseDetails?.name || "N/A";
+              const trainerName = enrollment.courseDetails?.trainer
+                ? `${enrollment.courseDetails.trainer.firstName} ${enrollment.courseDetails.trainer.lastName}`
+                : "N/A";
 
-                const trainingDuration =
-                  enrollment.plannedCourse?.trainingDuration || "N/A";
+              const trainingDuration =
+                enrollment.plannedCourse?.trainingDuration || "N/A";
+              const todayDate = new Date().toLocaleDateString("en-CA");
 
-                const todayDate = new Date().toLocaleDateString("en-CA");
+              return (
+                <tr key={`${enrollment.user?.userId}-${index}`}>
+                  <td className="date-field">{actualDate}</td>
+                  <td className="date-field">{dueDate}</td>
+                  <td>{courseName}</td>
+                  <td>{`${enrollment.user?.firstName} ${enrollment.user?.lastName}`}</td>
+                  <td>{trainerName}</td>
+                  <td className="duration-field">{trainingDuration}</td>
 
-                return (
-                  <tr key={`${user.userId}-${index}`}>
-                    <td className="date-field">{actualDate}</td>
-                    <td className="date-field">{dueDate}</td>
-                    <td>{courseName}</td>
-                    <td>{`${user.firstName} ${user.lastName}`}</td>
-                    <td>{trainerName}</td>
-                    <td className="duration-field">{trainingDuration}</td>
-
-                    {[
-                      "criteriaA",
-                      "criteriaB",
-                      "criteriaC",
-                      "criteriaD",
-                      "criteriaE",
-                      "criteriaF",
-                    ].map((grade) => (
-                      <td key={grade} className="grade-input">
-                        <input
-                          type="text"
-                          min="0"
-                          max="4"
-                          defaultValue={enrollment[grade.toLowerCase()] || ""}
-                          onChange={(e) =>
-                            handleInputChange(
-                              enrollment.enrollmentId,
-                              enrollment.plannedCourseId,
-                              grade,
-                              e.target.value
-                            )
-                          }
-                          className="large-input"
-                        />
-                      </td>
-                    ))}
-
-                    <td className="remark-field">
+                  {[
+                    "criteriaA",
+                    "criteriaB",
+                    "criteriaC",
+                    "criteriaD",
+                    "criteriaE",
+                    "criteriaF",
+                  ].map((grade) => (
+                    <td key={grade} className="grade-input">
+                    {isEditMode ? (
+                      // In edit mode, show the value from updatedEvaluations (if available)
                       <input
-                        type="text"
-                        defaultValue={enrollment.remark || ""}
+                        className="large-input"
+                        type="number"
+                        min="0"
+                        max="4"
+                        value={
+                          updatedEvaluations.find(
+                            (evaluation) =>
+                              evaluation.enrollmentId === enrollment.enrollmentId &&
+                              evaluation.plannedCourseId === enrollment.plannedCourseId
+                          )?.[grade] || "" // Empty string if no updated value exists
+                        }
                         onChange={(e) =>
                           handleInputChange(
                             enrollment.enrollmentId,
-                            enrollment.plannedCourseId,
-                            "remark",
+                            enrollment.plannedCourse.plannedCourseId,
+                            grade,
                             e.target.value
                           )
                         }
                       />
-                    </td>
-                    <td className="date-field">{todayDate}</td>
-                  </tr>
-                );
-              })
-          )}
-        
+                    ) : (
+                      // In normal mode, leave the input field empty (no pre-filled value)
+                      <input
+                        className="large-input"
+                        type="number"
+                        min="0"
+                        max="4"
+                        value={enrollment.grade} // Empty value in normal mode
+                        onChange={(e) =>
+                          handleInputChange(
+                            enrollment.enrollmentId,
+                            enrollment.plannedCourse.plannedCourseId,
+                            grade,
+                            e.target.value
+                          )
+                        }
+                      />
+                    )}
+                  </td>
+                  ))}
+
+                  <td className="remark-field">
+                    <input
+                      type="text"
+                      defaultValue={enrollment.evaluationRemark || ""}
+                      onChange={(e) =>
+                        handleInputChange(
+                          enrollment.enrollmentId,
+                          enrollment.plannedCourse.plannedCourseId,
+                          "evaluationRemark",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </td>
+                  <td className="date-field">{todayDate}</td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
   );
 };
 
-export default TrainingTable;
+export default TrainingTable1;

@@ -20,11 +20,15 @@
 .navbar-logo {
   display: flex;
   align-items: center;
+  border: none; /* Remove any border */
+  outline: none; /* Remove focus outline */
 }
 
 .navbar-logo-img {
   height: 50px; /* Adjusted height to fit better in the navbar */
   cursor: pointer; /* Cursor pointer to indicate clickable logo */
+  outline: none;
+  box-shadow: none; /* Remove shadow if added by default */
 }
 
 /* Navbar links container */

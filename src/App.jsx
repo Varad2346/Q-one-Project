@@ -9,9 +9,10 @@ import PageNotFound from './components/PageNotFound';
 import AddEmployee from './components/AddEmployee/AddEmployeeForm';
 import Coursetable from './components/CourseAssignTable/Coursetable1';
 import TrainingAttendance from './components/TrainingAttendance/TrainingReport';
-import TrainingTable from './components/TrainingTable/TrainingTable';
+import TrainingTable from './components/TrainingTable/TrainingTable1';
 import TrainingCalendar from './components/TrainingCalendar/TrainingCalendar';
 import { useAuth } from './store/auth'; // Import useAuth for authentication
+import Dashboard from './components/Dashboard/Dashboard';
 import './App.css';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/training-calendar" element={isLoggedIn ? <TrainingCalendar /> : <Navigate to="/" />} />
           <Route path="/training-attendance" element={isLoggedIn ? <TrainingAttendance /> : <Navigate to="/" />} />
           <Route path="/training-evaluation" element={isLoggedIn ? <TrainingTable /> : <Navigate to="/" />} />
+          <Route path="/admin" element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>

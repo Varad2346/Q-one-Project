@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt} from "react-icons/fa";
 import { NAVBAR_LINKS, LOGO_SRC } from "../../constants/constant";
 import { useAuth } from '../../store/auth';
 import { jwtDecode } from "jwt-decode";
 import "./Navbar.css";
+
 
 const Navbar = () => {
   const [isProfileCardOpen, setIsProfileCardOpen] = useState(false); // State for profile card visibility
@@ -97,7 +98,9 @@ const Navbar = () => {
               Home
             </NavLink>
           )}
-
+             <NavLink to="/admin" className="navbar-link">
+              Dashboard
+            </NavLink>
           {/* User Icon (opens profile card on click) */}
           <div
             className="navbar-link1"
@@ -108,6 +111,8 @@ const Navbar = () => {
               src="https://files.codingninjas.in/avatar-1710924338.png"
               alt=""
             />
+                  {/* <FaArrowUp /> */}
+
           </div>
         </div>
       </div>

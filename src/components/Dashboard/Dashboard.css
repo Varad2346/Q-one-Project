@@ -1,7 +1,8 @@
-.dashboard-container {
+/* .dashboard-container {
   display: flex;
   height: 100vh;
 }
+
 
 .sidebar {
   width: 250px;
@@ -10,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  height: 100vh;
+  height: 100%;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Add a shadow to the sidebar */
   transition: width 0.3s ease-in-out;
 }
@@ -28,11 +29,16 @@
 
 .logo-container {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  
   justify-content: center;
   width: 100%;
+  /* visibility: visible; Default visibility */
+  /* transition: visibility 0.3s ease-in-out; Smooth transition for visibility */
 }
+
+
+
 
 .toggle-btn {
   background: none;
@@ -40,17 +46,19 @@
   cursor: pointer;
   padding: 10px;
   font-size: 20px;
+  margin-top: 5px;
+  margin-left: 10px;
+  color: grey;
 }
 
-.sidebar img {
-  margin-bottom: 30px;
-}
+
 
 .options-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  margin-right:22px;
 }
 
 .options {
@@ -58,7 +66,8 @@
   margin: 5px 0;
   border-radius: 10px;
   padding: 12px;
-  font-size: 18px;
+  margin-left: 5px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -85,3 +94,30 @@
 .icon{
   margin-left: 10px;
 }
+.dashboard-img {
+  width: 150px;
+  display: block; /* Default: image is visible */
+  transition: display 0.3s ease-in-out; /* Transition to hide the image */
+  margin-right: 10px;
+}
+
+.sidebar.collapsed .dashboard-img {
+  display: none; /* Hide image and remove its space when sidebar is collapsed */
+}
+
+.dashboard-log-button{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    font-size: 20px;
+    margin-top: 50px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* font-size: small; */
+    /* font-weight:100; */
+    color: orange;
+    /* margin-right:22px; */
+} */

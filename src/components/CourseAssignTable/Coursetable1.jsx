@@ -591,6 +591,7 @@ const CourseTable = () => {
                     value={newCourseName}
                     onChange={(e) => setNewCourseName(e.target.value)}
                     required
+                    className="coursetable-modal-input"
                   />
                   <input
                     type="text"
@@ -598,6 +599,7 @@ const CourseTable = () => {
                     value={newDescription}
                     onChange={(e) => setNewDescription(e.target.value)}
                     required
+                    className="coursetable-modal-input"
                   />
                  
                   <Select
@@ -630,7 +632,8 @@ const CourseTable = () => {
             onChange={handleEmployeeChange}
             value={selectedEmployees}
             className="employee-select"
-            classNamePrefix="select"
+            // classNamePrefix="select"
+            // classNames="coursetable-emp-select"
           />
         </div>
 

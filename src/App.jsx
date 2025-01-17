@@ -12,7 +12,7 @@ import TrainingAttendance from './components/TrainingAttendance/TrainingReport';
 import TrainingTable from './components/TrainingTable/TrainingTable1';
 import TrainingCalendar from './components/TrainingCalendar/TrainingCalendar';
 import { useAuth } from './store/auth'; // Import useAuth for authentication
-import Dashboard from './components/Dashboard/Dashboard';
+import Dashboard from './components/Dashboard/Dashboard1';
 import './App.css';
 
 function App() {

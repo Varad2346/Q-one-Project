@@ -51,10 +51,8 @@
 }
 
 /* Input field styling */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select {
+.add-role-form-text,.add-role-form-email,.add-role-form-password,.add-role-form-gender-select
+ {
   width: 100%;
   padding: 9px;
   border: 1px solid #ddd;
@@ -67,8 +65,7 @@ select {
 }
 
 /* Floating effect on input focus */
-input:focus,
-select:focus {
+.add-role-form-text:focus,.add-role-form-email:focus ,.add-role-form-password:focus ,.add-role-form-gender-select:focus {
   border-color: #ff4b2b;
   box-shadow: 0 0 8px rgba(255, 75, 43, 0.3);
   outline: none;

@@ -182,6 +182,7 @@ const AddEmployeeForm = () => {
               value={formData.firstName}
               onChange={handleChange}
               required
+              className='add-role-form-text'
             />
           </div>
           <div className="form-group1">
@@ -193,6 +194,8 @@ const AddEmployeeForm = () => {
               value={formData.lastName}
               onChange={handleChange}
               required
+              className='add-role-form-text'
+
             />
           </div>
         </div>
@@ -206,6 +209,7 @@ const AddEmployeeForm = () => {
               value={formData.gender}
               onChange={handleChange}
               required
+              className='add-role-form-gender-select'
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -220,6 +224,8 @@ const AddEmployeeForm = () => {
               value={formData.mobileNumber}
               onChange={handleChange}
               required
+              className='add-role-form-text'
+
             />
           </div>
         </div>
@@ -235,6 +241,8 @@ const AddEmployeeForm = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              className='add-role-form-email'
+
             />
           </div>
           {role !== 'hr' && (
@@ -247,6 +255,8 @@ const AddEmployeeForm = () => {
                 value={formData.department}
                 onChange={handleChange}
                 required
+                className='add-role-form-text'
+
               />
             </div>
           )}
@@ -264,6 +274,8 @@ const AddEmployeeForm = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                className='add-role-form-password'
+
               />
             </div>
             <div className="form-group1">
@@ -275,6 +287,8 @@ const AddEmployeeForm = () => {
                 value={formData.confirmPassword || ''}
                 onChange={handleChange}
                 required
+                className='add-role-form-password'
+
               />
             </div>
           </div>

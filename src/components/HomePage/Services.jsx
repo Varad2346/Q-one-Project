@@ -226,11 +226,11 @@ const Services = () => {
       </div>
 
       <div className="service-buttons">
-        <button className="add-button" onClick={() => setModalOpen(true)}>
+        <button className="services-add-button" onClick={() => setModalOpen(true)}>
           Add Training Topic
         </button>
         <button 
-          className={`drop-button ${showDeleteButtons ? 'active' : ''}`} 
+          className={`services-drop-button ${showDeleteButtons ? 'active' : ''}`} 
           onClick={toggleDeleteButtons}
         >
           {showDeleteButtons ? 'Cancel' : 'Drop Training Topic'}

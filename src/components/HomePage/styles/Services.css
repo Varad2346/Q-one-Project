@@ -73,7 +73,7 @@
   gap: 20px;
 }
 
-.add-button, .drop-button {
+.services-add-button, .services-drop-button {
   background-color: #ff5733;
   color: white;
   border: none;
@@ -83,11 +83,11 @@
   transition: background-color 0.3s ease;
 }
 
-.add-button:hover {
+.services-add-button:hover {
   background-color: #e64a2f;
 }
 
-.drop-button:hover {
+.services-drop-button:hover {
   background-color: #e64a2f;
 }
 

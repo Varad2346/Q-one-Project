@@ -74,6 +74,7 @@ const Login = () => {
               onChange={handleChange}
               required
               autoComplete="email"
+              className="login-email-field"
             />
             <label htmlFor="password" className="form-label">Password</label>
             <input
@@ -84,6 +85,8 @@ const Login = () => {
               onChange={handleChange}
               required
               autoComplete="current-password"
+              className="login-password-field"
+
             />
 
             <div

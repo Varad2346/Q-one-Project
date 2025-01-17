@@ -45,15 +45,27 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  height: 40px;
+  margin-top: 5px; /* Minor top margin for better alignment */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
+.search-input:focus{
+  border-color: #ff4b2b;
+  box-shadow: 0 0 8px rgba(255, 75, 43, 0.3);
+  outline: none;
+}
 .button-group {
   display: flex;
   gap: 10px;
 }
 
 .add-course-button {
-  background-color: #ff8c00;
+  background-color: red;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -65,7 +77,7 @@
 }
 
 .drop-course-button {
-  background-color: #f44336;
+  background-color: red;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -265,7 +277,7 @@
   margin-bottom: 15px;
 }
 
-button {
+/* button {
   background-color: #ff8c00;
   color: white;
   padding: 12px 24px;
@@ -276,16 +288,16 @@ button {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.3s ease;
 
-}
+} */
 
-button[type="button"] {
+/* button[type="button"] {
   background-color: #f44336;
 }
 
 button[type="submit"]:hover,
 button[type="button"]:hover {
   opacity: 0.9;
-}
+} */
 
 .modal-buttons {
   display: flex;
@@ -303,7 +315,7 @@ button[type="button"]:hover {
 }
 
 .toggle-view-button {
-  background-color: #ff8c00;
+  background-color: red;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -320,7 +332,7 @@ button[type="button"]:hover {
 }
 
 /* Consistent button animations */
-button,
+/* button, */
 .add-course-button,
 .drop-course-button,
 .toggle-view-button,
@@ -330,7 +342,7 @@ button,
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-button:hover,
+/* button:hover, */
 .add-course-button:hover,
 .drop-course-button:hover,
 .toggle-view-button:hover,
@@ -340,7 +352,7 @@ button:hover,
   background-color: #e67e00;
 }
 
-button svg,
+/* button svg, */
 .add-course-button svg,
 .drop-course-button svg,
 .toggle-view-button svg,
@@ -430,7 +442,7 @@ button svg,
 }
 
 .plan-date-button {
-  background-color: #ff8c00;
+  background-color: red;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -448,4 +460,15 @@ button svg,
 .date-input-field {
   color: rgba(128, 128, 128, 0.849);
   cursor: pointer;
+}
+
+.coursetable-modal-input{
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  height: 40px;
+  margin-top: 5px; /* Minor top margin for better alignment */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }

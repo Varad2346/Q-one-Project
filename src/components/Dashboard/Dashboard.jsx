@@ -14,7 +14,7 @@ const Dashboard = () => {
       <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-content">
           <div className="logo-container">
-            <img src="logo.jpg" alt="Logo" width={150} />
+            <img src="logo.jpg" alt="Logo" width={150} className='dashboard-img' />
             <button onClick={toggleSidebar} className="toggle-btn">
               {isSidebarCollapsed ? <FaBars size={30} /> : <FaBars size={30} />} {/* Toggle between hamburger and close icon */}
             </button>
@@ -41,8 +41,9 @@ const Dashboard = () => {
               {!isSidebarCollapsed && <div className="name">HOD</div>}
             </div>
           </div>
-            <div className="log-button" >
-                        <FaSignOutAlt /> Logout
+            <div className="dashboard-log-button">
+              <div className="icon"><FaSignOutAlt size={30} /></div>
+              {!isSidebarCollapsed && <div className="name">Logout</div>}
             </div>
         </div>
       </div>

@@ -1,10 +1,4 @@
-/* Center the login-container on the page */
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-}
+
 
 .login-page {
     display: flex;
@@ -73,18 +67,25 @@ body, html {
     flex-direction: column;
 }
 
-input[type="email"],
-input[type="text"],
-input[type="password"] {
-    margin-top: 15px;
+.login-email-field,
+.login-password-field {
     margin-bottom: 10px;
-    padding: 22px;
     font-size: 1rem;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 5px;
     outline: none;
-}
+    height: 40px;
+    margin-top: 5px; /* Minor top margin for better alignment */
+    padding: 9px;
 
+}
+.login-email-field:focus,
+.login-password-field:focus {
+    border-color: #ff4b2b;
+    box-shadow: 0 0 8px rgba(255, 75, 43, 0.3);
+    outline: none;
+  
+  }
 .show-password {
     align-self: flex-end;
     color: #f97316;
@@ -208,8 +209,8 @@ input[type="password"] {
         font-size: 1.8rem;
     }
 
-    .login-form input[type="email"],
-    .login-form input[type="password"] {
+    .login-email-field,
+.login-password-field {
         padding: 18px; /* Adjust padding for smaller screens */
     }
 
@@ -257,8 +258,8 @@ input[type="password"] {
         font-size: 1.6rem;
     }
 
-    .login-form input[type="email"],
-    .login-form input[type="password"] {
+    .login-email-field,
+    .login-password-field {
         padding: 15px; /* Adjust padding for very small screens */
     }
 

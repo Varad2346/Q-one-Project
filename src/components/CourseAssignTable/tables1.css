@@ -183,13 +183,24 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.employee-select {
+.employee-select-dropdown {
   width: 100%;
   margin-top: 10px;
   border-radius: 5px;
   padding: 8px;
+  
 }
+select {
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  height: 40px;
+  margin-top: 5px; /* Minor top margin for better alignment */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
+}
 .button-group {
   justify-content: end;
   margin: 15px 20px;
@@ -501,3 +512,18 @@ button[type="button"]:hover {
   margin-top: 5px; /* Minor top margin for better alignment */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

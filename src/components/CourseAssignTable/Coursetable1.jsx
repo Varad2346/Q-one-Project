@@ -53,7 +53,7 @@ const CourseTable = () => {
 
   const getLastDateOfMonth = (month, year) => {
     const monthNumber = monthMapping[month];
-    return new Date(year, monthNumber + 1, 0).toISOString().split("T")[0];
+    return new Date(year, monthNumber+1 ).toISOString().split("T")[0];
   };
 
   const getMinDate = () => {
@@ -631,7 +631,7 @@ const CourseTable = () => {
             options={employees}
             onChange={handleEmployeeChange}
             value={selectedEmployees}
-            className="employee-select"
+            className="employee-select-dropdown"
             // classNamePrefix="select"
             // classNames="coursetable-emp-select"
           />

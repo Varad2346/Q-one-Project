@@ -98,9 +98,9 @@ const Navbar = () => {
               Home
             </NavLink>
           )}
-             <NavLink to="/admin" className="navbar-link">
+             {/* <NavLink to="/admin" className="navbar-link">
               Dashboard
-            </NavLink>
+            </NavLink> */}
           {/* User Icon (opens profile card on click) */}
           <div
             className="navbar-link1"

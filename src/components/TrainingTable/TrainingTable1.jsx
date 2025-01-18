@@ -569,6 +569,7 @@ const TrainingTable1 = () => {
                           e.target.value
                         )
                       }
+                      className="eval-remark-text-field"
                     />
                   </td>
                   <td className="date-field">{todayDate}</td>

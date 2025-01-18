@@ -415,13 +415,13 @@ const CourseTable = () => {
       <div className="left-container">
         <form onSubmit={handleSubmit}>
           <div className="header">
-            <div className="search-bar">
+            <div className="courses-search-bar">
               <input
                 type="text"
                 placeholder="Search courses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
+                className="courses-search-input"
               />
             </div>
             <div className="button-group">
@@ -607,10 +607,10 @@ const CourseTable = () => {
                     value={selectedTrainer}
                     onChange={setSelectedTrainer}
                     placeholder="Select Trainer"
-                    className="trainer-select"
+                    className="trainer-select "
                   />
                 </div>
-                <div className="modal-buttons">
+                <div className="add-course-modal-buttons">
                   <button type="submit">Submit</button>
                   <button type="button" onClick={handleCloseModal}>
                     Cancel

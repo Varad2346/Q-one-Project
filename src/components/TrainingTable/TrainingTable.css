@@ -198,3 +198,14 @@
   align-items: center;
   justify-content: center;
 }
+.eval-search-bar{
+  padding: 9px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    height: 40px;
+    margin-top: 5px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 60%;
+    margin-bottom: 10px;
+}

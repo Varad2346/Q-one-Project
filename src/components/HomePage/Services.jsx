@@ -246,12 +246,14 @@ const Services = () => {
               placeholder="Topic Name"
               value={newTopic.name}
               onChange={(e) => setNewTopic({ ...newTopic, name: e.target.value })}
+              className='add-topic-name-field'
             />
             <input
               type="text"
               placeholder="Description"
               value={newTopic.description}
               onChange={(e) => setNewTopic({ ...newTopic, description: e.target.value })}
+              className='add-topic-description-field'
             />
 
             <h3>Select an Icon:</h3>
@@ -270,7 +272,7 @@ const Services = () => {
               ))}
             </div>
 
-            <div className="modal-buttons">
+            <div className="add-topic-modal-buttons">
               <button onClick={handleAddTopic}>Submit</button>
               <button onClick={() => setModalOpen(false)}>Close</button>
             </div>

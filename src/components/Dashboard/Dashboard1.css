@@ -180,18 +180,18 @@
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-table {
+.dash-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th, td {
+.dashboard-table-th, .dashboard-table-td {
   padding: 12px;
   text-align: left;
   border: 1px solid whitesmoke;
 }
 
-th {
+.dashboard-table-th {
   background-color: white;
   color: #333;
 }

@@ -95,7 +95,7 @@ const Register = () => {
                 <input
                   type="text"
                   id="fname"
-                  className="input-field"
+                  className="register-text-field"
                   placeholder="First Name"
                   name="fname"
                   value={formData.fname}
@@ -108,7 +108,7 @@ const Register = () => {
                 <input
                   type="text"
                   id="lname"
-                  className="input-field"
+                  className="register-text-field"
                   placeholder="Last Name"
                   name="lname"
                   value={formData.lname}
@@ -123,7 +123,7 @@ const Register = () => {
                 <select
                   id="gender"
                   name="gender"
-                  className="input-field"
+                  className="register-gender-select"
                   value={formData.gender}
                   onChange={handleChange}
                   required
@@ -137,7 +137,7 @@ const Register = () => {
                 <select
                   id="role"
                   name="role"
-                  className="input-field"
+                  className="register-role-select"
                   value={formData.role}
                   onChange={handleChange}
                   required
@@ -153,7 +153,7 @@ const Register = () => {
                 <input
                   type="email"
                   id="email"
-                  className="input-field"
+                  className="register-email-field"
                   placeholder="Email"
                   name="email"
                   value={formData.email}
@@ -166,7 +166,7 @@ const Register = () => {
                 <input
                   type="password"
                   id="password"
-                  className="input-field"
+                  className="register-password-field"
                   placeholder="Password"
                   name="password"
                   value={formData.password}
@@ -181,7 +181,7 @@ const Register = () => {
                 <input
                   type="text"
                   id="mobilenumber"
-                  className="input-field"
+                  className="register-text-field"
                   placeholder="Mobile Number"
                   name="mobilenumber"
                   value={formData.mobilenumber}

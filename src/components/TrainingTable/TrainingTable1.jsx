@@ -403,6 +403,7 @@ const TrainingTable1 = () => {
         placeholder="Search by Employee Name"
         value={searchQuery}
         onChange={handleSearchChange}
+        className="eval-search-bar"
       />
         <div className="eval-button-container">
         <button className="commit-button" onClick={handleEditChanges}>{isEditMode ? "Cancel Edit" : "Edit Changes"}</button>

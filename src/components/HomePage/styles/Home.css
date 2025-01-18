@@ -12,6 +12,7 @@
   font-size: 24px;
   cursor: pointer;
   opacity: 1;
+  border-radius: 10px;
   transition: opacity 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

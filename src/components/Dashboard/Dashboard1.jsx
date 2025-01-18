@@ -79,23 +79,23 @@ const Dashboard = () => {
             {/* <button>Add User</button> */}
           </div>
           <div className='dashboard-table'>
-            <table>
+            <table className='dash-table'>
               <thead>
                 <tr className='table-header-row'>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Department</th>
-                  <th>Email</th>
-                  <th>Action</th>
+                  <th className='dashboard-table-th'>Name</th>
+                  <th className='dashboard-table-th'>Position</th>
+                  <th className='dashboard-table-th'>Department</th>
+                  <th className='dashboard-table-th'>Email</th>
+                  <th className='dashboard-table-th'>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredEmployees.map((employee, index) => (
                   <tr key={index}>
-                    <td>{employee.name}</td>
-                    <td>{employee.position}</td>
-                    <td>{employee.department}</td>
-                    <td>{employee.email}</td>
+                    <td className='dashboard-table-td'>{employee.name}</td>
+                    <td className='dashboard-table-td'>{employee.position}</td>
+                    <td className='dashboard-table-td'>{employee.department}</td>
+                    <td className='dashboard-table-td'>{employee.email}</td>
                     {/* <td><button>Edit</button></td> */}
                   </tr>
                 ))}

@@ -10,3 +10,10 @@
 *::after {
   box-sizing: border-box;
 }
+input:focus,
+select:focus {
+  border-color: #ff4b2b;
+  box-shadow: 0 0 8px rgba(255, 75, 43, 0.3);
+  outline: none;
+
+}

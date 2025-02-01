@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import "./tables1.css";
+import "./CourseTable.css";
 import Select from "react-select";
 import { useSnackbar } from "notistack"; // Import Notistack's hook
 import { useAuth } from "../../store/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import {months,durations,monthMapping} from "../CourseAssignTable/coursetableconstants"
+import {months,durations,monthMapping} from "./coursetableconstants"
 
 const CourseTable = () => {
 

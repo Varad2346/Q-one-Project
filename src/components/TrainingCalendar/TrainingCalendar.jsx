@@ -10,6 +10,7 @@ function TrainingCalendar() {
   const [loading, setLoading] = useState(true); // Loading state for API calls
   const [groupedCourses, setGroupedCourses] = useState([]); // New state for grouped courses
   const [remarks, setRemarks] = useState({});
+  console.log("remarks",remarks);
   // const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
@@ -282,6 +283,7 @@ function TrainingCalendar() {
               {groupedCourses.map((course, index) => (
                 <React.Fragment key={course.courseName}>
                   <tr>
+                    {console.log(course)}
                     <td className="training-sr-col" rowSpan="2">
                       {index + 1}
                     </td>
@@ -339,11 +341,11 @@ function TrainingCalendar() {
                     <td rowSpan="2">
                       <input
                         type="text"
-                        value={remarks[course.plannedCourseId] || course.status || ""}
+                        value={remarks[course.courseName]}
                         onChange={(e) => {
                           const newRemarks = {
                             ...remarks,
-                            [course.plannedCourseId]: e.target.value,
+                            [course.courseName]: e.target.value,
                           };
                           setRemarks(newRemarks);
                         }}

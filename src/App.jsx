@@ -9,10 +9,10 @@ import PageNotFound from './components/PageNotFound';
 import AddEmployee from './components/AddEmployee/AddEmployeeForm';
 import Coursetable from './components/CourseAssignTable/Coursetable1';
 import TrainingAttendance from './components/TrainingAttendance/TrainingReport';
-import TrainingTable from './components/TrainingTable/TrainingTable1';
+import TrainingTable from './components/TrainingTable1/TrainingTable2';
 import TrainingCalendar from './components/TrainingCalendar/TrainingCalendar';
 import { useAuth } from './store/auth'; // Import useAuth for authentication
-import Dashboard from './components/Dashboard/Dashboard';
+import Dashboard from './components/Dashboard1/Dashboard';
 import './App.css';
 
 function App() {

@@ -1,5 +1,12 @@
+
+
+/* CSS for table cells with background color based on conditions */
+
+
+
+
 /* Center align the title */
-.title {
+.training-title {
   margin-top: 30px;
   text-align: center;
   font-size: 24px;
@@ -8,7 +15,7 @@
   position: relative; /* Enable positioning for ::after */
 }
 
-.title::after {
+.training-title::after {
   content: '';
   display: block;
   width: 100%; /* Adjust as needed */
@@ -16,7 +23,6 @@
   background-color: orange; /* Orange underline */
   margin: 5px auto 0; /* Centers and adds spacing */
 }
-
 
 /* Outer container styling */
 .training-calendar {
@@ -33,67 +39,67 @@
 }
 
 /* Table container */
-.table-container {
+.training-table-container {
   width: 94vw; /* Takes 99% of the viewport width */
-  /* max-width: 1600px; */
 }
 
 /* Table styling */
-table {
+.training-table {
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
   text-align: center;
 }
 
-th, td {
+.training-table th, .training-table td {
   border: 1px solid grey;
   padding: 9px;
   width: 150px;
   height: 50px;
   box-sizing: border-box;
+  font-size: 15px;
 }
 
-th {
+.training-table th {
   background-color: orange;
   color: black;
   font-weight: bold;
 }
 
-
-.yellow {
+.training-yellow {
   background-color: yellow;
 }
 
 /* Responsive styling */
 @media screen and (max-width: 1200px) {
-  th, td {
+  .training-table th, .training-table td {
       font-size: 0.9em;
       padding: 8px;
   }
 }
 
 @media screen and (max-width: 992px) {
-  th, td {
+  .training-table th, .training-table td {
       font-size: 0.8em;
       padding: 6px;
   }
 }
 
 @media screen and (max-width: 768px) {
-  th, td {
+  .training-table th, .training-table td {
       font-size: 0.7em;
       padding: 5px;
   }
 }
-.table-container {
-  position: relative; /* This makes the button positioning relative to this container */
+
+.training-table-container {
+  position: relative;
 }
 
-.download-btn {
-  position: absolute;  /* Positioned relative to .table-container */
-  bottom: -50px;       /* Adjust this value to move the button just outside the table */
-  right: 0;            /* Aligns the button to the right */
+.training-download-btn {
+  position: absolute;
+  bottom: -50px;
+  right: 0;
   padding: 10px 20px;
   background-color: #e91248;
   color: white;
@@ -103,29 +109,19 @@ th {
   z-index: 1000;
 }
 
-th.sr-col, td.sr-col {
-  width: 50px; /* Adjust to desired width */
+.training-sr-col {
+  width: 50px;
   max-width: 50px;
 }
 
-/* Add these new styles to your existing CSS */
-th, td {
-  border: 1px solid grey;
-  padding: 9px;
-  width: 150px;
-  height: 50px;
-  box-sizing: border-box;
-  font-size: 15px; /* Smaller font size for dates */
-}
-
-.date-cell {
+.training-date-cell {
   font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.remark-input {
+.training-remark-input {
   width: 100%;
   height: 100%;
   border: none;
@@ -135,30 +131,29 @@ th, td {
   background: transparent;
 }
 
-.remark-input:hover {
+.training-remark-input:hover {
   background: #f5f5f5;
 }
 
-.download-btn:hover {
+.training-download-btn:hover {
   background-color: #ff0040;
 }
 
-.sr-col {
+.training-sr-col {
   width: 50px !important;
   min-width: 50px !important;
   max-width: 50px !important;
 }
 
-/* CSS for table cells with background color based on conditions */
-.has-evaluation {
+.training-has-evaluation {
   background-color: yellow;
 }
 
-.show-orange-background {
+.training-show-orange-background {
   background-color: orange;
 }
 
-.remark-input {
+.training-remark-input {
   width: 100%;
   border: none;
   overflow: hidden;
@@ -166,11 +161,140 @@ th, td {
   text-overflow: ellipsis;
 }
 
-.has-report {
+.training-has-report {
   background-color: lightgreen;
 }
 
-.show-red-background {
+.training-show-red-background {
   background-color: red;
 }
 
+
+.training-year-navigation {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  top: 100px;
+  right: 57px;
+}
+
+.training-year-select {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 2px solid orange;
+  border-radius: 5px;
+  background-color: white;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.training-year-select:hover {
+  border-color: #ff8c00;
+  box-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+}
+
+.training-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.training-title {
+  margin-right: 200px;
+  margin: 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+}
+
+.training-title::after {
+  content: '';
+  display: block;
+  width: 100%; 
+  height: 4px;
+  background-color: orange;
+  margin: 5px auto 0;
+}
+
+.training-year-navigation {
+  display: flex;
+  align-items: center;
+}
+
+.training-year-select {
+  padding: 6px 10px;
+  font-size: 16px;
+  border: 2px solid orange;
+  border-radius: 5px;
+  background-color: white;
+  outline: none;
+  cursor: pointer;
+}
+.training-has-evaluation {
+  background-color: lightgreen;
+}
+.training-has-report {
+  background-color:rgb(129, 188, 129)  ;
+}
+.color-info {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.color-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 23%; /* Adjusted width for a more balanced look */
+  text-align: center; /* Center-align the text under the color boxes */
+}
+
+.color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Makes the color box circular */
+  margin-bottom: 5px; /* Adds some space between the color and the text */
+}
+
+.color-card {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  padding: 5px;
+  text-align: center;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .color-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .color-container {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .color-card {
+    font-size: 12px;
+  }
+}

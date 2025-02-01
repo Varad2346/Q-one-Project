@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "./TrainingCalendar.css";
+import "./TrainingCalendar1.css";
 import { useAuth } from "../../store/auth";
 import html2pdf from "html2pdf.js";
-import Modal from "./Modal.jsx"; // Import the Modal component
+// import { formatDate } from "../../utils/dateUtils"; // Utility function for date formatting
+import Modal from "./Modal"; // Import the Modal component
 
 function TrainingCalendar() {
   const { authToken } = useAuth();
@@ -10,10 +11,10 @@ function TrainingCalendar() {
   const [loading, setLoading] = useState(true); // Loading state for API calls
   const [groupedCourses, setGroupedCourses] = useState([]); // New state for grouped courses
   const [remarks, setRemarks] = useState({});
-  // const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  console.log(groupedCourses);
   const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
   const [dueDate, setDueDate] = useState(""); // State to hold the due date for the modal
+
   const months = [
     "Jan",
     "Feb",
@@ -37,12 +38,6 @@ function TrainingCalendar() {
     setModalVisible(false);
     setDueDate(""); // Reset due date when modal is closed
   };
-  // Generate an array of years to navigate (past 4 years and 1 future year)
-  const yearOptions = (() => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: 6 }, (_, i) => currentYear - 4 + i);
-  })();
-
   // Fetch planned courses data
   useEffect(() => {
     if (!authToken) {
@@ -177,15 +172,8 @@ function TrainingCalendar() {
           });
           return course;
         });
-
-        // Filter courses by selected year
-        const filteredCourses = finalCourses.filter(course => {
-          const courseYear = new Date(course.plannedDate).getFullYear();
-          return courseYear === selectedYear;
-        });
-
         // Add this right before setCourseData(finalCourses)
-        const groupedByName = filteredCourses.reduce((acc, course) => {
+        const groupedByName = finalCourses.reduce((acc, course) => {
           if (!acc[course.courseName]) {
             acc[course.courseName] = {
               courseName: course.courseName,
@@ -204,7 +192,7 @@ function TrainingCalendar() {
 
         const groupedCoursesArray = Object.values(groupedByName);
         setGroupedCourses(groupedCoursesArray);
-        setCourseData(filteredCourses);
+        setCourseData(finalCourses);
         setLoading(false); // Set loading to false after all data is fetched
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -213,7 +201,7 @@ function TrainingCalendar() {
     };
 
     fetchData();
-  }, [authToken, selectedYear]);
+  }, [authToken]);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -227,7 +215,7 @@ function TrainingCalendar() {
   const downloadPDF = () => {
     const element = document.getElementById("training-table");
     const options = {
-      filename: `training-calendar-${selectedYear}.pdf`,
+      filename: "training-calendar.pdf",
       html2canvas: { scale: 6 },
       jsPDF: { unit: "mm", format: "a2", orientation: "landscape" },
     };
@@ -246,31 +234,14 @@ function TrainingCalendar() {
 
   return (
     <>
-          {modalVisible && <Modal dueDate={dueDate} closeModal={closeModal} />}
-
+      {modalVisible && <Modal dueDate={dueDate} closeModal={closeModal} />}
       <div className="training-calendar" id="training-table">
-        <div className="training-calendar-header">
-          <h2 className="training-title">Training Calendar - {selectedYear}</h2>
-        </div>
-          <div className="training-year-navigation">
-            <select 
-              value={selectedYear} 
-              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              className="training-year-select"
-            >
-              {yearOptions.map(year => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-  
-        <div className="training-table-container">
-        <table className="training-table">
+        <h2 className="title">Training Calendar - 2025</h2>
+        <div className="table-container">
+          <table>
             <thead>
               <tr>
-                <th className="training-sr-col">SR. No.</th>
+                <th className="sr-col">SR. No.</th>
                 <th style={{ width: 1 }}>TRAINING PROGRAM DETAILS</th>
                 {months.map((month, index) => (
                   <th key={index}>{month}</th>
@@ -282,7 +253,7 @@ function TrainingCalendar() {
               {groupedCourses.map((course, index) => (
                 <React.Fragment key={course.courseName}>
                   <tr>
-                    <td className="training-sr-col" rowSpan="2">
+                    <td className="sr-col" rowSpan="2">
                       {index + 1}
                     </td>
                     <td rowSpan="2">{course.courseName}</td>
@@ -312,22 +283,20 @@ function TrainingCalendar() {
 
                       const showOrangeBackground =
                         !hasEvaluation && hasDueDate && daysDifference > 14;
-                      const showRedBackground =
-                        !hasEvaluation && hasDueDate && daysDifference < 14;
-
+                      // const showRedBackground=!hasEvaluation && hasDueDate && daysDifference<14
                       return (
                         <td
                           key={monthIndex}
                           className={
-                            hasEvaluation 
-                              ? "training-has-evaluation" 
-                              : showOrangeBackground 
-                              ? "training-show-orange-background" 
-                              : showRedBackground? "training-show-red-background":" "
+                            hasEvaluation
+                              ? "has-evaluation"
+                              : showOrangeBackground
+                              ? "show-orange-background"
+                              : ""
                           }
                         >
                           {instancesThisMonth.map((instance, idx) => (
-                            <div key={idx} className="training-date-cell">
+                            <div key={idx}>
                               {instance.dateOfEvaluation
                                 ? formatDate(instance.dateOfEvaluation)
                                 : formatDate(instance.plannedDate)}
@@ -339,7 +308,9 @@ function TrainingCalendar() {
                     <td rowSpan="2">
                       <input
                         type="text"
-                        value={remarks[course.plannedCourseId] || course.status || ""}
+                        value={
+                          remarks[course.plannedCourseId] || course.status || ""
+                        }
                         onChange={(e) => {
                           const newRemarks = {
                             ...remarks,
@@ -347,7 +318,7 @@ function TrainingCalendar() {
                           };
                           setRemarks(newRemarks);
                         }}
-                        className="training-remark-input"
+                        className="remark-input"
                         placeholder="remark"
                         title="Enter remark here"
                       />
@@ -387,16 +358,17 @@ function TrainingCalendar() {
                                 instancesThisMonth[0].reportDetails.dueDate
                               );
                           }}
+                          // onMouseLeave={closeModal}
                           className={
-                            hasReport 
-                              ? "training-has-report" 
-                              : showRedBackground 
-                              ? "training-show-red-background" 
+                            hasReport
+                              ? "has-report"
+                              : showRedBackground
+                              ? "show-red-background"
                               : ""
                           }
                         >
                           {instancesThisMonth.map((instance, idx) => (
-                            <div key={idx} className="training-date-cell">
+                            <div key={idx}>
                               {instance.reportDetails?.actualDate &&
                                 formatDate(instance.reportDetails.actualDate)}
                             </div>
@@ -408,16 +380,13 @@ function TrainingCalendar() {
                 </React.Fragment>
               ))}
             </tbody>
+            {/* <button className="download-btn" onClick={downloadPDF}>
+            Download PDF
+          </button> */}
           </table>
 
           <div className="color-info">
-            {/* <div className="color-container">
-              <div
-                className="color"
-                style={{ backgroundColor: "orange" }}
-              ></div>
-              <div className="color-card">Due Date</div>
-            </div> */}
+           
             <div className="color-container">
               <div className="color" style={{ backgroundColor: "green" }}></div>
               <div className="color-card">Attendance Successful</div>
@@ -434,16 +403,10 @@ function TrainingCalendar() {
               <div className="color-card">Pending</div>
             </div>
           </div>
-          <button 
-            className="training-download-btn" 
-            onClick={downloadPDF}
-          >
-            Download PDF
-          </button>
+
         </div>
       </div>
     </>
   );
 }
-
 export default TrainingCalendar;

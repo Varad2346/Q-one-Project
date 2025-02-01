@@ -240,7 +240,7 @@
   height: 70vh
 }
 
-.modal-overlay {
+.coursetable-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -250,9 +250,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
-.modal-content {
+.coursetable-modal-content {
   text-align: center;
   background: white;
   padding: 20px;
@@ -287,11 +288,11 @@ button[type="button"]:hover {
   opacity: 0.9;
 }
 
-.modal-buttons {
+.coursetable-modal-buttons {
   display: flex;
-  justify-content: end;
+  justify-content: center;
   gap: 20px;
-  margin-right: 120px
+  /* margin: auto; */
 }
 
 .modal-input-fields {

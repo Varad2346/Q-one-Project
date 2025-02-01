@@ -212,6 +212,7 @@ const CourseTable = () => {
           trainingDuration: selectedDurations[courseId],
           plannedDate: planDates[courseId] || null,
           status: "pending", // Assuming status remains pending
+          remark:"blank"
         };
 
         const response = await fetch(
@@ -580,8 +581,8 @@ const CourseTable = () => {
         </form>
 
         {isModalOpen && (
-          <div className="modal-overlay">
-            <div className="modal-content">
+          <div className="coursetable-modal-overlay">
+            <div className="coursetable-modal-content">
               <h2>Add New Course</h2>
               <form onSubmit={handleAddCourse}>
                 <div className="modal-input-fields">
@@ -608,7 +609,7 @@ const CourseTable = () => {
                     className="trainer-select"
                   />
                 </div>
-                <div className="modal-buttons">
+                <div className="coursetable-modal-buttons">
                   <button type="submit">Submit</button>
                   <button type="button" onClick={handleCloseModal}>
                     Cancel

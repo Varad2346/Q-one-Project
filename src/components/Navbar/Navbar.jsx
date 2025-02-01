@@ -6,9 +6,8 @@ import { useAuth } from '../../store/auth';
 import { jwtDecode } from "jwt-decode";
 import "./Navbar.css";
 
-
 const Navbar = () => {
-  const [isProfileCardOpen, setIsProfileCardOpen] = useState(false); // State for profile card visibility
+  const [isProfileCardOpen, setIsProfileCardOpen] = useState(false);
   const [navbarActive, setNavbarActive] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,10 +61,11 @@ const Navbar = () => {
   };
 
   const handleProfileClick = () => {
-    setIsProfileCardOpen(prevState => !prevState); // Toggle profile card visibility on click
+    setIsProfileCardOpen(prevState => !prevState);
   };
 
-  if (!isLoggedIn) {
+  // Don't render navbar if not logged in or if on the dashboard page
+  if (!isLoggedIn || location.pathname === "/admin") {
     return null;
   }
 
@@ -98,21 +98,18 @@ const Navbar = () => {
               Home
             </NavLink>
           )}
-             <NavLink to="/admin" className="navbar-link">
-              Dashboard
-            </NavLink>
-          {/* User Icon (opens profile card on click) */}
+          <NavLink to="/admin" className="navbar-link">
+            Dashboard
+          </NavLink>
           <div
             className="navbar-link1"
-            onClick={handleProfileClick} // Toggle profile card visibility on click
+            onClick={handleProfileClick}
           >
             <img
               className="user-image"
               src="https://files.codingninjas.in/avatar-1710924338.png"
               alt=""
             />
-                  {/* <FaArrowUp /> */}
-
           </div>
         </div>
       </div>

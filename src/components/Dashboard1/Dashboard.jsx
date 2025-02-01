@@ -2,46 +2,99 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import { FaSignOutAlt, FaHome, FaUsers, FaUserTie, FaChalkboardTeacher, FaBuilding, FaBars, FaEdit, FaTrash } from 'react-icons/fa';
-// import bcrypt from "bcrypt"
 import { useAuth } from '../../store/auth';
 
 const EditUserModal = ({ user, onClose, onSave }) => {
-  console.log("user",user);
+  console.log("user", user);
   const [editedUser, setEditedUser] = useState({
-    userId: user.userId || '', // Ensure ID is not empty
+    userId: user.userId || '',
     firstName: user.name.split(' ')[0],
     lastName: user.name.split(' ')[1],
     email: user.email,
     mobileNumber: user.phoneNumber,
     department: user.department,
     role: user.role,
-    // password: '' // Optional password field
+    password: '',
+    confirmPassword: ''
   });
-  
+
+  const [passwordError, setPasswordError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedUser(prev => ({ ...prev, [name]: value }));
+    
+    // Clear password error when user starts typing new passwords
+    if (name === 'password' || name === 'confirmPassword') {
+      setPasswordError('');
+    }
+  };
+
+  const validatePasswords = () => {
+    // If both password fields are empty, allow the update (no password change)
+    if (!editedUser.password && !editedUser.confirmPassword) {
+      return true;
+    }
+
+    // If only one password field is filled
+    if ((!editedUser.password && editedUser.confirmPassword) || 
+        (editedUser.password && !editedUser.confirmPassword)) {
+      setPasswordError('Both password fields must be filled');
+      return false;
+    }
+
+    // Check if passwords match
+    if (editedUser.password !== editedUser.confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return false;
+    }
+
+    // Check password length (minimum 6 characters)
+    if (editedUser.password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long');
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate passwords before submission
+    if (!validatePasswords()) {
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       
-      // Validate that ID exists before making the request
       if (!editedUser.userId) {
-        /* throw new Error('User ID is missing'); */
+        throw new Error('User ID is missing');
       }
-      console.log(editedUser)
+
+      // Create update payload
+      const updatePayload = {
+        firstName: editedUser.firstName,
+        lastName: editedUser.lastName,
+        email: editedUser.email,
+        mobileNumber: editedUser.mobileNumber,
+        department: editedUser.department,
+        role: editedUser.role
+      };
+
+      // Only include password in payload if it's been changed
+      if (editedUser.password) {
+        updatePayload.password = editedUser.password;
+      }
+
       const response = await fetch(`http://localhost:3000/api/users/${editedUser.userId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(editedUser)
-        
+        body: JSON.stringify(updatePayload)
       });
 
       if (!response.ok) {
@@ -58,8 +111,8 @@ const EditUserModal = ({ user, onClose, onSave }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="dashboard-modal-overlay">
+      <div className="dashboard-modal-content">
         <h2>Edit User</h2>
         <form onSubmit={handleSubmit}>
           <input
@@ -108,14 +161,29 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             <option value="Trainer">Trainer</option>
             <option value="HOD">HOD</option>
           </select>
-          <input
-            name="password"
-            type="password"
-            value={editedUser.password}
-            onChange={handleChange}
-            placeholder="Password"
-          />
-          <div className="modal-actions">
+          
+          {/* Password update fields */}
+          <div className="password-section">
+            <input
+              type="password"
+              name="password"
+              value={editedUser.password}
+              onChange={handleChange}
+              placeholder="New Password (leave empty to keep current)"
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              value={editedUser.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm New Password"
+            />
+            {passwordError && (
+              <div className="password-error">{passwordError}</div>
+            )}
+          </div>
+
+          <div className="dashboard-modal-actions">
             <button type="button" onClick={onClose}>Cancel</button>
             <button type="submit">Save</button>
           </div>
@@ -126,7 +194,7 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 };
 
 const Dashboard = () => {
-  const {authToken,logout}=useAuth();
+  const { authToken, logout } = useAuth();
   const navigate = useNavigate();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -143,8 +211,6 @@ const Dashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      // const token = localStorage.getItem('token');
-      
       const response = await fetch('http://localhost:3000/api/users', {
         method: 'GET',
         headers: {
@@ -152,25 +218,25 @@ const Dashboard = () => {
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const result = await response.json();
-      
+
       if (result.success) {
         const filteredUsers = result.data
           .filter(user => user.role.toLowerCase() !== 'admin')
           .map((user) => ({
-            userId: user.userId, // Add this line to handle different ID formats
+            userId: user.userId,
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
             phoneNumber: user.mobileNumber,
             department: user.department,
             role: user.role,
           }));
-          console.log("filter",filteredUsers);
+        console.log("filter", filteredUsers);
         setUsers(filteredUsers);
       } else {
         setError('Failed to fetch users');
@@ -214,12 +280,13 @@ const Dashboard = () => {
       alert(error.message);
     }
   };
+
   const toggleSidebar = () => {
     setIsSidebarCollapsed(prevState => !prevState);
   };
 
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value.toLowerCase());
+    setSearchQuery(event.target.value);
   };
 
   const handleRoleChange = (role) => {
@@ -231,20 +298,16 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    // localStorage.removeItem('token');
     logout();
     navigate('/');
   };
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = 
-      user.name.toLowerCase().includes(searchQuery) ||
-      user.email.toLowerCase().includes(searchQuery) ||
-      user.department.toLowerCase().includes(searchQuery) ||
-      user.phoneNumber.toLowerCase().includes(searchQuery) ||
-      user.role.toLowerCase().includes(searchQuery);
+    const matchesSearch = searchQuery === '' || 
+      user.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesRole = selectedRole === 'all' || user.role.toLowerCase() === selectedRole.toLowerCase();
+    const matchesRole = selectedRole === 'all' || 
+      user.role.toLowerCase() === selectedRole.toLowerCase();
 
     return matchesSearch && matchesRole;
   });
@@ -255,7 +318,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='dashboard-container1'>
+    <div className='dashboard-outer-container'>
       <div className="dashboard-container">
         <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
           <div className="sidebar-content">
@@ -265,24 +328,24 @@ const Dashboard = () => {
                 <FaBars size={30} />
               </button>
             </div>
-            <div className="options-list">
-              <div className="options" onClick={navigateToHome}>
+            <div className="dashboard-options-list">
+              <div className="dashboard-options" onClick={navigateToHome}>
                 <div className="icon"><FaHome size={30} /></div>
                 {!isSidebarCollapsed && <div className="name">Home</div>}
               </div>
-              <div className="options" onClick={() => handleRoleChange('hr')}>
+              <div className="dashboard-options" onClick={() => handleRoleChange('hr')}>
                 <div className="icon"><FaUsers size={30} /></div>
                 {!isSidebarCollapsed && <div className="name">HR</div>}
               </div>
-              <div className="options" onClick={() => handleRoleChange('employee')}>
+              <div className="dashboard-options" onClick={() => handleRoleChange('employee')}>
                 <div className="icon"><FaUserTie size={30} /></div>
                 {!isSidebarCollapsed && <div className="name">Employees</div>}
               </div>
-              <div className="options" onClick={() => handleRoleChange('trainer')}>
+              <div className="dashboard-options" onClick={() => handleRoleChange('trainer')}>
                 <div className="icon"><FaChalkboardTeacher size={30} /></div>
                 {!isSidebarCollapsed && <div className="name">Trainers</div>}
               </div>
-              <div className="options" onClick={() => handleRoleChange('hod')}>
+              <div className="dashboard-options" onClick={() => handleRoleChange('hod')}>
                 <div className="icon"><FaBuilding size={30} /></div>
                 {!isSidebarCollapsed && <div className="name">HOD</div>}
               </div>
@@ -297,13 +360,13 @@ const Dashboard = () => {
           <div className='dashboard-header'>
             <input
               type="text"
-              className="search-bar"
-              placeholder="Search by name, email, department, role..."
+              className="dashboard-search-bar"
+              placeholder="Search by name..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
-          <div className='dashboard-table'>
+          <div className='dashboard-table-container'>
             <div className="table-title">{getTableTitle()}</div>
             {loading ? (
               <div className="loading-state">Loading users...</div>
@@ -311,45 +374,43 @@ const Dashboard = () => {
               <div className="error-message">Error: {error}</div>
             ) : filteredUsers.length === 0 ? (
               <div className="empty-state">
-                {searchQuery 
-                  ? "No users found matching your search criteria" 
+                {searchQuery
+                  ? "No users found matching your search criteria"
                   : "No users found in this category"}
               </div>
             ) : (
-              <table>
+              <table className='dashboard-table'>
                 <thead>
                   <tr className='table-header-row'>
-                    {/* <th>userId</th> */}
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
-                    <th>Department</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th className='dashboard-table-heading'>Name</th>
+                    <th className='dashboard-table-heading'>Email</th>
+                    <th className='dashboard-table-heading'>Phone Number</th>
+                    <th className='dashboard-table-heading'>Department</th>
+                    <th className='dashboard-table-heading'>Role</th>
+                    <th className='dashboard-table-heading'>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredUsers.map((user, index) => (
                     <tr key={index} className="table-row">
-                      {/* <td>{user.userId}</td> */}
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.phoneNumber}</td>
-                      <td>{user.department}</td>
-                      <td>
+                      <td className='dashboard-table-data'>{user.name}</td>
+                      <td className='dashboard-table-data'>{user.email}</td>
+                      <td className='dashboard-table-data'>{user.phoneNumber}</td>
+                      <td className='dashboard-table-data'>{user.department}</td>
+                      <td className='dashboard-table-data'>
                         <span className={`role-badge ${user.role.toLowerCase()}`}>
                           {user.role}
                         </span>
                       </td>
                       <td className="actions-column">
-                        <button 
-                          className="edit-btn" 
+                        <button
+                          className="edit-btn"
                           onClick={() => setEditingUser(user)}
                         >
                           <FaEdit />
                         </button>
-                        <button 
-                          className="delete-btn" 
+                        <button
+                          className="delete-btn"
                           onClick={() => setDeletingUser(user)}
                         >
                           <FaTrash />
@@ -365,13 +426,13 @@ const Dashboard = () => {
       </div>
 
       {editingUser && (
-        <EditUserModal 
+        <EditUserModal
           user={editingUser}
           onClose={() => setEditingUser(null)}
           onSave={(updatedUser) => {
-            setUsers(users.map(user => 
-              user.userId === editingUser.userId 
-                ? {...user, ...updatedUser, name: `${updatedUser.firstName} ${updatedUser.lastName}`} 
+            setUsers(users.map(user =>
+              user.userId === editingUser.userId
+                ? { ...user, ...updatedUser, name: `${updatedUser.firstName} ${updatedUser.lastName}` }
                 : user
             ));
           }}

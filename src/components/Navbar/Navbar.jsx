@@ -13,7 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [filteredUser, setFilteredUser] = useState(null);
 
-  const { isLoggedIn, logout, authToken } = useAuth();
+  const { isLoggedIn, logout, authToken,setAuthToken,setIsLoggedIn } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -49,10 +49,11 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setIsProfileCardOpen(false);
-    logout();
-    navigate("/");
+    localStorage.removeItem('token'); // Remove token from localStorage
+    setAuthToken(null); // Clear the token from state
+    setIsLoggedIn(false); // Update the login state    navigate("/");
   };
-
+ 
   const handleScrollToSection = (scrollTo) => {
     const element = document.getElementById(scrollTo);
     if (element) {

@@ -353,9 +353,9 @@ const Dashboard = () => {
                 width={150}
                 className="dashboard-img"
               />
-              <button onClick={toggleSidebar} className="toggle-btn">
+              <div onClick={toggleSidebar} className="toggle-btn">
                 <FaBars size={30} />
-              </button>
+              </div>
             </div>
             <div className="dashboard-options-list">
               <div className="dashboard-options" onClick={navigateToHome}>
@@ -463,18 +463,18 @@ const Dashboard = () => {
                       </td>
                       <td className="actions-column">
                         <div className="action-buttons-container">
-                          <button
+                          <div
                             className="edit-btn"
                             onClick={() => setEditingUser(user)}
                           >
                             <FaEdit />
-                          </button>
-                          <button
+                          </div>
+                          <div
                             className="delete-btn"
                             onClick={() => setDeletingUser(user)}
                           >
                             <FaTrash />
-                          </button>
+                          </div>
                         </div>
                       </td>
                     </tr>

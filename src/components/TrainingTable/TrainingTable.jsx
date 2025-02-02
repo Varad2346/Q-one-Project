@@ -21,11 +21,9 @@ const TrainingTable2 = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [searchMode, setSearchMode] = useState('employee');  // Toggle between 'employee' and 'topic'
     const [selectedTopic, setSelectedTopic] = useState(null);
-    // Fetch user data
-  const fetchUsersData = async () => {
+
+    const fetchUsersData = async () => {
       const decodedId =jwtDecode(authToken);
-      console.log(decodedId.id);
-      // await setHodId(decodedId.id);
     try {
       const response = await fetch("http://localhost:3000/api/users", {
         method: "GET",
@@ -35,25 +33,19 @@ const TrainingTable2 = () => {
         },
       });
       const data = await response.json();
-      console.log("data",data)
       if (data.success) {
         // await setHodData(users,hodId);
         const employees=data.data.filter((user)=>{
               return user.role=="employee"
         })
-
-        console.log("emp",employees);
         setusers(employees);
-        // console.log("hoidd",hodId)
         const filteredUser = await data.data.filter(
           (user) =>{
             return user.userId==decodedId.id
           }
         );
 
-        console.log("fil",filteredUser)
         sethodData(filteredUser);
-        // return employees;
       }
       return data;
     } catch (error) {
@@ -61,20 +53,7 @@ const TrainingTable2 = () => {
     }
   };
 
-  // const setHodData=async(users)=>{
-    
-  //     console.log("users1",users);
-  //     console.log("hodId",hodId)
-  //     const filteredUser = await users.filter(
-  //       (user) =>{
-  //         return user.userId==hodId
-  //       }
-  //     );
-      
-  //     console.log("filtered",filteredUser)
-  //     // return filteredUser
 
-  // }
   const fetchEnrollments = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/enrollments", {
@@ -192,7 +171,6 @@ const TrainingTable2 = () => {
     
         if(enrichedWithReports){
             return enrichedWithReports;
-            // updateEmployeeOptions(enrichedWithReports);
         }
       } else {
         console.error("Failed to fetch reports:", reportData.message);
@@ -236,8 +214,6 @@ const TrainingTable2 = () => {
       )
       .map((enrollment) => enrollment.user);
       
-      console.log("unr",filteredEnrollments);
-      // Remove duplicates based on userId
       const uniqueUsers = Array.from(
         new Set(filteredEnrollments.map((user) => user.userId))
       ).map((userId) => filteredEnrollments.find((user) => user.userId === userId));
@@ -257,7 +233,6 @@ const TrainingTable2 = () => {
   const fetchData = async () => {
     if (authToken) {
         const userData = await fetchUsersData();
-        console.log("users",userData.data)
         const enrollmentData=await fetchEnrollments();
         const plannedCourseData=await fetchPlannedCourses();
         const enrichedEnrollments=await enrichEnrollmentsWithUsersAndCourses(enrollmentData,userData,plannedCourseData);
@@ -266,7 +241,6 @@ const TrainingTable2 = () => {
         setEnrollments(enrollmentWithReport);
     }
     };
-
 
     const handleInputChange = (enrollmentId, plannedCourseId, field, value) => {
         setUpdatedEvaluations((prevEvaluations) => {
@@ -368,19 +342,14 @@ const TrainingTable2 = () => {
             
             const result = await response.json();
             if (result.success) {
-              enqueueSnackbar(
-                `Successfully committed evaluation for enrollment ID: ${enrollmentId}`,
-                {
-                  variant: "success",
-                }
-              );
+              fetchData();
             } else {
               console.error(
                 `Failed to commit evaluation for enrollment ID: ${enrollmentId}: ${result.message}`
               );
             }
           }
-          
+
           setUpdatedEvaluations([]); // Clear the updated evaluations list
         } catch (error) {
           console.error("Error committing evaluations:", error);
@@ -396,18 +365,13 @@ const TrainingTable2 = () => {
           };
           html2pdf().from(element).set(options).save();
         };
-      // {console.log(hodData)}
-       
-        
-        
-        // updateEmployeeOptions(enrollments?.data);
+
         const handleEmployeeSelect = (selectedOption) => {
           setSelectedEmployee(selectedOption);
       
         };
         
         const getUniqueTopics = () => {
-          console.log("en",Enrollments)
           const availableTopics = Enrollments?.filter((enrollment)=> !enrollment.dateOfEvaluation && enrollment.report?.actualDate).map((enrollment) =>( enrollment.courseDetails?.name)).filter(Boolean);
           return Array.from(new Set(availableTopics)); // Remove duplicates and return unique topics
         };
@@ -418,7 +382,6 @@ const TrainingTable2 = () => {
         }
       
         const handleTopicSelect = (selectedOption) => {
-          console.log("so",selectedOption);
           setSelectedTopic(selectedOption.value);
         };
         const toggleSearchMode = () => {
@@ -430,15 +393,12 @@ const TrainingTable2 = () => {
         
         const handleEditChanges = () => {
           if (isEditMode) {
-            // When leaving edit mode, reset the updated evaluations to null values or empty
             setUpdatedEvaluations([]);
           }
-          // Toggle the edit mode
           setIsEditMode((prevMode) => !prevMode);
         };
         useEffect(() => {
           if (isEditMode && Enrollments.length > 0) {
-            // Ensure `updatedEvaluations` is populated with backend values when entering edit mode
             const evaluations = Enrollments.map((enrollment) => {
               return {
                 enrollmentId: enrollment.enrollmentId,
@@ -457,9 +417,6 @@ const TrainingTable2 = () => {
           }
         }, [isEditMode, Enrollments]);
 
-
-
-        {console.log("hoddata",hodData)}
     return (
         <div className="eval-container">
           <h2 className="eval-heading">Training Evaluation-2025</h2>
@@ -550,8 +507,7 @@ const TrainingTable2 = () => {
               </tr>
             </thead>
             <tbody>
-              {/* // enrollment?.dateOfEvaluation != null && */}
-              {console.log(Enrollments)}
+            
               {Enrollments
                 ?.filter((enrollment) => {
                   // If no employee is selected, show all enrollments

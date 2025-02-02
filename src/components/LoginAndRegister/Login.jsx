@@ -8,7 +8,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth(); // Use login from AuthContext
+  const { login,setAuthToken,authToken,setIsLoggedIn } = useAuth(); // Use login from AuthContext
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar(); // Get the enqueueSnackbar function from Notistack
 
@@ -34,7 +34,29 @@ const Login = () => {
     setIsLoading(true);
     try {
       console.log(formData.email, formData.password);
-      await login(formData.email, formData.password); // Login via AuthContext
+      const email=formData.email;
+      const password=formData.password;
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email,password }),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('token', data.token); // Store the token in localStorage
+          setAuthToken(data.token); // Set token in state
+          setIsLoggedIn(true); // Update the login state
+        } else {
+          throw new Error('Invalid credentials');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        throw error; // Propagate the error to the caller
+      }
       enqueueSnackbar("Login successful!", { variant: "success" });
       navigate("/home"); // Redirect to home page
     } catch (err) {

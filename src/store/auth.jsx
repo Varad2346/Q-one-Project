@@ -44,43 +44,10 @@ export const AuthProvider = ({ children }) => {
     return false;
   };
   
-
-
-
-  // Login function
-  const login = async (email, password) => {
-    try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token); // Store the token in localStorage
-        setAuthToken(data.token); // Set token in state
-        setIsLoggedIn(true); // Update the login state
-      } else {
-        throw new Error('Invalid credentials');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error; // Propagate the error to the caller
-    }
-  };
-
   // Logout function
-  const logout = () => {
-    localStorage.removeItem('token'); // Remove token from localStorage
-    setAuthToken(null); // Clear the token from state
-    setIsLoggedIn(false); // Update the login state
-  };
-
+  
   return (
-    <AuthContext.Provider value={{ isLoggedIn, authToken, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, authToken,setAuthToken,setIsLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

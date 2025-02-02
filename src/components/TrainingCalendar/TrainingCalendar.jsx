@@ -44,6 +44,10 @@ function TrainingCalendar() {
     return Array.from({ length: 6 }, (_, i) => currentYear - 4 + i);
   })();
 
+  const handleCommit=async()=>{
+    
+  }
+
   // Fetch planned courses data
   useEffect(() => {
     if (!authToken) {
